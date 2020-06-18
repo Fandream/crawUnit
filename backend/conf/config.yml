@@ -1,0 +1,12 @@
+mongo:
+  host: localhost
+  port: 27017
+  db: crawUnit
+  username: ""
+  password: ""
+  authSource: "admin"
+redis:
+  address: localhost
+  password: ""
+  database: 1
+  port: 6379
