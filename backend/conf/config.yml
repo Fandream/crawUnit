@@ -1,7 +1,9 @@
+api:
+  address: "localhost:8000"
 mongo:
   host: localhost
   port: 27017
-  db: crawUnit
+  db: crawunit
   username: ""
   password: ""
   authSource: "admin"
@@ -10,3 +12,8 @@ redis:
   password: ""
   database: 1
   port: 6379
+log:
+  level: info
+  path: "/var/logs/crawunit"
+  isDeletePeriodically: "N"
+  deleteFrequency: "@hourly"
