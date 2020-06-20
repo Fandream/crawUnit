@@ -58,5 +58,28 @@ func main() {
 	}
 	log.Info("initialized redis successfully")
 
+	// 初始化节点服务
+	if err := services.InitNodeService(); err != nil {
+		log.Error("init node service error:" + err.Error())
+		panic(err)
+	}
+	log.Info("initialized local node successfully")
+
+	// 初始化定时任务
+	if err := services.InitScheduler(); err != nil {
+		log.Error("init scheduler error:" + err.Error())
+		debug.PrintStack()
+		panic(err)
+	}
+	log.Info("initialized schedule successfully")
+
+	// 初始化任务执行器
+	if err := services.InitTaskExecutor(); err != nil {
+		log.Error("init task executor error:" + err.Error())
+		debug.PrintStack()
+		panic(err)
+	}
+	log.Info("initialized task executor successfully")
+
 
 }
