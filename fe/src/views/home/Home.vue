@@ -13,29 +13,16 @@
                 {{overviewStats[m.name]}}
               </div>
               <div class="metric-name">
-                {{$t(m.label)}}
+                {{m.label}}
               </div>
             </div>
           </div>
-          <!--          <el-card class="metric-card" shadow="hover">-->
-          <!--            <el-col :span="6" class="icon-col">-->
-          <!--              <font-awesome-icon :icon="m.icon" :color="m.color"/>-->
-          <!--            </el-col>-->
-          <!--            <el-col :span="18" class="text-col">-->
-          <!--              <el-row>-->
-          <!--                <label class="label">{{$t(m.label)}}</label>-->
-          <!--              </el-row>-->
-          <!--              <el-row>-->
-          <!--                <div class="value">{{overviewStats[m.name]}}</div>-->
-          <!--              </el-row>-->
-          <!--            </el-col>-->
-          <!--          </el-card>-->
         </li>
       </ul>
     </el-row>
     <el-row>
       <el-card shadow="hover">
-        <h4 class="title">{{$t('Daily New Tasks')}}</h4>
+        <h4 class="title">{{'每日新增任务数'}}</h4>
         <div id="echarts-daily-tasks" class="echarts-box"></div>
       </el-card>
     </el-row>
@@ -54,11 +41,11 @@ export default {
       overviewStats: {},
       dailyTasks: [],
       metrics: [
-        { name: 'task_count', label: 'Total Tasks', icon: 'fa fa-check', color: 'blue', path: 'tasks' },
-        { name: 'spider_count', label: 'Spiders', icon: 'fa fa-bug', color: 'green', path: 'spiders' },
-        { name: 'active_node_count', label: 'Active Nodes', icon: 'fa fa-server', color: 'red', path: 'nodes' },
-        { name: 'schedule_count', label: 'Schedules', icon: 'fa fa-clock-o', color: 'orange', path: 'schedules' },
-        { name: 'project_count', label: 'Projects', icon: 'fa fa-code-fork', color: 'grey', path: 'projects' }
+        { name: 'task_count', label: '总任务数', icon: 'fa fa-check', color: 'blue', path: 'tasks' },
+        { name: 'spider_count', label: '爬虫', icon: 'fa fa-bug', color: 'green', path: 'spiders' },
+        { name: 'active_node_count', label: '在线节点', icon: 'fa fa-server', color: 'red', path: 'nodes' },
+        { name: 'schedule_count', label: '定时任务', icon: 'fa fa-clock-o', color: 'orange', path: 'schedules' },
+        { name: 'project_count', label: '项目', icon: 'fa fa-code-fork', color: 'grey', path: 'projects' }
       ]
     }
   },
