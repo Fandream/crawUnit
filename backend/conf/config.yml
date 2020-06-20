@@ -17,3 +17,9 @@ log:
   path: "/var/logs/crawunit"
   isDeletePeriodically: "N"
   deleteFrequency: "@hourly"
+spider:
+  path: "/app/spiders"
+task:
+  workers: 4
+other:
+  tmppath: "/tmp"
