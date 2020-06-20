@@ -47,3 +47,116 @@ func (a *Action) Add() error {
 	return nil
 }
 
+func GetAction(id bson.ObjectId) (Action, error) {
+	s, c := database.GetCol("actions")
+	defer s.Close()
+	var user Action
+	if err := c.Find(bson.M{"_id": id}).One(&user); err != nil {
+		log.Errorf(err.Error())
+		debug.PrintStack()
+		return user, err
+	}
+	return user, nil
+}
+
+func GetActionList(filter interface{}, skip int, limit int, sortKey string) ([]Action, error) {
+	s, c := database.GetCol("actions")
+	defer s.Close()
+
+	var actions []Action
+	if err := c.Find(filter).Skip(skip).Limit(limit).Sort(sortKey).All(&actions); err != nil {
+		debug.PrintStack()
+		return actions, err
+	}
+	return actions, nil
+}
+
+func GetActionListTotal(filter interface{}) (int, error) {
+	s, c := database.GetCol("actions")
+	defer s.Close()
+
+	var result int
+	result, err := c.Find(filter).Count()
+	if err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
+func GetVisitDays(uid bson.ObjectId) (int, error) {
+	type ResData struct {
+		Days int `json:"days" bson:"days"`
+	}
+	s, c := database.GetCol("actions")
+	defer s.Close()
+
+	pipeline := []bson.M{
+		{
+			"$match": bson.M{
+				"user_id": uid,
+				"type": constants.ActionTypeVisit,
+			},
+		},
+		{
+			"$addFields": bson.M{
+				"date": bson.M{
+					"$dateToString": bson.M{
+						"format": "%Y%m%d",
+						"date": "$create_ts",
+						"timezone": "Asia/Shanghai",
+					},
+				},
+			},
+		},
+		{
+			"$group": bson.M{
+				"_id": "$date",
+			},
+		},
+		{
+			"_id": nil,
+			"days": bson.M{"$sum": 1},
+		},
+	}
+
+	var resData []ResData
+	if err := c.Pipe(pipeline).All(&resData); err != nil {
+		log.Errorf(err.Error())
+		debug.PrintStack()
+		return 0, err
+	}
+
+	return resData[0].Days, nil
+}
+
+func UpdateAction(id bson.ObjectId, item Action) error {
+	s, c := database.GetCol("actions")
+	defer s.Close()
+
+	var result Action
+	if err := c.FindId(id).One(&result); err != nil {
+		debug.PrintStack()
+		return err
+	}
+
+	if err := item.Save(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func RemoveAction(id bson.ObjectId) error {
+	s, c := database.GetCol("actions")
+	defer s.Close()
+
+	var result Action
+	if err := c.FindId(id).One(&result); err != nil {
+		return err
+	}
+
+	if err := c.RemoveId(id); err != nil {
+		return err
+	}
+
+	return nil
+}
