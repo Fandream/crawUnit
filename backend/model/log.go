@@ -142,4 +142,29 @@ func GetLogItemList(query bson.M, keyword string, skip int, limit int, sortStr s
 	return logItems, nil
 }
 
+func GetLogItemTotal(query bson.M, keyword string) (int, error) {
+	s, c := database.GetCol("logs")
+	defer s.Close()
+
+	filter := query
+
+	if keyword != "" {
+		filter["msg"] = bson.M{
+			"$regex": bson.RegEx{
+				Pattern: keyword,
+				Options: "i",
+			},
+		}
+	}
+
+	total, err := c.Find(filter).Count()
+	if err != nil {
+		debug.PrintStack()
+		return total, err
+	}
+
+	return total, nil
+}
+
+
 
