@@ -12,24 +12,23 @@
         @click.native="clickSelectedTag(tag)"
         @click.middle.native="closeSelectedTag(tag)"
         @contextmenu.prevent.native="openMenu(tag,$event)">
-        {{ $t(generateTitle(tag.title)) }}
+        {{ generateTitle(tag.title) }}
         <span v-if="!tag.meta.affix" class="el-icon-close" @click.prevent.stop="closeSelectedTag(tag)"/>
       </router-link>
     </scroll-pane>
     <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="refreshSelectedTag(selectedTag)">{{ $t('tagsView.refresh') }}</li>
+      <li @click="refreshSelectedTag(selectedTag)">{{ 'tagsView.refresh' }}</li>
       <li v-if="!(selectedTag.meta&&selectedTag.meta.affix)" @click="closeSelectedTag(selectedTag)">{{
-        $t('tagsView.close') }}
+        'tagsView.close' }}
       </li>
-      <li @click="closeOthersTags">{{ $t('tagsView.closeOthers') }}</li>
-      <li @click="closeAllTags(selectedTag)">{{ $t('tagsView.closeAll') }}</li>
+      <li @click="closeOthersTags">{{ 'tagsView.closeOthers' }}</li>
+      <li @click="closeAllTags(selectedTag)">{{ 'tagsView.closeAll' }}</li>
     </ul>
   </div>
 </template>
 
 <script>
 import ScrollPane from '@/components/ScrollPane'
-import { generateTitle } from '@/utils/i18n'
 import path from 'path'
 
 export default {
@@ -69,7 +68,6 @@ export default {
     this.addTags()
   },
   methods: {
-    generateTitle, // generateTitle by vue-i18n
     isActive (route) {
       return route.path === this.$route.path
     },
@@ -140,7 +138,7 @@ export default {
       })
     },
     clickSelectedTag (tag) {
-      this.$st.sendEv('全局', '点击标签', tag.name)
+
     },
     closeSelectedTag (view) {
       this.$store.dispatch('delView', view).then(({ visitedViews }) => {

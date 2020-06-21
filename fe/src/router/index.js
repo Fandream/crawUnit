@@ -20,7 +20,7 @@ export const constantRouterMap = [
         path: '',
         component: () => import('../views/home/Home'),
         meta: {
-          title: 'Home',
+          title: '主页'
 
         }
       }
@@ -30,7 +30,7 @@ export const constantRouterMap = [
     path: '/projects',
     component: Layout,
     meta: {
-      title: 'Project',
+      title: '项目'
 
     },
     children: [
@@ -39,7 +39,7 @@ export const constantRouterMap = [
         name: 'Project',
         component: () => import('../views/project/ProjectList'),
         meta: {
-          title: 'Project',
+          title: '项目'
 
         }
       }
@@ -49,7 +49,7 @@ export const constantRouterMap = [
     path: '/spiders',
     component: Layout,
     meta: {
-      title: 'Spider',
+      title: '爬虫'
 
     },
     children: [
@@ -58,7 +58,7 @@ export const constantRouterMap = [
         name: 'SpiderList',
         component: () => import('../views/spider/SpiderList'),
         meta: {
-          title: 'Spiders',
+          title: '爬虫'
 
         }
       },
@@ -67,7 +67,7 @@ export const constantRouterMap = [
         name: 'SpiderDetail',
         component: () => import('../views/spider/SpiderDetail'),
         meta: {
-          title: 'Spider Detail',
+          title: '爬虫详情'
 
         },
         hidden: true
@@ -78,7 +78,7 @@ export const constantRouterMap = [
     path: '/tasks',
     component: Layout,
     meta: {
-      title: 'Task',
+      title: 'Task'
 
     },
     children: [
@@ -87,7 +87,7 @@ export const constantRouterMap = [
         name: 'TaskList',
         component: () => import('../views/task/TaskList'),
         meta: {
-          title: 'Tasks',
+          title: '任务'
 
         }
       },
@@ -96,7 +96,7 @@ export const constantRouterMap = [
         name: 'TaskDetail',
         component: () => import('../views/task/TaskDetail'),
         meta: {
-          title: 'Task Detail',
+          title: '任务详情'
 
         },
         hidden: true
@@ -107,7 +107,7 @@ export const constantRouterMap = [
     path: '/schedules',
     component: Layout,
     meta: {
-      title: 'Schedules',
+      title: '定时任务'
 
     },
     hidden: false,
@@ -117,7 +117,7 @@ export const constantRouterMap = [
         name: 'ScheduleList',
         component: () => import('../views/schedule/ScheduleList'),
         meta: {
-          title: 'Schedules',
+          title: '定时任务'
 
         }
       }
@@ -127,7 +127,7 @@ export const constantRouterMap = [
     path: '/nodes',
     component: Layout,
     meta: {
-      title: 'Node',
+      title: '节点'
 
     },
     children: [
@@ -136,7 +136,7 @@ export const constantRouterMap = [
         name: 'NodeList',
         component: () => import('../views/node/NodeList'),
         meta: {
-          title: 'Nodes',
+          title: '节点'
 
         }
       },
@@ -145,33 +145,13 @@ export const constantRouterMap = [
         name: 'NodeDetail',
         component: () => import('../views/node/NodeDetail'),
         meta: {
-          title: 'Node Detail',
+          title: '节点详情'
 
         },
         hidden: true
       }
     ]
   },
-  {
-    path: '/setting',
-    component: Layout,
-    meta: {
-      title: 'Setting',
-
-    },
-    children: [
-      {
-        path: '',
-        name: 'Setting',
-        component: () => import('../views/setting/Setting'),
-        meta: {
-          title: 'Setting',
-
-        }
-      }
-    ]
-  },
-
   { path: '*', redirect: '/404', hidden: true }
 ]
 

@@ -11,17 +11,18 @@ import {
 } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import GithubButton from 'vue-github-button'
+
 import showdown from 'showdown'
-import 'github-markdown-css/github-markdown.css'
 
 export default {
   components: {
-    Breadcrumb,
-    Hamburger,
-    GithubButton
+    Breadcrumb
   },
-  data () {}
+  data () {
+    return {
+
+    }
+  }
 }
 </script>
 

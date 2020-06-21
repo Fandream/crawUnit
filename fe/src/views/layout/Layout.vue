@@ -23,12 +23,10 @@ import {
   TagsView
 } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
-import Documentation from '../../components/Documentation/Documentation'
 
 export default {
   name: 'Layout',
   components: {
-    Documentation,
     Navbar,
     Sidebar,
     TagsView,
@@ -37,7 +35,6 @@ export default {
   mixins: [ResizeMixin],
   data () {
     return {
-      isShowDocumentation: false
     }
   },
   computed: {
@@ -59,10 +56,7 @@ export default {
   methods: {
     handleClickOutside () {
       this.$store.dispatch('CloseSideBar', { withoutAnimation: false })
-    },
-  },
-  async created () {
-    await this.$store.dispatch('doc/getDocData')
+    }
   }
 }
 </script>
@@ -83,4 +77,3 @@ export default {
     }
   }
 </style>
-
