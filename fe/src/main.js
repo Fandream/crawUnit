@@ -25,19 +25,19 @@ import store from './store'
 import router from './router'
 
 import '@/icons' // icon
-import '@/permission' // permission control
 
 import request from './api/request'
-import i18n from './i18n'
 import utils from './utils'
 
 import iView from 'iview'; // 引入iview
 import 'iview/dist/styles/iview.css';
-Vue.use(iView);
 
 // vue-tour
 import VueTour from 'vue-tour'
 import 'vue-tour/dist/vue-tour.css'
+Vue.use(iView);
+
+Vue.use(iView);
 
 // code mirror
 Vue.use(codemirror)
@@ -58,31 +58,28 @@ Vue.use(VueTour)
 
 Vue.config.productionTip = false
 
-// 百度统计
-if (localStorage.getItem('useStats') !== '0') {
-  window._hmt = window._hmt || [];
-  (function () {
-    let hm = document.createElement('script')
-    hm.src = 'https://hm.baidu.com/hm.js?c35e3a563a06caee2524902c81975add'
-    let s = document.getElementsByTagName('script')[0]
-    s.parentNode.insertBefore(hm, s)
-  })()
-}
-
 // inject request api
 Vue.prototype.$request = request
 
 // inject utils
 Vue.prototype.$utils = utils
 
-// inject stats
-Vue.prototype.$st = utils.stats
-
 const app = new Vue({
-  el: '#app',
-  i18n,
   router,
   store,
   render: h => h(App)
+})
+
+async function Login () {
+  const res = await store.dispatch('user/login')
+  if (res.status === 200) {
+    // success
+    await store.dispatch('user/getInfo')
+  } else {
+    console.log(res)
+  }
+}
+Login().then(i => {
+  app.$mount('#app')
 })
 export default app
