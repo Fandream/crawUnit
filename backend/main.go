@@ -4,8 +4,7 @@ import (
 	"context"
 	"crawlab/config"
 	"crawlab/database"
-	_ "crawlab/docs"
-	validate2 "crawlab/lib/validate"
+	"crawlab/lib/validate_bridge"
 	"crawlab/middlewares"
 	"crawlab/model"
 	"crawlab/routes"
@@ -15,11 +14,7 @@ import (
 	"github.com/apex/log"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/go-playground/validator/v10"
-	"github.com/olivere/elastic/v7"
 	"github.com/spf13/viper"
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"net"
 	"net/http"
 	"os"
@@ -29,12 +24,9 @@ import (
 	"time"
 )
 
-var swagHandler gin.HandlerFunc
-
-func init() {
-	swagHandler = ginSwagger.WrapHandler(swaggerFiles.Handler)
-}
 func main() {
+	binding.Validator = new(validate_bridge.DefaultValidator)
+	app := gin.Default()
 
 	// 初始化配置
 	if err := config.InitConfig(""); err != nil {
@@ -58,20 +50,34 @@ func main() {
 	}
 	log.Info("initialized redis successfully")
 
-	// 初始化节点服务
-	if err := services.InitNodeService(); err != nil {
-		log.Error("init node service error:" + err.Error())
-		panic(err)
-	}
-	log.Info("initialized local node successfully")
 
-	// 初始化定时任务
-	if err := services.InitScheduler(); err != nil {
-		log.Error("init scheduler error:" + err.Error())
-		debug.PrintStack()
-		panic(err)
+
+	if model.IsMaster() {
+		// 初始化定时任务
+		if err := services.InitScheduler(); err != nil {
+			log.Error("init scheduler error:" + err.Error())
+			debug.PrintStack()
+			panic(err)
+		}
+		log.Info("initialized schedule successfully")
+
+		// 初始化用户服务
+		if err := services.InitUserService(); err != nil {
+			log.Error("init user service error:" + err.Error())
+			debug.PrintStack()
+			panic(err)
+		}
+		log.Info("initialized user service successfully")
+
+		// 初始化依赖服务
+		if err := services.InitDepsFetcher(); err != nil {
+			log.Error("init dependency fetcher error:" + err.Error())
+			debug.PrintStack()
+			panic(err)
+		}
+		log.Info("initialized dependency fetcher successfully")
+
 	}
-	log.Info("initialized schedule successfully")
 
 	// 初始化任务执行器
 	if err := services.InitTaskExecutor(); err != nil {
@@ -81,5 +87,53 @@ func main() {
 	}
 	log.Info("initialized task executor successfully")
 
+	// 初始化节点服务
+	if err := services.InitNodeService(); err != nil {
+		log.Error("init node service error:" + err.Error())
+		panic(err)
+	}
+	log.Info("initialized node service successfully")
 
+	// 初始化爬虫服务
+	if err := services.InitSpiderService(); err != nil {
+		log.Error("init spider service error:" + err.Error())
+		debug.PrintStack()
+		panic(err)
+	}
+	log.Info("initialized spider service successfully")
+
+	// 初始化RPC服务
+	if err := rpc.InitRpcService(); err != nil {
+		log.Error("init rpc service error:" + err.Error())
+		debug.PrintStack()
+		panic(err)
+	}
+	log.Info("initialized rpc service successfully")
+
+
+	// 运行服务器
+	host := viper.GetString("server.host")
+	port := viper.GetString("server.port")
+	address := net.JoinHostPort(host, port)
+	srv := &http.Server{
+		Handler: app,
+		Addr:    address,
+	}
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			if err != http.ErrServerClosed {
+				log.Error("run server error:" + err.Error())
+			} else {
+				log.Info("server graceful down")
+			}
+		}
+	}()
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	ctx2, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx2); err != nil {
+		log.Error("run server error:" + err.Error())
+	}
 }
