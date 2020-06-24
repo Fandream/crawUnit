@@ -3,7 +3,7 @@ api:
 mongo:
   host: localhost
   port: 27017
-  db: crawunit
+  db: crawunitDB
   username: ""
   password: ""
   authSource: "admin"
@@ -17,9 +17,32 @@ log:
   path: "/var/logs/crawunit"
   isDeletePeriodically: "N"
   deleteFrequency: "@hourly"
+server:
+  host: 0.0.0.0
+  port: 8000
+  master: "Y"
+  secret: "crawunit"
+  register:
+    # mac地址/ip地址/hostname, 如果是ip，则需要手动指定IP
+    type: "mac"
+    ip: ""
+  lang: # 安装语言环境, Y 为安装，N 为不安装
+    python: "Y"
+    node: "y"
+    java: "y"
+    dotnet: "N"
+    php: "N"
 spider:
   path: "/app/spiders"
 task:
   workers: 4
 other:
   tmppath: "/tmp"
+version: 0.4.10
+setting:
+  allowRegister: "N"
+  enableTutorial: "N"
+  runOnMaster: "Y"
+  demoSpiders: "N"
+  checkScrapy: "Y"
+  autoInstall: "Y"
