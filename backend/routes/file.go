@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"crawlab/utils"
+	"crawunit/utils"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"

@@ -1,7 +1,7 @@
 package model
 
 import (
-	"crawlab/database"
+	"crawunit/database"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo/bson"
 	"runtime/debug"

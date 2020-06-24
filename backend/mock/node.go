@@ -1,9 +1,9 @@
 package mock
 
 import (
-	"crawlab/entity"
-	"crawlab/model"
-	"crawlab/services"
+	"crawunit/entity"
+	"crawunit/model"
+	"crawunit/services"
 	"github.com/apex/log"
 	"github.com/gin-gonic/gin"
 	"github.com/globalsign/mgo/bson"

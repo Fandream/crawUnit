@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"crawlab/entity"
+	"crawunit/entity"
 	"encoding/json"
 	"github.com/apex/log"
 	"github.com/gomodule/redigo/redis"

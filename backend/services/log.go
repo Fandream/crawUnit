@@ -1,12 +1,12 @@
 package services
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/entity"
-	"crawlab/lib/cron"
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/entity"
+	"crawunit/lib/cron"
+	"crawunit/model"
+	"crawunit/utils"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"

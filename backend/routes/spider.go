@@ -1,12 +1,12 @@
 package routes
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/entity"
-	"crawlab/model"
-	"crawlab/services"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/entity"
+	"crawunit/model"
+	"crawunit/services"
+	"crawunit/utils"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/gin-gonic/gin"

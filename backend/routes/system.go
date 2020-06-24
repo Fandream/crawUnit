@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"crawlab/constants"
-	"crawlab/entity"
-	"crawlab/services"
-	"crawlab/services/rpc"
+	"crawunit/constants"
+	"crawunit/entity"
+	"crawunit/services"
+	"crawunit/services/rpc"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"

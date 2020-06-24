@@ -1,8 +1,8 @@
 package mock
 
 import (
-	"crawlab/constants"
-	"crawlab/model"
+	"crawunit/constants"
+	"crawunit/model"
 	"github.com/apex/log"
 	"github.com/gin-gonic/gin"
 	"github.com/globalsign/mgo/bson"

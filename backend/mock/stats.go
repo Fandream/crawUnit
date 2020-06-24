@@ -1,7 +1,7 @@
 package mock
 
 import (
-	"crawlab/model"
+	"crawunit/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

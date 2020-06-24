@@ -2,7 +2,7 @@ package register
 
 import (
 	"bytes"
-	"crawlab/constants"
+	"crawunit/constants"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/spf13/viper"

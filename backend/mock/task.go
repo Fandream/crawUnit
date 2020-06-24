@@ -2,9 +2,9 @@ package mock
 
 import (
 	"bytes"
-	"crawlab/constants"
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/model"
+	"crawunit/utils"
 	"encoding/csv"
 	"fmt"
 	"github.com/gin-gonic/gin"

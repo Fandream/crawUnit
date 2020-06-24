@@ -1,10 +1,10 @@
 package spider_handler
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/model"
+	"crawunit/utils"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo/bson"

@@ -1,7 +1,7 @@
 package services
 
 import (
-	"crawlab/entity"
+	"crawunit/entity"
 	"github.com/apex/log"
 	"github.com/imroc/req"
 	"runtime/debug"
