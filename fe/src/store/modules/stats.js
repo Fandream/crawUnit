@@ -1,14 +1,14 @@
-const state = {}
+const state = {};
 const getters = {
-  useStats () {
-    return localStorage.getItem('useStats')
+  useStats() {
+    return localStorage.getItem("useStats");
   }
-}
-const mutations = {}
-const actions = {}
+};
+const mutations = {};
+const actions = {};
 export default {
   state,
   getters,
   mutations,
   actions
-}
+};

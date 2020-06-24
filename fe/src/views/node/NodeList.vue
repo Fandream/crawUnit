@@ -11,16 +11,7 @@
     <el-tabs type="border-card" v-model="activeTab">
       <el-tab-pane :label="'节点列表'">
         <!--filter-->
-        <div class="filter-wrapper">
-          <el-button
-            size="small"
-            type="success"
-            icon="el-icon-plus"
-            @click="onAddNode"
-          >
-            {{ "添加节点" }}
-          </el-button>
-        </div>
+        <div class="filter-wrapper"></div>
         <!--./filter-->
         <!--table list-->
         <el-table

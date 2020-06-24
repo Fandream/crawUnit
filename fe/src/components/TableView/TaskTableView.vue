@@ -104,7 +104,6 @@ export default {
         this.clicked = false;
       }, 100);
       this.$router.push(`/spiders/${row.spider_id}`);
-      // eslint-disable-next-line no-empty
       if (this.$route.path.match(/\/nodes\//)) {
       }
     },
@@ -114,16 +113,13 @@ export default {
         this.clicked = false;
       }, 100);
       this.$router.push(`/nodes/${row.node_id}`);
-      // eslint-disable-next-line no-empty
       if (this.$route.path.match(/\/spiders\//)) {
       }
     },
     onClickTask(row) {
       if (!this.clicked) {
         this.$router.push(`/tasks/${row._id}`);
-        // eslint-disable-next-line no-empty
         if (this.$route.path.match(/\/nodes\//)) {
-          // eslint-disable-next-line no-empty
         } else if (this.$route.path.match(/\/spiders\//)) {
         }
       }
