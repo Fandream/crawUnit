@@ -9,17 +9,6 @@
         <log-view @search="getTaskLog(true)"/>
       </el-tab-pane> -->
       <el-tab-pane :label="'结果'" name="results">
-        <div class="button-group">
-          <el-button
-            size="small"
-            class="btn-download"
-            type="primary"
-            icon="el-icon-download"
-            @click="downloadCSV"
-          >
-            {{ "下载CSV" }}
-          </el-button>
-        </div>
         <general-table-view
           :data="taskResultsData"
           :columns="taskResultsColumns"

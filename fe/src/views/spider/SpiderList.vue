@@ -102,43 +102,7 @@
               </el-col>
             </el-row>
           </el-form>
-          <el-alert
-            type="warning"
-            :closable="false"
-            style="margin-bottom: 10px"
-          >
-            <p>{{ '您可以点击"添加"按钮创建空的爬虫，之后再上传文件。' }}</p>
-            <p>
-              {{
-                '或者，您也可以点击"上传"按钮并上传一个包含爬虫项目的 zip 文件。'
-              }}
-            </p>
-            <p>
-              <i class="fa fa-exclamation-triangle"></i>
-              {{ "注意: 上传 zip 文件时，请从 根目录 下开始压缩爬虫文件。" }}
-            </p>
-            <p style="font-weight: bolder">
-              <template v-if="lang === 'en'">
-                Recommend uploading spiders using
-                <a
-                  href="https://docs.crawlab.cn/SDK/CLI.html"
-                  target="_blank"
-                  style="color: #409eff;font-weight: bolder"
-                  >CLI Tool</a
-                >.
-              </template>
-              <template v-else-if="lang === 'zh'">
-                推荐使用
-                <a
-                  href="https://docs.crawlab.cn/SDK/CLI.html"
-                  target="_blank"
-                  style="color: #409eff;font-weight: bolder"
-                  >CLI 工具</a
-                >
-                上传爬虫。
-              </template>
-            </p>
-          </el-alert>
+
           <div class="actions">
             <el-button size="small" type="primary" @click="onAddCustomized">{{
               "添加"
@@ -296,18 +260,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item>
-              <el-select
-                v-model="filter.owner_type"
-                size="small"
-                :placeholder="'所有者'"
-                @change="getList"
-              >
-                <el-option value="me" :label="'我的爬虫'" />
-                <el-option value="all" :label="'所有爬虫'" />
-                <el-option value="public" :label="'公共爬虫'" />
-              </el-select>
-            </el-form-item>
+
             <el-form-item>
               <el-input
                 v-model="filter.keyword"
@@ -583,15 +536,7 @@
                 @click="onView(scope.row, $event)"
               />
             </el-tooltip>
-            <el-tooltip :content="'删除'" placement="top">
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                size="mini"
-                :disabled="isDisabled(scope.row)"
-                @click="onRemove(scope.row, $event)"
-              />
-            </el-tooltip>
+
             <el-tooltip :content="'复制'" placement="top">
               <el-button
                 type="info"
@@ -620,15 +565,6 @@
                 size="mini"
                 :disabled="isDisabled(scope.row)"
                 @click="onCrawl(scope.row, $event)"
-              />
-            </el-tooltip>
-            <el-tooltip :content="'最近任务'" placement="top">
-              <el-button
-                type="warning"
-                icon="fa fa-tasks"
-                size="mini"
-                :disabled="isDisabled(scope.row)"
-                @click="onViewRunningTasks(scope.row, $event)"
               />
             </el-tooltip>
           </template>
@@ -757,8 +693,6 @@ export default {
       columns.push({ name: "last_run_ts", label: "上次运行", width: "140" });
       columns.push({ name: "update_ts", label: "更新时间", width: "140" });
       columns.push({ name: "create_ts", label: "创建时间", width: "140" });
-      columns.push({ name: "username", label: "所有者", width: "100" });
-      columns.push({ name: "remark", label: "备注", width: "140" });
       return columns;
     },
     activeNodeList() {

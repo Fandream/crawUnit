@@ -15,7 +15,7 @@
               <el-select
                 v-model="filter.node_id"
                 size="small"
-                :placeholder="'Node'"
+                :placeholder="'节点'"
                 @change="onFilterChange"
               >
                 <el-option value="" :label="'全部'" />
@@ -288,7 +288,6 @@ export default {
         { name: "node_name", label: "节点", width: "120" },
         { name: "spider_name", label: "爬虫", width: "120" },
         { name: "status", label: "状态", width: "180" },
-        { name: "param", label: "参数", width: "120" },
         // { name: 'create_ts', label: 'Create Time', width: '100' },
         { name: "start_ts", label: "开始时间", width: "100" },
         { name: "finish_ts", label: "结束时间", width: "100" },
@@ -300,8 +299,7 @@ export default {
           width: "80",
           align: "right"
         },
-        { name: "result_count", label: "结果数", width: "80" },
-        { name: "username", label: "所有者", width: "100" }
+        { name: "result_count", label: "结果数", width: "80" }
         // { name: 'avg_num_results', label: 'Average Results Count per Second', width: '80' }
       ],
 

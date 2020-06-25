@@ -14,7 +14,7 @@
     </el-form>
     <template slot="footer">
       <el-button type="plain" size="small" @click="$emit('close')">{{
-        "Cancel"
+        "取消"
       }}</el-button>
       <el-button
         type="primary"

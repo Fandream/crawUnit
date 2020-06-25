@@ -25,27 +25,11 @@
       <el-tab-pane v-if="isGit" :label="'Git'" name="git-settings">
         <git-settings />
       </el-tab-pane>
-      <el-tab-pane
-        v-if="isScrapy"
-        :label="'Scrapy 设置'"
-        name="scrapy-settings"
-      >
-        <spider-scrapy
-          @click-spider="onClickScrapySpider"
-          @click-pipeline="onClickScrapyPipeline"
-        />
-      </el-tab-pane>
       <el-tab-pane v-if="isConfigurable" :label="'配置'" name="config">
         <config-list ref="config" @convert="onConvert" />
       </el-tab-pane>
       <el-tab-pane :label="'文件'" name="files">
         <file-list ref="file-list" />
-      </el-tab-pane>
-      <el-tab-pane :label="'分析'" name="analytics">
-        <spider-stats ref="spider-stats" />
-      </el-tab-pane>
-      <el-tab-pane :label="'定时任务'" name="schedules">
-        <spider-schedules />
       </el-tab-pane>
     </el-tabs>
   </div>

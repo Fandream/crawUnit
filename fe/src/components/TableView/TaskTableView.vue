@@ -37,11 +37,6 @@
           }}</a>
         </template>
       </el-table-column>
-      <el-table-column property="param" :label="'参数'" width="120">
-        <template slot-scope="scope">
-          <span>{{ scope.row.param }}</span>
-        </template>
-      </el-table-column>
       <el-table-column
         property="result_count"
         :label="'结果数'"
