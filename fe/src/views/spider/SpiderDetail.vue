@@ -41,9 +41,6 @@
       <el-tab-pane :label="'文件'" name="files">
         <file-list ref="file-list" />
       </el-tab-pane>
-      <el-tab-pane :label="'环境'" name="environment">
-        <environment-list />
-      </el-tab-pane>
       <el-tab-pane :label="'分析'" name="analytics">
         <spider-stats ref="spider-stats" />
       </el-tab-pane>
@@ -58,7 +55,6 @@
 import { mapState } from "vuex";
 import FileList from "../../components/File/FileList";
 import SpiderOverview from "../../components/Overview/SpiderOverview";
-import EnvironmentList from "../../components/Environment/EnvironmentList";
 import SpiderStats from "../../components/Stats/SpiderStats";
 import ConfigList from "../../components/Config/ConfigList";
 import SpiderSchedules from "./SpiderSchedules";
@@ -73,7 +69,7 @@ export default {
     SpiderSchedules,
     ConfigList,
     SpiderStats,
-    EnvironmentList,
+    // EnvironmentList,
     FileList,
     SpiderOverview
   },
