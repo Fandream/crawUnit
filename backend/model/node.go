@@ -43,7 +43,6 @@ func IsMaster() bool {
 }
 
 // 获取本机节点
-// TODO: 这里职责不单一，需要重构
 func GetCurrentNode() (Node, error) {
 	// 获得注册的key值
 	key, err := register.GetRegister().GetKey()
