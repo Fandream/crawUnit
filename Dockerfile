@@ -1,27 +1,9 @@
-FROM golang:1.12 AS backend-build
-
-WORKDIR /go/src/app
-COPY ./backend .
-
-ENV GO111MODULE on
-ENV GOPROXY https://goproxy.io
-
-RUN go install -v ./...
-
-FROM node:8.16.0-alpine AS frontend-build
-
-ADD ./frontend /app
-WORKDIR /app
-
-# install frontend
-RUN npm config set unsafe-perm true
-RUN npm install -g yarn && yarn install
-
-RUN npm run build:prod
-
-# images
 FROM ubuntu:latest
-
+WORKDIR .
+COPY ./backend/ /app/backend/
+COPY ./fe/dist /app/dist/
+COPY ./docker_init.sh /app/
+COPY ./backend/conf /conf
 # set as non-interactive
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -42,22 +24,10 @@ RUN chmod +x /usr/local/bin/dumb-init
 # install backend
 RUN pip install scrapy pymongo bs4 requests crawlab-sdk scrapy-splash
 
-# add files
-ADD . /app
-
-# copy backend files
-RUN mkdir -p /opt/bin
-COPY --from=backend-build /go/bin/crawlab /opt/bin
-RUN cp /opt/bin/crawlab /usr/local/bin/crawlab-server
-
-# copy frontend files
-COPY --from=frontend-build /app/dist /app/dist
 
 # copy nginx config files
 COPY ./nginx/crawlab.conf /etc/nginx/conf.d
 
-# working directory
-WORKDIR /app/backend
 
 # timezone environment
 ENV TZ Asia/Shanghai
@@ -71,6 +41,8 @@ EXPOSE 8080
 
 # backend port
 EXPOSE 8000
+
+WORKDIR /app/backend/
 
 # start backend
 CMD ["/bin/bash", "/app/docker_init.sh"]
