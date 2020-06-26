@@ -68,13 +68,6 @@ export default {
           path: 'nodes'
         },
         {
-          name: 'schedule_count',
-          label: '定时任务',
-          icon: 'fa fa-clock-o',
-          color: 'orange',
-          path: 'schedules'
-        },
-        {
           name: 'project_count',
           label: '项目',
           icon: 'fa fa-code-fork',
