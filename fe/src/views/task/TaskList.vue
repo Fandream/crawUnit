@@ -264,15 +264,15 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import dayjs from "dayjs";
-import StatusTag from "../../components/Status/StatusTag";
-import StatusLegend from "../../components/Status/StatusLegend";
+import { mapState } from 'vuex';
+import dayjs from 'dayjs';
+import StatusTag from '../../components/Status/StatusTag';
+import StatusLegend from '../../components/Status/StatusLegend';
 
 export default {
-  name: "TaskList",
+  name: 'TaskList',
   components: { StatusLegend, StatusTag },
-  data() {
+  data () {
     return {
       // setInterval handle
       handle: undefined,
@@ -285,21 +285,21 @@ export default {
 
       // table columns
       columns: [
-        { name: "node_name", label: "节点", width: "120" },
-        { name: "spider_name", label: "爬虫", width: "120" },
-        { name: "status", label: "状态", width: "180" },
+        { name: 'node_name', label: '节点', width: '120' },
+        { name: 'spider_name', label: '爬虫', width: '120' },
+        { name: 'status', label: '状态', width: '180' },
         // { name: 'create_ts', label: 'Create Time', width: '100' },
-        { name: "start_ts", label: "开始时间", width: "100" },
-        { name: "finish_ts", label: "结束时间", width: "100" },
-        { name: "wait_duration", label: "等待时长(秒)", align: "right" },
-        { name: "runtime_duration", label: "运行时长(秒)", align: "right" },
+        { name: 'start_ts', label: '开始时间', width: '100' },
+        { name: 'finish_ts', label: '结束时间', width: '100' },
+        { name: 'wait_duration', label: '等待时长(秒)', align: 'right' },
+        { name: 'runtime_duration', label: '运行时长(秒)', align: 'right' },
         {
-          name: "total_duration",
-          label: "总时长(秒)",
-          width: "80",
-          align: "right"
+          name: 'total_duration',
+          label: '总时长(秒)',
+          width: '80',
+          align: 'right'
         },
-        { name: "result_count", label: "结果数", width: "80" }
+        { name: 'result_count', label: '结果数', width: '80' }
         // { name: 'avg_num_results', label: 'Average Results Count per Second', width: '80' }
       ],
 
@@ -309,31 +309,31 @@ export default {
     };
   },
   computed: {
-    ...mapState("task", [
-      "filter",
-      "taskList",
-      "taskListTotalCount",
-      "taskForm"
+    ...mapState('task', [
+      'filter',
+      'taskList',
+      'taskListTotalCount',
+      'taskForm'
     ]),
-    ...mapState("spider", ["spiderList"]),
-    ...mapState("node", ["nodeList"]),
+    ...mapState('spider', ['spiderList']),
+    ...mapState('node', ['nodeList']),
     pageNum: {
-      get() {
+      get () {
         return this.$store.state.task.pageNum;
       },
-      set(value) {
-        this.$store.commit("task/SET_PAGE_NUM", value);
+      set (value) {
+        this.$store.commit('task/SET_PAGE_NUM', value);
       }
     },
     pageSize: {
-      get() {
+      get () {
         return this.$store.state.task.pageSize;
       },
-      set(value) {
-        this.$store.commit("task/SET_PAGE_SIZE", value);
+      set (value) {
+        this.$store.commit('task/SET_PAGE_SIZE', value);
       }
     },
-    filteredTableData() {
+    filteredTableData () {
       return this.taskList
         .map(d => d)
         .sort((a, b) => (a.create_ts < b.create_ts ? 1 : -1))
@@ -356,126 +356,126 @@ export default {
     }
   },
   methods: {
-    onSearch(value) {},
-    onRefresh() {
-      this.$store.dispatch("task/getTaskList");
+    onSearch (value) {},
+    onRefresh () {
+      this.$store.dispatch('task/getTaskList');
     },
-    onRemoveMultipleTask() {
+    onRemoveMultipleTask () {
       if (this.multipleSelection.length === 0) {
         this.$message({
-          type: "error",
-          message: "请选择要删除的任务"
+          type: 'error',
+          message: '请选择要删除的任务'
         });
         return;
       }
-      this.$confirm("确定删除任务", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确定删除任务', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
           let ids = this.multipleSelection.map(item => item._id);
-          this.$store.dispatch("task/deleteTaskMultiple", ids).then(resp => {
-            if (resp.data.status === "ok") {
+          this.$store.dispatch('task/deleteTaskMultiple', ids).then(resp => {
+            if (resp.data.status === 'ok') {
               this.$message({
-                type: "success",
-                message: "删除任务成功"
+                type: 'success',
+                message: '删除任务成功'
               });
-              this.$store.dispatch("task/getTaskList");
-              this.$refs["table"].clearSelection();
+              this.$store.dispatch('task/getTaskList');
+              this.$refs['table'].clearSelection();
               return;
             }
             this.$message({
-              type: "error",
+              type: 'error',
               message: resp.data.error
             });
           });
         })
         .catch(() => {});
     },
-    onRemove(row, ev) {
+    onRemove (row, ev) {
       ev.stopPropagation();
-      this.$confirm("您确定要删除该任务?", "提示", {
-        confirmButtonText: "Confirm",
-        cancelButtonText: "Cancel",
-        type: "warning"
+      this.$confirm('您确定要删除该任务?', '提示', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
       }).then(() => {
-        this.$store.dispatch("task/deleteTask", row._id).then(() => {
+        this.$store.dispatch('task/deleteTask', row._id).then(() => {
           this.$message({
-            type: "success",
-            message: "成功删除"
+            type: 'success',
+            message: '成功删除'
           });
         });
       });
     },
-    onRestart(row, ev) {
+    onRestart (row, ev) {
       ev.stopPropagation();
-      this.$confirm("确认重新运行该任务?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确认重新运行该任务?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$store.dispatch("task/restartTask", row._id).then(() => {
+        this.$store.dispatch('task/restartTask', row._id).then(() => {
           this.$message({
-            type: "success",
-            message: "成功重新运行"
+            type: 'success',
+            message: '成功重新运行'
           });
         });
       });
     },
-    onView(row) {
+    onView (row) {
       this.$router.push(`/tasks/${row._id}`);
     },
-    onClickSpider(row) {
+    onClickSpider (row) {
       this.$router.push(`/spiders/${row.spider_id}`);
     },
-    onClickNode(row) {
+    onClickNode (row) {
       this.$router.push(`/nodes/${row.node_id}`);
     },
-    onPageChange() {
+    onPageChange () {
       setTimeout(() => {
-        this.$store.dispatch("task/getTaskList");
+        this.$store.dispatch('task/getTaskList');
       }, 0);
     },
-    getTime(str) {
-      if (str.match("^0001")) return "NA";
-      return dayjs(str).format("YYYY-MM-DD HH:mm:ss");
+    getTime (str) {
+      if (str.match('^0001')) return 'NA';
+      return dayjs(str).format('YYYY-MM-DD HH:mm:ss');
     },
-    getWaitDuration(row) {
-      if (row.start_ts.match("^0001")) return "NA";
-      return dayjs(row.start_ts).diff(row.create_ts, "second");
+    getWaitDuration (row) {
+      if (row.start_ts.match('^0001')) return 'NA';
+      return dayjs(row.start_ts).diff(row.create_ts, 'second');
     },
-    getRuntimeDuration(row) {
-      if (row.finish_ts.match("^0001")) return "NA";
-      return dayjs(row.finish_ts).diff(row.start_ts, "second");
+    getRuntimeDuration (row) {
+      if (row.finish_ts.match('^0001')) return 'NA';
+      return dayjs(row.finish_ts).diff(row.start_ts, 'second');
     },
-    getTotalDuration(row) {
-      if (row.finish_ts.match("^0001")) return "NA";
-      return dayjs(row.finish_ts).diff(row.create_ts, "second");
+    getTotalDuration (row) {
+      if (row.finish_ts.match('^0001')) return 'NA';
+      return dayjs(row.finish_ts).diff(row.create_ts, 'second');
     },
-    onRowClick(row, event, column) {
-      if (column.label !== "Action") {
+    onRowClick (row, event, column) {
+      if (column.label !== 'Action') {
         this.onView(row);
       }
     },
-    onSelectionChange(val) {
+    onSelectionChange (val) {
       this.multipleSelection = val;
     },
-    onFilterChange() {
-      this.$store.dispatch("task/getTaskList");
+    onFilterChange () {
+      this.$store.dispatch('task/getTaskList');
     }
   },
-  created() {
-    this.$store.dispatch("task/getTaskList");
-    this.$store.dispatch("spider/getSpiderList");
-    this.$store.dispatch("node/getNodeList");
+  created () {
+    this.$store.dispatch('task/getTaskList');
+    this.$store.dispatch('spider/getSpiderList');
+    this.$store.dispatch('node/getNodeList');
   },
-  mounted() {
+  mounted () {
     this.handle = setInterval(() => {
-      this.$store.dispatch("task/getTaskList");
+      this.$store.dispatch('task/getTaskList');
     }, 5000);
   },
-  destroyed() {
+  destroyed () {
     clearInterval(this.handle);
   }
 };

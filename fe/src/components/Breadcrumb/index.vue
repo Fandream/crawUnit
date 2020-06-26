@@ -14,42 +14,42 @@
 </template>
 
 <script>
-import pathToRegexp from "path-to-regexp";
+import pathToRegexp from 'path-to-regexp';
 
 export default {
-  data() {
+  data () {
     return {
       levelList: null
     };
   },
   watch: {
-    $route() {
+    $route () {
       this.getBreadcrumb();
     }
   },
-  created() {
+  created () {
     this.getBreadcrumb();
   },
   methods: {
-    getBreadcrumb() {
+    getBreadcrumb () {
       let matched = this.$route.matched.filter(item => item.name);
 
       const first = matched[0];
-      if (first && first.name !== "Home") {
-        matched = [{ path: "/home", meta: { title: "主页" } }].concat(matched);
+      if (first && first.name !== 'Home') {
+        matched = [{ path: '/home', meta: { title: '主页' } }].concat(matched);
       }
 
       this.levelList = matched.filter(
         item => item.meta && item.meta.title && item.meta.breadcrumb !== false
       );
     },
-    pathCompile(path) {
+    pathCompile (path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
       const { params } = this.$route;
       var toPath = pathToRegexp.compile(path);
       return toPath(params);
     },
-    handleLink(item) {
+    handleLink (item) {
       const { redirect } = item;
       if (redirect) {
         this.$router.push(redirect);
@@ -57,15 +57,15 @@ export default {
       }
       this.$router.push(this.getGoToPath(item));
     },
-    getGoToPath(item) {
+    getGoToPath (item) {
       if (item.path) {
         var path = item.path;
-        var startPos = path.indexOf(":");
+        var startPos = path.indexOf(':');
 
         if (startPos !== -1) {
-          var endPos = path.indexOf("/", startPos);
+          var endPos = path.indexOf('/', startPos);
           var key = path.substring(startPos + 1, endPos);
-          path = path.replace(":" + key, this.$route.params[key]);
+          path = path.replace(':' + key, this.$route.params[key]);
           return path;
         }
       }

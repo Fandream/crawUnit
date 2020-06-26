@@ -92,14 +92,6 @@
                   />
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
-                <el-form-item :label="'是否为长任务'" prop="is_long_task">
-                  <el-switch
-                    v-model="spiderForm.is_long_task"
-                    active-color="#13ce66"
-                  />
-                </el-form-item>
-              </el-col>
             </el-row>
           </el-form>
 
@@ -331,22 +323,6 @@
         </div>
       </div>
       <!--./filter-->
-
-      <!--tabs-->
-      <el-tabs v-model="filter.type" @tab-click="onClickTab" class="tabs">
-        <el-tab-pane :label="'全部'" name="all" class="all"></el-tab-pane>
-        <el-tab-pane
-          :label="'自定义'"
-          name="customized"
-          class="customized"
-        ></el-tab-pane>
-        <el-tab-pane
-          :label="'长任务'"
-          name="long-task"
-          class="long-task"
-        ></el-tab-pane>
-      </el-tabs>
-      <!--./tabs-->
 
       <!--legend-->
       <status-legend />
@@ -588,22 +564,22 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import dayjs from "dayjs";
-import CrawlConfirmDialog from "../../components/Common/CrawlConfirmDialog";
-import StatusTag from "../../components/Status/StatusTag";
-import StatusLegend from "../../components/Status/StatusLegend";
-import CopySpiderDialog from "../../components/Spider/CopySpiderDialog";
+import { mapState, mapGetters } from 'vuex';
+import dayjs from 'dayjs';
+import CrawlConfirmDialog from '../../components/Common/CrawlConfirmDialog';
+import StatusTag from '../../components/Status/StatusTag';
+import StatusLegend from '../../components/Status/StatusLegend';
+import CopySpiderDialog from '../../components/Spider/CopySpiderDialog';
 
 export default {
-  name: "SpiderList",
+  name: 'SpiderList',
   components: {
     CopySpiderDialog,
     StatusLegend,
     CrawlConfirmDialog,
     StatusTag
   },
-  data() {
+  data () {
     return {
       pagination: {
         pageNum: 1,
@@ -619,23 +595,23 @@ export default {
       activeSpiderId: undefined,
       activeSpider: undefined,
       filter: {
-        project_id: "",
-        keyword: "",
-        type: "all",
-        owner_type: "me"
+        project_id: '',
+        keyword: '',
+        type: 'all',
+        owner_type: 'me'
       },
       sort: {
-        sortKey: "",
+        sortKey: '',
         sortDirection: null
       },
       types: [],
       spiderFormRules: {
-        name: [{ required: true, message: "Required Field", trigger: "change" }]
+        name: [{ required: true, message: 'Required Field', trigger: 'change' }]
       },
       fileList: [],
-      activeTabName: "customized",
+      activeTabName: 'customized',
       handle: undefined,
-      activeSpiderTaskStatus: "running",
+      activeSpiderTaskStatus: 'running',
       selectedSpiders: [],
       isStopLoading: false,
       isRemoveLoading: false,
@@ -644,18 +620,18 @@ export default {
     };
   },
   computed: {
-    ...mapState("spider", [
-      "importForm",
-      "spiderList",
-      "spiderForm",
-      "spiderTotal",
-      "templateList"
+    ...mapState('spider', [
+      'importForm',
+      'spiderList',
+      'spiderForm',
+      'spiderTotal',
+      'templateList'
     ]),
-    ...mapGetters("user", ["userInfo", "token"]),
-    ...mapState("lang", ["lang"]),
-    ...mapState("project", ["projectList"]),
-    ...mapState("node", ["nodeList"]),
-    uploadForm() {
+    ...mapGetters('user', ['userInfo', 'token']),
+    ...mapState('lang', ['lang']),
+    ...mapState('project', ['projectList']),
+    ...mapState('node', ['nodeList']),
+    uploadForm () {
       return {
         name: this.spiderForm.name,
         display_name: this.spiderForm.display_name,
@@ -663,115 +639,110 @@ export default {
         cmd: this.spiderForm.cmd
       };
     },
-    columns() {
+    columns () {
       const columns = [];
       columns.push({
-        name: "display_name",
-        label: "名称",
-        width: "160",
-        align: "left",
+        name: 'display_name',
+        label: '名称',
+        width: '160',
+        align: 'left',
         sortable: true
       });
       columns.push({
-        name: "type",
-        label: "爬虫类型",
-        width: "120",
+        name: 'type',
+        label: '爬虫类型',
+        width: '120',
         sortable: true
       });
+      columns.push({ name: 'is_scrapy', label: '是否是Scrapy', width: '80' });
+      columns.push({ name: 'latest_tasks', label: '最近任务', width: '180' });
       columns.push({
-        name: "is_long_task",
-        label: "是否为长任务",
-        width: "80"
+        name: 'last_status',
+        label: '上次运行状态',
+        width: '120'
       });
-      columns.push({ name: "is_scrapy", label: "是否是Scrapy", width: "80" });
-      columns.push({ name: "latest_tasks", label: "最近任务", width: "180" });
-      columns.push({
-        name: "last_status",
-        label: "上次运行状态",
-        width: "120"
-      });
-      columns.push({ name: "last_run_ts", label: "上次运行", width: "140" });
-      columns.push({ name: "update_ts", label: "更新时间", width: "140" });
-      columns.push({ name: "create_ts", label: "创建时间", width: "140" });
+      columns.push({ name: 'last_run_ts', label: '上次运行', width: '140' });
+      columns.push({ name: 'update_ts', label: '更新时间', width: '140' });
+      columns.push({ name: 'create_ts', label: '创建时间', width: '140' });
       return columns;
     },
-    activeNodeList() {
+    activeNodeList () {
       return this.nodeList.filter(d => {
-        return d.status === "online";
+        return d.status === 'online';
       });
     },
-    activeSpiderIds() {
+    activeSpiderIds () {
       return this.selectedSpiders.map(d => d._id);
     }
   },
   methods: {
-    onSpiderTypeChange(val) {
+    onSpiderTypeChange (val) {
       this.filter.type = val;
       this.getList();
     },
-    onPageSizeChange(val) {
+    onPageSizeChange (val) {
       this.pagination.pageSize = val;
       this.getList();
     },
-    onPageNumChange(val) {
+    onPageNumChange (val) {
       this.pagination.pageNum = val;
       this.getList();
     },
-    onSearch() {
+    onSearch () {
       this.getList();
     },
-    onAdd() {
-      let projectId = "000000000000000000000000";
+    onAdd () {
+      let projectId = '000000000000000000000000';
       if (this.filter.project_id) {
         projectId = this.filter.project_id;
       }
-      this.$store.commit("spider/SET_SPIDER_FORM", {
+      this.$store.commit('spider/SET_SPIDER_FORM', {
         project_id: projectId,
         template: this.templateList[0]
       });
       this.addDialogVisible = true;
     },
-    onAddConfigurable() {
-      this.$refs["addConfigurableForm"].validate(async res => {
+    onAddConfigurable () {
+      this.$refs['addConfigurableForm'].validate(async res => {
         if (!res) return;
 
         let res2;
         try {
-          res2 = await this.$store.dispatch("spider/addConfigSpider");
+          res2 = await this.$store.dispatch('spider/addConfigSpider');
         } catch (e) {
-          this.$message.error("Something wrong happened");
+          this.$message.error('Something wrong happened');
           return;
         }
         this.$router.push(`/spiders/${res2.data.data._id}`);
         this.getList();
       });
     },
-    onAddCustomized() {
-      this.$refs["addCustomizedForm"].validate(async res => {
+    onAddCustomized () {
+      this.$refs['addCustomizedForm'].validate(async res => {
         if (!res) return;
         let res2;
         try {
-          res2 = await this.$store.dispatch("spider/addSpider");
+          res2 = await this.$store.dispatch('spider/addSpider');
         } catch (e) {
-          this.$message.error("Something wrong happened");
+          this.$message.error('Something wrong happened');
           return;
         }
         this.$router.push(`/spiders/${res2.data.data._id}`);
         this.getList();
       });
     },
-    onRefresh() {
+    onRefresh () {
       this.getList();
     },
-    onSubmit() {
+    onSubmit () {
       const vm = this;
-      const formName = "spiderForm";
+      const formName = 'spiderForm';
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.isEditMode) {
-            vm.$store.dispatch("spider/editSpider");
+            vm.$store.dispatch('spider/editSpider');
           } else {
-            vm.$store.dispatch("spider/addSpider");
+            vm.$store.dispatch('spider/addSpider');
           }
           vm.dialogVisible = false;
         } else {
@@ -779,70 +750,70 @@ export default {
         }
       });
     },
-    onCancel() {
-      this.$store.commit("spider/SET_SPIDER_FORM", {});
+    onCancel () {
+      this.$store.commit('spider/SET_SPIDER_FORM', {});
       this.dialogVisible = false;
     },
-    onDialogClose() {
-      this.$store.commit("spider/SET_SPIDER_FORM", {});
+    onDialogClose () {
+      this.$store.commit('spider/SET_SPIDER_FORM', {});
       this.dialogVisible = false;
     },
-    onAddDialogClose() {
+    onAddDialogClose () {
       this.addDialogVisible = false;
     },
-    onEdit(row) {
+    onEdit (row) {
       this.isEditMode = true;
-      this.$store.commit("spider/SET_SPIDER_FORM", row);
+      this.$store.commit('spider/SET_SPIDER_FORM', row);
       this.dialogVisible = true;
     },
-    onRemove(row, ev) {
+    onRemove (row, ev) {
       ev.stopPropagation();
-      this.$confirm("你确定要删除该爬虫?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('你确定要删除该爬虫?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(async () => {
-        await this.$store.dispatch("spider/deleteSpider", row._id);
+        await this.$store.dispatch('spider/deleteSpider', row._id);
         this.$message({
-          type: "success",
-          message: "成功删除"
+          type: 'success',
+          message: '成功删除'
         });
         await this.getList();
       });
     },
-    onCrawl(row, ev) {
+    onCrawl (row, ev) {
       ev.stopPropagation();
       this.crawlConfirmDialogVisible = true;
       this.activeSpiderId = row._id;
     },
-    onCrawlConfirm() {
+    onCrawlConfirm () {
       setTimeout(() => {
         this.getList();
       }, 1000);
     },
-    onCopy(row, ev) {
+    onCopy (row, ev) {
       ev.stopPropagation();
       this.copyDialogVisible = true;
       this.activeSpiderId = row._id;
     },
-    onCopyConfirm() {
+    onCopyConfirm () {
       setTimeout(() => {
         this.getList();
       }, 1000);
     },
-    onView(row, ev) {
+    onView (row, ev) {
       ev.stopPropagation();
-      this.$router.push("/spiders/" + row._id);
+      this.$router.push('/spiders/' + row._id);
     },
-    onImport() {
+    onImport () {
       this.$refs.importForm.validate(valid => {
         if (valid) {
           this.importLoading = true;
           // TODO: switch between github / gitlab / svn
           this.$store
-            .dispatch("spider/importGithub")
+            .dispatch('spider/importGithub')
             .then(response => {
-              this.$message.success("Import repo successfully");
+              this.$message.success('Import repo successfully');
               this.getList();
             })
             .catch(response => {
@@ -855,32 +826,32 @@ export default {
         }
       });
     },
-    openImportDialog() {
+    openImportDialog () {
       this.dialogVisible = true;
     },
-    isShowRun(row) {
+    isShowRun (row) {
       if (!this.isCustomized(row)) return true;
       return !!row.cmd;
     },
-    isCustomized(row) {
-      return row.type === "customized";
+    isCustomized (row) {
+      return row.type === 'customized';
     },
-    fetchSiteSuggestions(keyword, callback) {
+    fetchSiteSuggestions (keyword, callback) {
       this.$request
-        .get("/sites", {
+        .get('/sites', {
           keyword: keyword,
           page_num: 1,
           page_size: 100
         })
         .then(response => {
           const data = response.data.items.map(d => {
-            d.value = d.name + " | " + d.domain;
+            d.value = d.name + ' | ' + d.domain;
             return d;
           });
           callback(data);
         });
     },
-    onUploadSuccess(res) {
+    onUploadSuccess (res) {
       // clear fileList
       this.fileList = [];
 
@@ -890,39 +861,39 @@ export default {
       }, 500);
 
       // message
-      this.$message.success("成功上传爬虫文件");
+      this.$message.success('成功上传爬虫文件');
 
       // navigate to spider detail
       this.$router.push(`/spiders/${res.data._id}`);
     },
-    beforeUpload(file) {
+    beforeUpload (file) {
       return new Promise((resolve, reject) => {
-        this.$refs["addCustomizedForm"].validate(res => {
+        this.$refs['addCustomizedForm'].validate(res => {
           if (res) {
             resolve();
           } else {
-            reject(new Error("form validation error"));
+            reject(new Error('form validation error'));
           }
         });
       });
     },
-    getTime(str) {
-      if (!str || str.match("^0001")) return "NA";
-      return dayjs(str).format("YYYY-MM-DD HH:mm:ss");
+    getTime (str) {
+      if (!str || str.match('^0001')) return 'NA';
+      return dayjs(str).format('YYYY-MM-DD HH:mm:ss');
     },
-    onRowClick(row, column, event) {
+    onRowClick (row, column, event) {
       this.onView(row, event);
     },
-    onSortChange({ column, prop, order }) {
-      this.sort.sortKey = order ? prop : "";
+    onSortChange ({ column, prop, order }) {
+      this.sort.sortKey = order ? prop : '';
       this.sort.sortDirection = order;
       this.getList();
     },
-    onClickTab(tab) {
+    onClickTab (tab) {
       this.filter.type = tab.name;
       this.getList();
     },
-    async getList() {
+    async getList () {
       let params = {
         page_num: this.pagination.pageNum,
         page_size: this.pagination.pageSize,
@@ -933,19 +904,19 @@ export default {
         project_id: this.filter.project_id,
         owner_type: this.filter.owner_type
       };
-      await this.$store.dispatch("spider/getSpiderList", params);
+      await this.$store.dispatch('spider/getSpiderList', params);
 
       // 更新当前爬虫（任务列表）
       this.updateActiveSpider();
     },
-    getTasksByStatus(row, status) {
+    getTasksByStatus (row, status) {
       if (!row.latest_tasks) return [];
       return row.latest_tasks.filter(d => d.status === status);
     },
-    getTaskCountByStatus(row, status) {
+    getTaskCountByStatus (row, status) {
       return this.getTasksByStatus(row, status).length;
     },
-    updateActiveSpider() {
+    updateActiveSpider () {
       if (this.activeSpider) {
         for (let i = 0; i < this.spiderList.length; i++) {
           const spider = this.spiderList[i];
@@ -955,12 +926,12 @@ export default {
         }
       }
     },
-    onViewRunningTasks(row, ev) {
+    onViewRunningTasks (row, ev) {
       ev.stopPropagation();
       this.activeSpider = row;
       this.isRunningTasksDialogVisible = true;
     },
-    getTasksByNode(row) {
+    getTasksByNode (row) {
       if (!this.activeSpider.latest_tasks) {
         return [];
       }
@@ -970,51 +941,51 @@ export default {
         )
         .map(d => {
           d = JSON.parse(JSON.stringify(d));
-          d.create_ts = d.create_ts.match("^0001")
-            ? "NA"
-            : dayjs(d.create_ts).format("YYYY-MM-DD HH:mm:ss");
-          d.start_ts = d.start_ts.match("^0001")
-            ? "NA"
-            : dayjs(d.start_ts).format("YYYY-MM-DD HH:mm:ss");
-          d.finish_ts = d.finish_ts.match("^0001")
-            ? "NA"
-            : dayjs(d.finish_ts).format("YYYY-MM-DD HH:mm:ss");
+          d.create_ts = d.create_ts.match('^0001')
+            ? 'NA'
+            : dayjs(d.create_ts).format('YYYY-MM-DD HH:mm:ss');
+          d.start_ts = d.start_ts.match('^0001')
+            ? 'NA'
+            : dayjs(d.start_ts).format('YYYY-MM-DD HH:mm:ss');
+          d.finish_ts = d.finish_ts.match('^0001')
+            ? 'NA'
+            : dayjs(d.finish_ts).format('YYYY-MM-DD HH:mm:ss');
           return d;
         });
     },
-    onViewTask(row) {
+    onViewTask (row) {
       this.$router.push(`/tasks/${row._id}`);
     },
-    async onStop(row, ev) {
+    async onStop (row, ev) {
       ev.stopPropagation();
-      const res = await this.$store.dispatch("task/cancelTask", row._id);
+      const res = await this.$store.dispatch('task/cancelTask', row._id);
       if (!res.data.error) {
         this.$message.success(`Task "${row._id}" has been sent signal to stop`);
         this.getList();
       }
     },
-    onIsScrapy(value) {
+    onIsScrapy (value) {
       if (value) {
-        this.spiderForm.cmd = "scrapy crawl";
+        this.spiderForm.cmd = 'scrapy crawl';
       }
     },
-    onSpiderSelect(spiders) {
+    onSpiderSelect (spiders) {
       this.selectedSpiders = spiders;
     },
-    async onRemoveSelectedSpiders() {
-      this.$confirm("您是否确认删除所选项？", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning"
+    async onRemoveSelectedSpiders () {
+      this.$confirm('您是否确认删除所选项？', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(async () => {
         this.isRemoveLoading = true;
         try {
-          const res = await this.$request.delete("/spiders", {
+          const res = await this.$request.delete('/spiders', {
             spider_ids: this.selectedSpiders.map(d => d._id)
           });
           if (!res.data.error) {
-            this.$message.success("成功删除");
-            this.$refs["table"].clearSelection();
+            this.$message.success('成功删除');
+            this.$refs['table'].clearSelection();
             await this.getList();
           }
         } finally {
@@ -1022,19 +993,19 @@ export default {
         }
       });
     },
-    async onStopSelectedSpiders() {
-      this.$confirm("您是否确认停止所选项？", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning"
+    async onStopSelectedSpiders () {
+      this.$confirm('您是否确认停止所选项？', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(async () => {
         this.isStopLoading = true;
         try {
-          const res = await this.$request.post("/spiders-cancel", {
+          const res = await this.$request.post('/spiders-cancel', {
             spider_ids: this.selectedSpiders.map(d => d._id)
           });
           if (!res.data.error) {
-            this.$message.success("已经向所选任务发送取消任务信号");
+            this.$message.success('已经向所选任务发送取消任务信号');
             await this.getList();
           }
         } finally {
@@ -1042,25 +1013,25 @@ export default {
         }
       });
     },
-    onCrawlSelectedSpiders() {
+    onCrawlSelectedSpiders () {
       this.crawlConfirmDialogVisible = true;
       this.isMultiple = true;
     },
-    onCrawlConfirmDialogClose() {
+    onCrawlConfirmDialogClose () {
       this.crawlConfirmDialogVisible = false;
       this.isMultiple = false;
     },
-    isDisabled(row) {
+    isDisabled (row) {
       return (
         row.is_public &&
         row.username !== this.userInfo.username &&
-        this.userInfo.role !== "admin"
+        this.userInfo.role !== 'admin'
       );
     }
   },
-  async created() {
+  async created () {
     // fetch project list
-    await this.$store.dispatch("project/getProjectList");
+    await this.$store.dispatch('project/getProjectList');
 
     // project id
     if (this.$route.params.project_id) {
@@ -1068,26 +1039,26 @@ export default {
     }
 
     // fetch node list
-    await this.$store.dispatch("node/getNodeList");
+    await this.$store.dispatch('node/getNodeList');
 
     // fetch spider list
     await this.getList();
 
     // fetch template list
-    await this.$store.dispatch("spider/getTemplateList");
+    await this.$store.dispatch('spider/getTemplateList');
 
     // periodically fetch spider list
     this.handle = setInterval(() => {
       this.getList();
     }, 15000);
   },
-  mounted() {
+  mounted () {
     const vm = this;
     this.$nextTick(() => {
-      vm.$store.commit("spider/SET_SPIDER_FORM", this.spiderForm);
+      vm.$store.commit('spider/SET_SPIDER_FORM', this.spiderForm);
     });
   },
-  destroyed() {
+  destroyed () {
     clearInterval(this.handle);
   }
 };

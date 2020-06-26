@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "LogItem",
+  name: 'LogItem',
   props: {
     index: {
       type: Number,
@@ -28,13 +28,13 @@ export default {
     },
     logItem: {
       type: Object,
-      default() {
+      default () {
         return {};
       }
     },
     data: {
       type: String,
-      default: ""
+      default: ''
     },
     isAnsi: {
       type: Boolean,
@@ -42,48 +42,48 @@ export default {
     },
     searchString: {
       type: String,
-      default: ""
+      default: ''
     },
     active: {
       type: Boolean,
       default: false
     }
   },
-  data() {
+  data () {
     return {};
   },
   computed: {
-    ...mapGetters("user", ["userInfo"]),
-    errorRegex() {
+    ...mapGetters('user', ['userInfo']),
+    errorRegex () {
       if (!this.userInfo.setting.error_regex_pattern) {
         return this.$utils.log.errorRegex;
       }
       console.log(this.userInfo.setting.error_regex_pattern);
-      return new RegExp(this.userInfo.setting.error_regex_pattern, "i");
+      return new RegExp(this.userInfo.setting.error_regex_pattern, 'i');
     },
-    dataHtml() {
+    dataHtml () {
       let html = this.data.replace(
         this.errorRegex,
         ' <span style="font-weight: bolder; text-decoration: underline">$1</span> '
       );
       if (!this.searchString) return html;
       html = html.replace(
-        new RegExp(`(${this.searchString})`, "gi"),
-        "<mark>$1</mark>"
+        new RegExp(`(${this.searchString})`, 'gi'),
+        '<mark>$1</mark>'
       );
       return html;
     },
-    style() {
-      let color = "";
+    style () {
+      let color = '';
       if (this.data.match(this.errorRegex)) {
-        color = "#F56C6C";
+        color = '#F56C6C';
       }
       return {
         color
       };
     },
-    isLogEnd() {
-      return this.data === "###LOG_END###";
+    isLogEnd () {
+      return this.data === '###LOG_END###';
     }
   }
 };

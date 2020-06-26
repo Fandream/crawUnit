@@ -428,18 +428,18 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import echarts from "echarts";
-import FieldsTableView from "../TableView/FieldsTableView";
-import CrawlConfirmDialog from "../Common/CrawlConfirmDialog";
+import { mapState, mapGetters } from 'vuex';
+import echarts from 'echarts';
+import FieldsTableView from '../TableView/FieldsTableView';
+import CrawlConfirmDialog from '../Common/CrawlConfirmDialog';
 
-import "codemirror/lib/codemirror.js";
-import "codemirror/mode/yaml/yaml.js";
-import FileDetail from "../File/FileDetail";
-import SettingFieldsTableView from "../TableView/SettingFieldsTableView";
+import 'codemirror/lib/codemirror.js';
+import 'codemirror/mode/yaml/yaml.js';
+import FileDetail from '../File/FileDetail';
+import SettingFieldsTableView from '../TableView/SettingFieldsTableView';
 
 export default {
-  name: "ConfigList",
+  name: 'ConfigList',
   components: {
     SettingFieldsTableView,
     FileDetail,
@@ -447,7 +447,7 @@ export default {
     FieldsTableView
   },
   watch: {
-    activeTab() {
+    activeTab () {
       setTimeout(() => {
         // 渲染流程图
         this.renderProcessChart();
@@ -456,16 +456,16 @@ export default {
         this.getSpiderfile();
 
         // 获取config
-        this.$store.dispatch("spider/getSpiderData", this.spiderForm._id);
+        this.$store.dispatch('spider/getSpiderData', this.spiderForm._id);
       }, 0);
     }
   },
-  data() {
+  data () {
     return {
       crawlTypeList: [
-        { value: "list", label: "仅列表" },
-        { value: "detail", label: "仅详情页" },
-        { value: "list-detail", label: "列表＋详情页" }
+        { value: 'list', label: '仅列表' },
+        { value: 'detail', label: '仅详情页' },
+        { value: 'list-detail', label: '列表＋详情页' }
       ],
       extractFieldsLoading: false,
       previewLoading: false,
@@ -474,18 +474,18 @@ export default {
       crawlConfirmDialogVisible: false,
       columnsDict: {},
       fieldColumns: [
-        { name: "name", label: "名称" },
-        { name: "selector_type", label: "选择器类型" },
-        { name: "selector", label: "选择器" },
-        { name: "is_attr", label: "是否为属性" },
-        { name: "attr", label: "属性" },
-        { name: "next_stage", label: "下一阶段" }
+        { name: 'name', label: '名称' },
+        { name: 'selector_type', label: '选择器类型' },
+        { name: 'selector', label: '选择器' },
+        { name: 'is_attr', label: '是否为属性' },
+        { name: 'attr', label: '属性' },
+        { name: 'next_stage', label: '下一阶段' }
       ],
-      activeTab: "stages",
+      activeTab: 'stages',
       processChart: undefined,
       fileOptions: {
-        mode: "text/x-yaml",
-        theme: "darcula",
+        mode: 'text/x-yaml',
+        theme: 'darcula',
         styleActiveLine: true,
         lineNumbers: true,
         line: true,
@@ -494,27 +494,27 @@ export default {
     };
   },
   computed: {
-    ...mapState("spider", ["spiderForm", "previewCrawlData"]),
-    ...mapGetters("user", ["userInfo"]),
-    isDisabled() {
+    ...mapState('spider', ['spiderForm', 'previewCrawlData']),
+    ...mapGetters('user', ['userInfo']),
+    isDisabled () {
       return (
         this.spiderForm.is_public &&
         this.spiderForm.username !== this.userInfo.username &&
-        this.userInfo.role !== "admin"
+        this.userInfo.role !== 'admin'
       );
     },
-    fields() {
-      if (this.spiderForm.crawl_type === "list") {
+    fields () {
+      if (this.spiderForm.crawl_type === 'list') {
         return this.spiderForm.fields;
-      } else if (this.spiderForm.crawl_type === "detail") {
+      } else if (this.spiderForm.crawl_type === 'detail') {
         return this.spiderForm.detail_fields;
-      } else if (this.spiderForm.crawl_type === "list-detail") {
+      } else if (this.spiderForm.crawl_type === 'list-detail') {
         return this.spiderForm.fields.concat(this.spiderForm.detail_fields);
       } else {
         return [];
       }
     },
-    isCss() {
+    isCss () {
       let i = 0;
       this.spiderForm.config.stages.forEach(stage => {
         stage.fields.forEach(field => {
@@ -523,7 +523,7 @@ export default {
       });
       return i === 0;
     },
-    isXpath() {
+    isXpath () {
       let i = 0;
       this.spiderForm.config.stages.forEach(stage => {
         stage.fields.forEach(field => {
@@ -532,31 +532,31 @@ export default {
       });
       return i === 0;
     },
-    activeNames() {
+    activeNames () {
       return this.spiderForm.config.stages.map(d => d.name);
     },
-    startUrlClass() {
+    startUrlClass () {
       if (!this.spiderForm.config.start_url) {
-        return "invalid";
+        return 'invalid';
       } else if (
         !this.spiderForm.config.start_url.match(/^https?:\/\/.+|^\/\/.+/i)
       ) {
-        return "invalid";
+        return 'invalid';
       }
 
-      return "";
+      return '';
     },
-    startStageClass() {
+    startStageClass () {
       if (!this.spiderForm.config.start_stage) {
-        return "invalid";
+        return 'invalid';
       } else if (
         !this.activeNames.includes(this.spiderForm.config.start_stage)
       ) {
-        return "invalid";
+        return 'invalid';
       }
-      return "";
+      return '';
     },
-    stageNodes() {
+    stageNodes () {
       const startStage = this.spiderForm.config.stages[
         this.spiderForm.config.start_stage
       ];
@@ -571,7 +571,7 @@ export default {
           x: i++,
           y: 0,
           itemStyle: {
-            color: "#409EFF"
+            color: '#409EFF'
           },
           ...currentStage
         });
@@ -598,7 +598,7 @@ export default {
           x: i++,
           y: 1,
           itemStyle: {
-            color: "#F56C6C"
+            color: '#F56C6C'
           },
           ...stage
         });
@@ -606,7 +606,7 @@ export default {
 
       return nodes;
     },
-    stageEdges() {
+    stageEdges () {
       const edges = [];
       const stages = this.spiderForm.config.stages;
       stages.forEach(stage => {
@@ -624,15 +624,15 @@ export default {
     }
   },
   methods: {
-    onSelectCrawlType(value) {
+    onSelectCrawlType (value) {
       this.spiderForm.crawl_type = value;
     },
-    async onSave() {
+    async onSave () {
       this.saveLoading = true;
       try {
-        const res = await this.$store.dispatch("spider/postConfigSpiderConfig");
+        const res = await this.$store.dispatch('spider/postConfigSpiderConfig');
         if (!res.data.error) {
-          this.$message.success("Spider info has been saved successfully");
+          this.$message.success('Spider info has been saved successfully');
           return true;
         }
         return false;
@@ -642,19 +642,19 @@ export default {
         this.saveLoading = false;
       }
     },
-    onDialogClose() {
+    onDialogClose () {
       this.dialogVisible = false;
       this.fields.forEach(f => {
         f.name = this.columnsDict[f.name];
       });
     },
-    onPreview() {
-      this.$refs["form"].validate(res => {
+    onPreview () {
+      this.$refs['form'].validate(res => {
         if (res) {
           this.onSave().then(() => {
             this.previewLoading = true;
             this.$store
-              .dispatch("spider/getPreviewCrawlData")
+              .dispatch('spider/getPreviewCrawlData')
               .then(() => {
                 this.fields.forEach(f => {
                   this.columnsDict[f.name] = f.name;
@@ -662,7 +662,7 @@ export default {
                 this.dialogVisible = true;
               })
               .catch(() => {
-                this.$message.error("Something wrong happened");
+                this.$message.error('Something wrong happened');
               })
               .finally(() => {
                 this.previewLoading = false;
@@ -671,31 +671,31 @@ export default {
         }
       });
     },
-    async onCrawl() {
+    async onCrawl () {
       const res = await this.onSave();
       if (res) {
         this.crawlConfirmDialogVisible = true;
       }
     },
-    onExtractFields() {
-      this.$refs["form"].validate(res => {
+    onExtractFields () {
+      this.$refs['form'].validate(res => {
         if (res) {
           this.onSave().then(() => {
             this.extractFieldsLoading = true;
             this.$store
-              .dispatch("spider/extractFields")
+              .dispatch('spider/extractFields')
               .then(response => {
                 if (response.data.item_selector) {
                   this.$set(
                     this.spiderForm,
-                    "item_selector",
+                    'item_selector',
                     response.data.item_selector
                   );
                 }
                 if (response.data.item_selector_type) {
                   this.$set(
                     this.spiderForm,
-                    "item_selector_type",
+                    'item_selector_type',
                     response.data.item_selector_type
                   );
                 }
@@ -716,57 +716,57 @@ export default {
         }
       });
     },
-    onDeleteField(index) {
+    onDeleteField (index) {
       this.fields.splice(index, 1);
     },
-    getDisplayStr(value) {
+    getDisplayStr (value) {
       if (!value) return value;
       value = value.trim();
-      if (value.length > 20) return value.substr(0, 20) + "...";
+      if (value.length > 20) return value.substr(0, 20) + '...';
       return value;
     },
-    onClickSelectorType(selectorType) {
+    onClickSelectorType (selectorType) {
       this.spiderForm.config.stages.forEach(stage => {
         // 列表
-        if (selectorType === "css") {
-          if (stage.list_xpath) stage.list_xpath = "";
-          if (!stage.list_css) stage.list_css = "body";
+        if (selectorType === 'css') {
+          if (stage.list_xpath) stage.list_xpath = '';
+          if (!stage.list_css) stage.list_css = 'body';
         } else {
-          if (stage.list_css) stage.list_css = "";
-          if (!stage.list_xpath) stage.list_xpath = "//body";
+          if (stage.list_css) stage.list_css = '';
+          if (!stage.list_xpath) stage.list_xpath = '//body';
         }
 
         // 分页
-        if (selectorType === "css") {
-          if (stage.page_xpath) stage.page_xpath = "";
-          if (!stage.page_css) stage.page_css = "body";
+        if (selectorType === 'css') {
+          if (stage.page_xpath) stage.page_xpath = '';
+          if (!stage.page_css) stage.page_css = 'body';
         } else {
-          if (stage.page_css) stage.page_css = "";
-          if (!stage.page_xpath) stage.page_xpath = "//body";
+          if (stage.page_css) stage.page_css = '';
+          if (!stage.page_xpath) stage.page_xpath = '//body';
         }
 
         // 字段
         stage.fields.forEach(field => {
-          if (selectorType === "css") {
-            if (field.xpath) field.xpath = "";
-            if (!field.css) field.css = "body";
+          if (selectorType === 'css') {
+            if (field.xpath) field.xpath = '';
+            if (!field.css) field.css = 'body';
           } else {
-            if (field.css) field.css = "";
-            if (!field.xpath) field.xpath = "//body";
+            if (field.css) field.css = '';
+            if (!field.xpath) field.xpath = '//body';
           }
         });
       });
     },
-    onStageNameFocus(ev) {
+    onStageNameFocus (ev) {
       ev.stopPropagation();
     },
-    onEditStage(stage) {
-      this.$set(stage, "isEdit", !stage.isEdit);
+    onEditStage (stage) {
+      this.$set(stage, 'isEdit', !stage.isEdit);
       setTimeout(() => {
         this.$refs[`stage-name-${stage.name}`][0].focus();
       }, 0);
     },
-    onCopyStage(stage) {
+    onCopyStage (stage) {
       const stages = this.spiderForm.config.stages;
       const ts = Math.floor(new Date().getTime()).toString();
       const newStage = JSON.parse(JSON.stringify(stage));
@@ -777,28 +777,28 @@ export default {
         }
       }
     },
-    addStage(index) {
+    addStage (index) {
       const stages = this.spiderForm.config.stages;
       const ts = Math.floor(new Date().getTime()).toString();
       const newStageName = `stage_${ts}`;
-      const newField = { name: `field_${ts}`, next_stage: "" };
+      const newField = { name: `field_${ts}`, next_stage: '' };
       if (this.isCss) {
-        newField["css"] = "body";
+        newField['css'] = 'body';
       } else if (this.isXpath) {
-        newField["xpath"] = "//body";
+        newField['xpath'] = '//body';
       } else {
-        newField["xpath"] = "//body";
+        newField['xpath'] = '//body';
       }
       stages.splice(index + 1, 0, {
         name: newStageName,
-        list_css: this.isCss ? "body" : "",
-        list_xpath: this.isXpath ? "//body" : "",
-        page_css: "",
-        page_xpath: "",
+        list_css: this.isCss ? 'body' : '',
+        list_xpath: this.isXpath ? '//body' : '',
+        page_css: '',
+        page_xpath: '',
         fields: [newField]
       });
     },
-    onRemoveStage(stage) {
+    onRemoveStage (stage) {
       const stages = this.spiderForm.config.stages;
       for (let i = 0; i < stages.length; i++) {
         if (stage.name === stages[i].name) {
@@ -814,12 +814,12 @@ export default {
       stages.forEach(_stage => {
         _stage.fields.forEach(field => {
           if (field.next_stage === stage.name) {
-            this.$set(field, "next_stage", "");
+            this.$set(field, 'next_stage', '');
           }
         });
       });
     },
-    onAddStage(stage) {
+    onAddStage (stage) {
       const stages = this.spiderForm.config.stages;
       for (let i = 0; i < stages.length; i++) {
         if (stage.name === stages[i].name) {
@@ -828,17 +828,17 @@ export default {
         }
       }
     },
-    renderProcessChart() {
+    renderProcessChart () {
       const option = {
         title: {
-          text: "Stage Process"
+          text: 'Stage Process'
         },
         series: [
           {
             animation: false,
-            type: "graph",
+            type: 'graph',
             // layout: 'force',
-            layout: "none",
+            layout: 'none',
             symbolSize: 50,
             roam: true,
             label: {
@@ -846,7 +846,7 @@ export default {
                 show: true
               }
             },
-            edgeSymbol: ["circle", "arrow"],
+            edgeSymbol: ['circle', 'arrow'],
             edgeSymbolSize: [4, 10],
             edgeLabel: {
               normal: {
@@ -857,7 +857,7 @@ export default {
             },
             focusOneNodeAdjacency: true,
             force: {
-              initLayout: "force",
+              initLayout: 'force',
               repulsion: 100,
               gravity: 0.00001,
               edgeLength: 200
@@ -879,163 +879,163 @@ export default {
           formatter: params => {
             if (!params.data.fields) return;
 
-            let str = "";
-            str += `<label>${"Stage"}: ${params.name}</label><br>`;
+            let str = '';
+            str += `<label>${'Stage'}: ${params.name}</label><br>`;
             str += `<ul style="list-style: none; padding: 0; margin: 0;">`;
             // 列表
             if (params.data.list_css || params.data.list_xpath) {
-              str += `<li><span style="display: inline-block;min-width: 50px;font-weight: bolder;text-align: right;margin-right: 3px">${"List"}: </span>${params
+              str += `<li><span style="display: inline-block;min-width: 50px;font-weight: bolder;text-align: right;margin-right: 3px">${'List'}: </span>${params
                 .data.list_css || params.data.list_xpath}</li>`;
             }
             if (params.data.page_css || params.data.page_xpath) {
-              str += `<li><span style="display: inline-block;min-width: 50px;font-weight: bolder;text-align: right;margin-right: 3px">${"Pagination"}: </span>${params
+              str += `<li><span style="display: inline-block;min-width: 50px;font-weight: bolder;text-align: right;margin-right: 3px">${'Pagination'}: </span>${params
                 .data.page_css || params.data.page_xpath}</li>`;
             }
             str += `</ul><br>`;
 
             // 字段
-            str += `<label>${"Fields"}: </label><br>`;
+            str += `<label>${'Fields'}: </label><br>`;
             str += '<ul style="list-style: none; padding: 0; margin: 0;">';
             for (let i = 0; i < params.data.fields.length; i++) {
               const f = params.data.fields[i];
               str += `
 <li>
 <span style="display: inline-block; min-width: 50px; font-weight: bolder; text-align: right">${
-                f.name
-              }: </span>
-${f.css || f.xpath} ${f.attr ? "(" + f.attr + ")" : ""} ${
-                f.next_stage
-                  ? " --> " +
+  f.name
+}: </span>
+${f.css || f.xpath} ${f.attr ? '(' + f.attr + ')' : ''} ${
+  f.next_stage
+    ? ' --> ' +
                     '<span style="font-weight:bolder">' +
                     f.next_stage +
-                    "</span>"
-                  : ""
-              }
+                    '</span>'
+    : ''
+}
 </li>
 `;
             }
-            str += "</ul>";
+            str += '</ul>';
             return str;
           }
         }
       };
-      const el = document.querySelector("#process-chart");
+      const el = document.querySelector('#process-chart');
       this.processChart = echarts.init(el);
       this.processChart.setOption(option);
       this.processChart.resize();
     },
-    onTabClick(tab) {
+    onTabClick (tab) {
       this.activeTab = tab.name;
     },
-    update() {
-      if (this.activeTab !== "stages") return;
+    update () {
+      if (this.activeTab !== 'stages') return;
 
       // 手动显示tab下划线
-      const elBar = document.querySelector(".el-tabs__active-bar");
-      const elStages = document.querySelector("#tab-stages");
+      const elBar = document.querySelector('.el-tabs__active-bar');
+      const elStages = document.querySelector('#tab-stages');
       const totalWidth = Number(
-        getComputedStyle(elStages).width.replace("px", "")
+        getComputedStyle(elStages).width.replace('px', '')
       );
       const paddingRight = Number(
-        getComputedStyle(elStages).paddingRight.replace("px", "")
+        getComputedStyle(elStages).paddingRight.replace('px', '')
       );
       elBar.setAttribute(
-        "style",
-        "width:" + (totalWidth - paddingRight) + "px"
+        'style',
+        'width:' + (totalWidth - paddingRight) + 'px'
       );
     },
-    getSpiderfile() {
-      this.$store.commit("file/SET_FILE_CONTENT", "");
-      this.$store.commit("file/SET_CURRENT_PATH", "Spiderfile");
-      this.$store.dispatch("file/getFileContent", { path: "Spiderfile" });
+    getSpiderfile () {
+      this.$store.commit('file/SET_FILE_CONTENT', '');
+      this.$store.commit('file/SET_CURRENT_PATH', 'Spiderfile');
+      this.$store.dispatch('file/getFileContent', { path: 'Spiderfile' });
     },
-    async onSpiderfileSave() {
+    async onSpiderfileSave () {
       try {
-        await this.$store.dispatch("spider/saveConfigSpiderSpiderfile");
-        this.$message.success("Spiderfile saved successfully");
+        await this.$store.dispatch('spider/saveConfigSpiderSpiderfile');
+        this.$message.success('Spiderfile saved successfully');
       } catch (e) {
-        this.$message.error("Something wrong happened");
+        this.$message.error('Something wrong happened');
       }
     },
-    isList(stage) {
+    isList (stage) {
       return !!stage.is_list;
     },
-    onCheckIsList(value, stage) {
+    onCheckIsList (value, stage) {
       stage.is_list = value;
       if (value) {
       } else {
       }
     },
-    onClickStageList($event, stage, type) {
+    onClickStageList ($event, stage, type) {
       $event.stopPropagation();
     },
-    onSelectStageListType(stage, type) {
-      if (type === "css") {
-        if (!stage.list_css) stage.list_css = "body";
-        stage.list_xpath = "";
+    onSelectStageListType (stage, type) {
+      if (type === 'css') {
+        if (!stage.list_css) stage.list_css = 'body';
+        stage.list_xpath = '';
       } else {
-        if (!stage.list_xpath) stage.list_xpath = "//body";
-        stage.list_css = "";
+        if (!stage.list_xpath) stage.list_xpath = '//body';
+        stage.list_css = '';
       }
     },
-    isPage(stage) {
+    isPage (stage) {
       return !!stage.page_css || !!stage.page_xpath;
     },
-    onCheckIsPage(value, stage) {
+    onCheckIsPage (value, stage) {
       if (value) {
         if (!stage.page_css && !stage.page_xpath) {
-          stage.page_xpath = "//body";
+          stage.page_xpath = '//body';
         }
       } else {
-        stage.page_css = "";
-        stage.page_xpath = "";
+        stage.page_css = '';
+        stage.page_xpath = '';
       }
     },
-    onClickStagePage($event, stage, type) {
+    onClickStagePage ($event, stage, type) {
       $event.stopPropagation();
     },
-    onSelectStagePageType(stage, type) {
-      if (type === "css") {
-        if (!stage.page_css) stage.page_css = "body";
-        stage.page_xpath = "";
+    onSelectStagePageType (stage, type) {
+      if (type === 'css') {
+        if (!stage.page_css) stage.page_css = 'body';
+        stage.page_xpath = '';
       } else {
-        if (!stage.page_xpath) stage.page_xpath = "//body";
-        stage.page_css = "";
+        if (!stage.page_xpath) stage.page_xpath = '//body';
+        stage.page_css = '';
       }
     },
-    getNextStageField(stage) {
+    getNextStageField (stage) {
       return stage.fields.filter(f => !!f.next_stage)[0];
     },
-    getNextStage(stage) {
+    getNextStage (stage) {
       const nextStageField = this.getNextStageField(stage);
       if (!nextStageField) return;
       return this.spiderForm.config.stages[nextStageField.next_stage];
     },
-    onConvert() {
+    onConvert () {
       this.$confirm(
-        "Are you sure to convert this spider to customized spider?",
-        "Notification",
+        'Are you sure to convert this spider to customized spider?',
+        'Notification',
         {
-          confirmButtonText: "Confirm",
-          cancelButtonText: "Cancel",
-          type: "warning"
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
         }
       ).then(async () => {
-        this.spiderForm.type = "customized";
-        this.$store.dispatch("spider/editSpider").then(res => {
+        this.spiderForm.type = 'customized';
+        this.$store.dispatch('spider/editSpider').then(res => {
           if (!res.data.error) {
-            this.$store.commit("spider/SET_CONFIG_LIST_TS", +new Date());
+            this.$store.commit('spider/SET_CONFIG_LIST_TS', +new Date());
             this.$message({
-              type: "success",
-              message: "Converted successfully"
+              type: 'success',
+              message: 'Converted successfully'
             });
           } else {
             this.$message({
-              type: "error",
-              message: "Converted unsuccessfully"
+              type: 'error',
+              message: 'Converted unsuccessfully'
             });
           }
-          this.$store.dispatch("spider/getSpiderData", this.spiderForm._id);
+          this.$store.dispatch('spider/getSpiderData', this.spiderForm._id);
         });
       });
     }

@@ -206,12 +206,12 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
-import { mapState } from "vuex";
+import dayjs from 'dayjs';
+import { mapState } from 'vuex';
 
 export default {
-  name: "GitSettings",
-  data() {
+  name: 'GitSettings',
+  data () {
     return {
       gitBranches: [],
       isGitBranchesLoading: false,
@@ -219,74 +219,74 @@ export default {
       isGitResetLoading: false,
       isGitCheckoutLoading: false,
       syncFrequencies: [
-        { label: "1m", value: "0 * * * * *" },
-        { label: "5m", value: "0 0/5 * * * *" },
-        { label: "15m", value: "0 0/15 * * * *" },
-        { label: "30m", value: "0 0/30 * * * *" },
-        { label: "1h", value: "0 0 * * * *" },
-        { label: "6h", value: "0 0 0/6 * * *" },
-        { label: "12h", value: "0 0 0/12 * * *" },
-        { label: "1d", value: "0 0 0 0 * *" }
+        { label: '1m', value: '0 * * * * *' },
+        { label: '5m', value: '0 0/5 * * * *' },
+        { label: '15m', value: '0 0/15 * * * *' },
+        { label: '30m', value: '0 0/30 * * * *' },
+        { label: '1h', value: '0 0 * * * *' },
+        { label: '6h', value: '0 0 0/6 * * *' },
+        { label: '12h', value: '0 0 0/12 * * *' },
+        { label: '1d', value: '0 0 0 0 * *' }
       ],
-      sshPublicKey: "",
-      activeTabName: "settings",
+      sshPublicKey: '',
+      activeTabName: 'settings',
       commits: []
     };
   },
   computed: {
-    ...mapState("spider", ["spiderForm"])
+    ...mapState('spider', ['spiderForm'])
   },
   methods: {
-    onSave() {
-      this.$refs["git-settings-form"].validate(async valid => {
+    onSave () {
+      this.$refs['git-settings-form'].validate(async valid => {
         if (!valid) return;
-        const res = await this.$store.dispatch("spider/editSpider");
+        const res = await this.$store.dispatch('spider/editSpider');
         if (!res.data.error) {
-          this.$message.success("Spider info has been saved successfully");
+          this.$message.success('Spider info has been saved successfully');
         }
       });
     },
-    async onGitUrlChange() {
+    async onGitUrlChange () {
       if (!this.spiderForm.git_url) return;
       this.isGitBranchesLoading = true;
       try {
-        const res = await this.$request.get("/git/branches", {
+        const res = await this.$request.get('/git/branches', {
           url: this.spiderForm.git_url
         });
         this.gitBranches = res.data.data;
         if (!this.spiderForm.git_branch && this.gitBranches.length > 0) {
-          this.$set(this.spiderForm, "git_branch", this.gitBranches[0]);
+          this.$set(this.spiderForm, 'git_branch', this.gitBranches[0]);
         }
       } finally {
         this.isGitBranchesLoading = false;
       }
     },
-    async onSync() {
+    async onSync () {
       this.isGitSyncLoading = true;
       try {
         const res = await this.$request.post(
           `/spiders/${this.spiderForm._id}/git/sync`
         );
         if (!res.data.error) {
-          this.$message.success("Git has been synchronized successfully");
+          this.$message.success('Git has been synchronized successfully');
         }
       } finally {
         this.isGitSyncLoading = false;
         await this.updateGit();
         await this.$store.dispatch(
-          "spider/getSpiderData",
+          'spider/getSpiderData',
           this.$route.params.id
         );
       }
     },
-    onReset() {
+    onReset () {
       this.$confirm(
-        "This would delete all files of the spider. Are you sure to continue?",
-        "Notification",
+        'This would delete all files of the spider. Are you sure to continue?',
+        'Notification',
         {
-          confirmButtonText: "Confirm",
-          cancelButtonText: "Cancel",
-          type: "warning"
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
         }
       ).then(async () => {
         this.isGitResetLoading = true;
@@ -295,7 +295,7 @@ export default {
             `/spiders/${this.spiderForm._id}/git/reset`
           );
           if (!res.data.error) {
-            this.$message.success("Git has been reset successfully");
+            this.$message.success('Git has been reset successfully');
           }
         } finally {
           this.isGitResetLoading = false;
@@ -303,63 +303,63 @@ export default {
         }
       });
     },
-    async getSshPublicKey() {
-      const res = await this.$request.get("/git/public-key");
+    async getSshPublicKey () {
+      const res = await this.$request.get('/git/public-key');
       this.sshPublicKey = res.data.data;
     },
-    copySshPublicKey() {
-      const el = document.querySelector("#ssh-public-key");
+    copySshPublicKey () {
+      const el = document.querySelector('#ssh-public-key');
       el.focus();
       el.setSelectionRange(0, this.sshPublicKey.length);
-      document.execCommand("copy");
-      this.$message.success("SSH Public Key is copied to the clipboard");
+      document.execCommand('copy');
+      this.$message.success('SSH Public Key is copied to the clipboard');
     },
-    async getCommits() {
-      const res = await this.$request.get("/git/commits", {
+    async getCommits () {
+      const res = await this.$request.get('/git/commits', {
         spider_id: this.spiderForm._id
       });
       this.commits = res.data.data.map(d => {
-        d.ts = dayjs(d.ts).format("YYYY-MM-DD HH:mm:ss");
+        d.ts = dayjs(d.ts).format('YYYY-MM-DD HH:mm:ss');
         return d;
       });
     },
-    async checkout(c) {
+    async checkout (c) {
       this.isGitCheckoutLoading = true;
       try {
-        const res = await this.$request.post("/git/checkout", {
+        const res = await this.$request.post('/git/checkout', {
           spider_id: this.spiderForm._id,
           hash: c.hash
         });
         if (!res.data.error) {
-          this.$message.success("Checkout success");
+          this.$message.success('Checkout success');
         }
       } finally {
         this.isGitCheckoutLoading = false;
         await this.getCommits();
       }
     },
-    async updateGit() {
+    async updateGit () {
       this.getCommits();
     },
-    getCommitType(c) {
-      if (c.is_head) return "primary";
+    getCommitType (c) {
+      if (c.is_head) return 'primary';
       if (c.branches && c.branches.length) {
-        if (c.branches.map(d => d.label).includes("master")) {
-          return "danger";
+        if (c.branches.map(d => d.label).includes('master')) {
+          return 'danger';
         } else {
-          return "warning";
+          return 'warning';
         }
       }
       if (c.tags && c.tags.length) {
-        return "success";
+        return 'success';
       }
       if (c.remote_branches && c.remote_branches.length) {
-        return "info";
+        return 'info';
       }
     },
-    onChangeTab() {}
+    onChangeTab () {}
   },
-  async created() {
+  async created () {
     if (this.spiderForm.git_url) {
       this.onGitUrlChange();
     }

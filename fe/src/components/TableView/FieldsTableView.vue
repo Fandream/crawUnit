@@ -159,70 +159,70 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
-  name: "FieldsTableView",
+  name: 'FieldsTableView',
   props: {
     type: {
       type: String,
-      default: "list"
+      default: 'list'
     },
     title: {
       type: String,
-      default: ""
+      default: ''
     },
     stage: {
       type: Object,
-      default() {
+      default () {
         return {};
       }
     },
     stageNames: {
       type: Array,
-      default() {
+      default () {
         return [];
       }
     },
     fields: {
       type: Array,
-      default() {
+      default () {
         return [];
       }
     }
   },
   computed: {
-    ...mapState("spider", ["spiderForm"]),
-    filteredStageNames() {
+    ...mapState('spider', ['spiderForm']),
+    filteredStageNames () {
       return this.stageNames.filter(n => n !== this.stage.name);
     }
   },
   methods: {
-    onNameChange(row) {
+    onNameChange (row) {
       if (this.fields.filter(d => d.name === row.name).length > 1) {
         this.$message.error(`Duplicated field names for ${row.name}`);
       }
     },
-    onClickSelectorType(row, selectorType) {
-      if (selectorType === "css") {
-        if (row.xpath) this.$set(row, "xpath", "");
-        if (!row.css) this.$set(row, "css", "body");
+    onClickSelectorType (row, selectorType) {
+      if (selectorType === 'css') {
+        if (row.xpath) this.$set(row, 'xpath', '');
+        if (!row.css) this.$set(row, 'css', 'body');
       } else {
-        if (row.css) this.$set(row, "css", "");
-        if (!row.xpath) this.$set(row, "xpath", "//body");
+        if (row.css) this.$set(row, 'css', '');
+        if (!row.xpath) this.$set(row, 'xpath', '//body');
       }
     },
-    onClickIsAttribute(row, isAttribute) {
+    onClickIsAttribute (row, isAttribute) {
       if (!isAttribute) {
         // 文本
-        if (row.attr) this.$set(row, "attr", "");
+        if (row.attr) this.$set(row, 'attr', '');
       } else {
         // 属性
-        if (!row.attr) this.$set(row, "attr", "href");
+        if (!row.attr) this.$set(row, 'attr', 'href');
       }
-      this.$set(row, "isAttrChange", false);
+      this.$set(row, 'isAttrChange', false);
     },
-    onCopyField(row) {
+    onCopyField (row) {
       for (let i = 0; i < this.fields.length; i++) {
         if (row.name === this.fields[i].name) {
           this.fields.splice(i, 0, JSON.parse(JSON.stringify(row)));
@@ -230,7 +230,7 @@ export default {
         }
       }
     },
-    onRemoveField(row) {
+    onRemoveField (row) {
       for (let i = 0; i < this.fields.length; i++) {
         if (row.name === this.fields[i].name) {
           this.fields.splice(i, 1);
@@ -239,51 +239,51 @@ export default {
       }
       if (this.fields.length === 0) {
         this.fields.push({
-          xpath: "//body",
-          next_stage: ""
+          xpath: '//body',
+          next_stage: ''
         });
       }
     },
-    onAddField(row) {
+    onAddField (row) {
       for (let i = 0; i < this.fields.length; i++) {
         if (row.name === this.fields[i].name) {
           this.fields.splice(i + 1, 0, {
             name: `field_${Math.floor(new Date().getTime()).toString()}`,
-            xpath: "//body",
-            next_stage: ""
+            xpath: '//body',
+            next_stage: ''
           });
           break;
         }
       }
     },
-    getCellClassStyle({ row, columnIndex }) {
+    getCellClassStyle ({ row, columnIndex }) {
       if (columnIndex === 1) {
         // 字段名称
         if (!row.name) {
           return {
-            border: "1px solid red"
+            border: '1px solid red'
           };
         }
       } else if (columnIndex === 3) {
         // 选择器
         if (!row.css && !row.xpath) {
           return {
-            border: "1px solid red"
+            border: '1px solid red'
           };
         }
       }
     },
-    onChangeNextStage(row) {
+    onChangeNextStage (row) {
       this.fields.forEach(f => {
         if (f.name !== row.name) {
-          this.$set(f, "next_stage", "");
+          this.$set(f, 'next_stage', '');
         }
       });
     },
-    onAttrChange(row) {
-      this.$set(row, "isAttrChange", !row.attr);
+    onAttrChange (row) {
+      this.$set(row, 'isAttrChange', !row.attr);
     },
-    isShowAttr(row) {
+    isShowAttr (row) {
       return row.attr || row.isAttrChange;
     }
   }

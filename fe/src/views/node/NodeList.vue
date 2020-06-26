@@ -187,15 +187,15 @@
 </template>
 
 <script>
-import showdown from "showdown";
-import { mapState } from "vuex";
+import showdown from 'showdown';
+import { mapState } from 'vuex';
 
-import NodeNetwork from "../../components/Node/NodeNetwork";
+import NodeNetwork from '../../components/Node/NodeNetwork';
 
 export default {
-  name: "NodeList",
+  name: 'NodeList',
   components: { NodeNetwork },
-  data() {
+  data () {
     return {
       pagination: {
         pageNum: 0,
@@ -204,33 +204,33 @@ export default {
       isEditMode: false,
       dialogVisible: false,
       filter: {
-        keyword: ""
+        keyword: ''
       },
       // tableData,
       columns: [
-        { name: "name", label: "名称", width: "220" },
-        { name: "ip", label: "IP地址", width: "160" },
-        { name: "type", label: "节点类型", width: "120" },
+        { name: 'name', label: '名称', width: '220' },
+        { name: 'ip', label: 'IP地址', width: '160' },
+        { name: 'type', label: '节点类型', width: '120' },
         // { name: 'port', label: 'Port', width: '80' },
-        { name: "status", label: "状态", width: "120" },
-        { name: "description", label: "描述", width: "auto" }
+        { name: 'status', label: '状态', width: '120' },
+        { name: 'description', label: '描述', width: 'auto' }
       ],
       nodeFormRules: {
-        name: [{ required: true, message: "Required Field", trigger: "change" }]
+        name: [{ required: true, message: 'Required Field', trigger: 'change' }]
       },
       activeTab: undefined,
       isButtonClicked: false,
       isShowAddNodeInstruction: false,
       converter: new showdown.Converter(),
       addNodeInstructionMarkdown:
-        "您不能在 CrawUnit 的 Web 界面直接添加节点。\n" +
-        "\n" +
-        "添加节点的方式非常简单，您只需要在目标机器上运行一个 CrawUnit 服务就可以了"
+        '您不能在 CrawUnit 的 Web 界面直接添加节点。\n' +
+        '\n' +
+        '添加节点的方式非常简单，您只需要在目标机器上运行一个 CrawUnit 服务就可以了'
     };
   },
   computed: {
-    ...mapState("node", ["nodeList", "nodeForm"]),
-    filteredTableData() {
+    ...mapState('node', ['nodeList', 'nodeForm']),
+    filteredTableData () {
       return this.nodeList.filter(d => {
         if (!this.filter.keyword) return true;
         for (let i = 0; i < this.columns.length; i++) {
@@ -247,14 +247,14 @@ export default {
         return false;
       });
     },
-    addNodeInstructionHtml() {
+    addNodeInstructionHtml () {
       if (!this.converter) return;
       return this.converter.makeHtml(this.addNodeInstructionMarkdown);
     }
   },
   methods: {
-    onSearch() {},
-    onAddNode() {
+    onSearch () {},
+    onAddNode () {
       this.isShowAddNodeInstruction = true;
     },
     // onAdd () {
@@ -262,18 +262,18 @@ export default {
     //   this.isEditMode = false
     //   this.dialogVisible = true
     // },
-    onRefresh() {
-      this.$store.dispatch("node/getNodeList");
+    onRefresh () {
+      this.$store.dispatch('node/getNodeList');
     },
-    onSubmit() {
+    onSubmit () {
       const vm = this;
-      const formName = "nodeForm";
+      const formName = 'nodeForm';
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (this.isEditMode) {
-            vm.$store.dispatch("node/editNode");
+            vm.$store.dispatch('node/editNode');
           } else {
-            vm.$store.dispatch("node/addNode");
+            vm.$store.dispatch('node/addNode');
           }
           vm.dialogVisible = false;
         } else {
@@ -281,39 +281,39 @@ export default {
         }
       });
     },
-    onCancel() {
-      this.$store.commit("node/SET_NODE_FORM", {});
+    onCancel () {
+      this.$store.commit('node/SET_NODE_FORM', {});
       this.dialogVisible = false;
     },
-    onDialogClose() {
-      this.$store.commit("node/SET_NODE_FORM", {});
+    onDialogClose () {
+      this.$store.commit('node/SET_NODE_FORM', {});
       this.dialogVisible = false;
     },
-    onEdit(row) {
+    onEdit (row) {
       this.isEditMode = true;
-      this.$store.commit("node/SET_NODE_FORM", row);
+      this.$store.commit('node/SET_NODE_FORM', row);
       this.dialogVisible = true;
     },
-    onRemove(row) {
+    onRemove (row) {
       this.isButtonClicked = true;
       setTimeout(() => {
         this.isButtonClicked = false;
       }, 100);
 
-      this.$confirm("你确定要删除该节点?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('你确定要删除该节点?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        this.$store.dispatch("node/deleteNode", row._id).then(() => {
+        this.$store.dispatch('node/deleteNode', row._id).then(() => {
           this.$message({
-            type: "success",
-            message: "成功删除"
+            type: 'success',
+            message: '成功删除'
           });
         });
       });
     },
-    onView(row) {
+    onView (row) {
       this.isButtonClicked = true;
       setTimeout(() => {
         this.isButtonClicked = false;
@@ -321,34 +321,34 @@ export default {
 
       this.$router.push(`/nodes/${row._id}`);
     },
-    onPageChange() {
-      this.$store.dispatch("node/getNodeList");
+    onPageChange () {
+      this.$store.dispatch('node/getNodeList');
     },
-    onRowExpand(row) {
-      this.$store.dispatch("node/getNodeSystemInfo", row._id);
+    onRowExpand (row) {
+      this.$store.dispatch('node/getNodeSystemInfo', row._id);
     },
-    onRowClick(row) {
+    onRowClick (row) {
       if (this.isButtonClicked) return;
       this.onView(row);
     },
-    getExecutables(row) {
+    getExecutables (row) {
       if (!row.systemInfo || !row.systemInfo.executables) return [];
       return row.systemInfo.executables;
     },
-    getOSName(os) {
-      if (os === "linux") {
-        return "Linux";
-      } else if (os === "windows") {
-        return "Windows";
-      } else if (os === "darwin") {
-        return "Mac OS (darwin)";
+    getOSName (os) {
+      if (os === 'linux') {
+        return 'Linux';
+      } else if (os === 'windows') {
+        return 'Windows';
+      } else if (os === 'darwin') {
+        return 'Mac OS (darwin)';
       } else {
         return os;
       }
     }
   },
-  created() {
-    this.$store.dispatch("node/getNodeList");
+  created () {
+    this.$store.dispatch('node/getNodeList');
   }
 };
 </script>

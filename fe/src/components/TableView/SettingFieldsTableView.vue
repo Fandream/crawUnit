@@ -46,29 +46,29 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
-  name: "SettingFieldsTableView",
+  name: 'SettingFieldsTableView',
   props: {
     type: {
       type: String,
-      default: "list"
+      default: 'list'
     },
     title: {
       type: String,
-      default: ""
+      default: ''
     },
     stageNames: {
       type: Array,
-      default() {
+      default () {
         return [];
       }
     }
   },
   computed: {
-    ...mapState("spider", ["spiderForm"]),
-    list() {
+    ...mapState('spider', ['spiderForm']),
+    list () {
       const list = [];
       for (let name in this.spiderForm.config.settings) {
         if (this.spiderForm.config.settings.hasOwnProperty(name)) {
@@ -80,13 +80,13 @@ export default {
     }
   },
   methods: {
-    onChange(row) {
+    onChange (row) {
       if (this.list.filter(d => d.name === row.name).length > 1) {
         this.$message.error(`Duplicated field names for ${row.name}`);
       }
-      this.$store.commit("spider/SET_SPIDER_FORM_CONFIG_SETTINGS", this.list);
+      this.$store.commit('spider/SET_SPIDER_FORM_CONFIG_SETTINGS', this.list);
     },
-    onRemoveField(row) {
+    onRemoveField (row) {
       const list = JSON.parse(JSON.stringify(this.list));
       for (let i = 0; i < list.length; i++) {
         if (row.name === list[i].name) {
@@ -99,51 +99,51 @@ export default {
           value: `VARIABLE_VALUE_${Math.floor(new Date().getTime())}`
         });
       }
-      this.$store.commit("spider/SET_SPIDER_FORM_CONFIG_SETTINGS", list);
+      this.$store.commit('spider/SET_SPIDER_FORM_CONFIG_SETTINGS', list);
     },
-    onAddField(row) {
+    onAddField (row) {
       const list = JSON.parse(JSON.stringify(this.list));
       for (let i = 0; i < list.length; i++) {
         if (row.name === list[i].name) {
-          const name = "VARIABLE_NAME_" + Math.floor(new Date().getTime());
-          const value = "VARIABLE_VALUE_" + Math.floor(new Date().getTime());
+          const name = 'VARIABLE_NAME_' + Math.floor(new Date().getTime());
+          const value = 'VARIABLE_VALUE_' + Math.floor(new Date().getTime());
           list.push({ name, value });
           break;
         }
       }
-      this.$store.commit("spider/SET_SPIDER_FORM_CONFIG_SETTINGS", list);
+      this.$store.commit('spider/SET_SPIDER_FORM_CONFIG_SETTINGS', list);
     },
-    getCellClassStyle({ row, columnIndex }) {
+    getCellClassStyle ({ row, columnIndex }) {
       if (columnIndex === 1) {
         // 字段名称
         if (!row.name) {
           return {
-            border: "1px solid red"
+            border: '1px solid red'
           };
         }
       } else if (columnIndex === 3) {
         // 选择器
         if (!row.css && !row.xpath) {
           return {
-            border: "1px solid red"
+            border: '1px solid red'
           };
         }
       }
     },
-    onChangeNextStage(row) {
+    onChangeNextStage (row) {
       this.list.forEach(f => {
         if (f.name !== row.name) {
-          this.$set(f, "next_stage", "");
+          this.$set(f, 'next_stage', '');
         }
       });
     }
   },
-  created() {
+  created () {
     if (this.list.length === 0) {
       this.$store.commit(
-        "spider/SET_SPIDER_FORM_CONFIG_SETTING_ITEM",
-        "VARIABLE_NAME_" + Math.floor(new Date().getTime()),
-        "VARIABLE_VALUE_" + Math.floor(new Date().getTime())
+        'spider/SET_SPIDER_FORM_CONFIG_SETTING_ITEM',
+        'VARIABLE_NAME_' + Math.floor(new Date().getTime()),
+        'VARIABLE_VALUE_' + Math.floor(new Date().getTime())
       );
     }
   }

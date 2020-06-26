@@ -154,20 +154,20 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import ParametersDialog from "./ParametersDialog";
+import { mapState } from 'vuex';
+import ParametersDialog from './ParametersDialog';
 
 export default {
-  name: "CrawlConfirmDialog",
+  name: 'CrawlConfirmDialog',
   components: { ParametersDialog },
   props: {
     spiderId: {
       type: String,
-      default: ""
+      default: ''
     },
     spiders: {
       type: Array,
-      default() {
+      default () {
         return [];
       }
     },
@@ -180,14 +180,14 @@ export default {
       default: false
     }
   },
-  data() {
+  data () {
     return {
       form: {
-        runType: "random",
+        runType: 'random',
         nodeIds: undefined,
         spider: undefined,
-        scrapy_log_level: "INFO",
-        param: "",
+        scrapy_log_level: 'INFO',
+        param: '',
         nodeList: []
       },
       isAllowDisclaimer: true,
@@ -199,38 +199,38 @@ export default {
     };
   },
   computed: {
-    ...mapState("spider", ["spiderForm"]),
-    ...mapState("setting", ["setting"]),
-    ...mapState("lang", ["lang"]),
-    isConfirmDisabled() {
+    ...mapState('spider', ['spiderForm']),
+    ...mapState('setting', ['setting']),
+    ...mapState('lang', ['lang']),
+    isConfirmDisabled () {
       if (this.isLoading) return true;
       if (!this.isAllowDisclaimer) return true;
       return false;
     },
-    scrapySpiders() {
-      return this.spiders.filter(d => d.type === "customized" && d.is_scrapy);
+    scrapySpiders () {
+      return this.spiders.filter(d => d.type === 'customized' && d.is_scrapy);
     }
   },
   watch: {
-    visible(value) {
+    visible (value) {
       if (value) {
         this.onOpen();
       }
     }
   },
   methods: {
-    beforeClose() {
-      this.$emit("close");
+    beforeClose () {
+      this.$emit('close');
     },
-    beforeParameterClose() {
+    beforeParameterClose () {
       this.isParametersVisible = false;
     },
-    async fetchScrapySpiderName(id) {
+    async fetchScrapySpiderName (id) {
       const res = await this.$request.get(`/spiders/${id}/scrapy/spiders`);
       this.scrapySpidersNamesDict[id] = res.data.data;
     },
-    onConfirm() {
-      this.$refs["form"].validate(async valid => {
+    onConfirm () {
+      this.$refs['form'].validate(async valid => {
         if (!valid) return;
 
         // 请求响应
@@ -244,14 +244,14 @@ export default {
 
           // Scrapy爬虫特殊处理
           if (
-            this.spiderForm.type === "customized" &&
+            this.spiderForm.type === 'customized' &&
             this.spiderForm.is_scrapy
           ) {
             param = `${this.form.spider} --loglevel=${this.form.scrapy_log_level} ${this.form.param}`;
           }
 
           // 发起请求
-          res = await this.$store.dispatch("spider/crawlSpider", {
+          res = await this.$store.dispatch('spider/crawlSpider', {
             spiderId: this.spiderId,
             nodeIds: this.form.nodeIds,
             param,
@@ -261,7 +261,7 @@ export default {
           // 运行多个爬虫
 
           // 发起请求
-          res = await this.$store.dispatch("spider/crawlSelectedSpiders", {
+          res = await this.$store.dispatch('spider/crawlSelectedSpiders', {
             nodeIds: this.form.nodeIds,
             runType: this.form.runType,
             taskParams: this.spiders.map(d => {
@@ -269,11 +269,11 @@ export default {
               let param = this.form.param;
 
               // Scrapy爬虫特殊处理
-              if (d.type === "customized" && d.is_scrapy) {
+              if (d.type === 'customized' && d.is_scrapy) {
                 param = `${
                   this.scrapySpidersNamesDict[d._id]
                     ? this.scrapySpidersNamesDict[d._id][0]
-                    : ""
+                    : ''
                 } --loglevel=${this.form.scrapy_log_level} ${this.form.param}`;
               }
 
@@ -286,9 +286,9 @@ export default {
         }
 
         // 消息提示
-        this.$message.success("A task has been scheduled successfully");
+        this.$message.success('A task has been scheduled successfully');
 
-        this.$emit("close");
+        this.$emit('close');
 
         // 是否重定向
         if (
@@ -298,23 +298,23 @@ export default {
         ) {
           // 返回任务id
           const id = res.data.data[0];
-          this.$router.push("/tasks/" + id);
+          this.$router.push('/tasks/' + id);
         }
 
-        this.$emit("confirm");
+        this.$emit('confirm');
       });
     },
-    onClickDisclaimer() {
-      this.$router.push("/disclaimer");
+    onClickDisclaimer () {
+      this.$router.push('/disclaimer');
     },
-    async onOpen() {
+    async onOpen () {
       // 节点列表
-      this.$request.get("/nodes", {}).then(response => {
+      this.$request.get('/nodes', {}).then(response => {
         this.nodeList = response.data.data.map(d => {
           d.systemInfo = {
-            os: "",
-            arch: "",
-            num_cpu: "",
+            os: '',
+            arch: '',
+            num_cpu: '',
             executables: []
           };
           return d;
@@ -326,17 +326,17 @@ export default {
         // 单个爬虫
         this.isLoading = true;
         try {
-          await this.$store.dispatch("spider/getSpiderData", this.spiderId);
+          await this.$store.dispatch('spider/getSpiderData', this.spiderId);
           if (this.spiderForm.is_scrapy) {
             await this.$store.dispatch(
-              "spider/getSpiderScrapySpiders",
+              'spider/getSpiderScrapySpiders',
               this.spiderId
             );
             if (
               this.spiderForm.spider_names &&
               this.spiderForm.spider_names.length > 0
             ) {
-              this.$set(this.form, "spider", this.spiderForm.spider_names[0]);
+              this.$set(this.form, 'spider', this.spiderForm.spider_names[0]);
             }
           }
         } finally {
@@ -357,16 +357,16 @@ export default {
         }
       }
     },
-    onOpenParameters() {
+    onOpenParameters () {
       this.isParametersVisible = true;
     },
-    onParametersConfirm(value) {
+    onParametersConfirm (value) {
       this.form.param = value;
       this.isParametersVisible = false;
     },
-    isNodeDisabled(node) {
-      if (node.status !== "online") return true;
-      if (node.is_master && this.setting.run_on_master === "N") return true;
+    isNodeDisabled (node) {
+      if (node.status !== 'online') return true;
+      if (node.is_master && this.setting.run_on_master === 'N') return true;
       return false;
     }
   }

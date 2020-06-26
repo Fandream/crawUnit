@@ -49,10 +49,10 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
-  name: "NodeInfoView",
+  name: 'NodeInfoView',
   props: {
     isView: {
       type: Boolean,
@@ -60,14 +60,14 @@ export default {
     }
   },
   computed: {
-    ...mapState("node", ["nodeForm"])
+    ...mapState('node', ['nodeForm'])
   },
   methods: {
-    onSave() {
+    onSave () {
       this.$refs.nodeForm.validate(valid => {
         if (valid) {
-          this.$store.dispatch("node/editNode").then(() => {
-            this.$message.success("Node info has been saved successfully");
+          this.$store.dispatch('node/editNode').then(() => {
+            this.$message.success('Node info has been saved successfully');
           });
         }
       });

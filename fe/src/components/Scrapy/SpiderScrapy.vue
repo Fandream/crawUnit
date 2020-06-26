@@ -372,23 +372,23 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
-  name: "SpiderScrapy",
+  name: 'SpiderScrapy',
   computed: {
-    ...mapState("spider", [
-      "spiderForm",
-      "spiderScrapySettings",
-      "spiderScrapyItems",
-      "spiderScrapyPipelines"
+    ...mapState('spider', [
+      'spiderForm',
+      'spiderScrapySettings',
+      'spiderScrapyItems',
+      'spiderScrapyPipelines'
     ]),
-    activeParamData() {
-      if (this.activeParam.type === "array") {
+    activeParamData () {
+      if (this.activeParam.type === 'array') {
         return this.activeParam.value.map(s => {
           return { value: s };
         });
-      } else if (this.activeParam.type === "object") {
+      } else if (this.activeParam.type === 'object') {
         return Object.keys(this.activeParam.value).map(key => {
           return {
             key,
@@ -399,33 +399,33 @@ export default {
       return [];
     }
   },
-  data() {
+  data () {
     return {
       dialogVisible: false,
       activeParam: {},
       activeParamIndex: undefined,
       isAddSpiderVisible: false,
       addSpiderForm: {
-        name: "",
-        domain: "",
-        template: "basic"
+        name: '',
+        domain: '',
+        template: 'basic'
       },
       isAddSpiderLoading: false,
-      activeTabName: "settings",
+      activeTabName: 'settings',
       loadingDict: {}
     };
   },
   methods: {
-    onOpenDialog() {
+    onOpenDialog () {
       this.dialogVisible = true;
     },
-    onCloseDialog() {
+    onCloseDialog () {
       this.dialogVisible = false;
     },
-    onSettingsConfirm() {
-      if (this.activeParam.type === "array") {
+    onSettingsConfirm () {
+      if (this.activeParam.type === 'array') {
         this.activeParam.value = this.activeParamData.map(d => d.value);
-      } else if (this.activeParam.type === "object") {
+      } else if (this.activeParam.type === 'object') {
         const dict = {};
         this.activeParamData.forEach(d => {
           dict[d.key] = d.value;
@@ -439,59 +439,59 @@ export default {
       );
       this.dialogVisible = false;
     },
-    onSettingsEditParam(row, index) {
+    onSettingsEditParam (row, index) {
       this.activeParam = JSON.parse(JSON.stringify(row));
       this.activeParamIndex = index;
       this.onOpenDialog();
     },
-    async onSettingsSave() {
+    async onSettingsSave () {
       const res = await this.$store.dispatch(
-        "spider/saveSpiderScrapySettings",
+        'spider/saveSpiderScrapySettings',
         this.$route.params.id
       );
       if (!res.data.error) {
-        this.$message.success("Saved successfully");
+        this.$message.success('Saved successfully');
       }
     },
-    onSettingsAdd() {
+    onSettingsAdd () {
       const data = JSON.parse(JSON.stringify(this.spiderScrapySettings));
       data.push({
-        key: "",
-        value: "",
-        type: "string"
+        key: '',
+        value: '',
+        type: 'string'
       });
-      this.$store.commit("spider/SET_SPIDER_SCRAPY_SETTINGS", data);
+      this.$store.commit('spider/SET_SPIDER_SCRAPY_SETTINGS', data);
     },
-    onSettingsRemove(index) {
+    onSettingsRemove (index) {
       const data = JSON.parse(JSON.stringify(this.spiderScrapySettings));
       data.splice(index, 1);
-      this.$store.commit("spider/SET_SPIDER_SCRAPY_SETTINGS", data);
+      this.$store.commit('spider/SET_SPIDER_SCRAPY_SETTINGS', data);
     },
-    onSettingsActiveParamAdd() {
-      if (this.activeParam.type === "array") {
-        this.activeParam.value.push("");
-      } else if (this.activeParam.type === "object") {
+    onSettingsActiveParamAdd () {
+      if (this.activeParam.type === 'array') {
+        this.activeParam.value.push('');
+      } else if (this.activeParam.type === 'object') {
         if (!this.activeParam.value) {
           this.activeParam.value = {};
         }
-        this.$set(this.activeParam.value, "", 999);
+        this.$set(this.activeParam.value, '', 999);
       }
     },
-    onSettingsActiveParamRemove(index) {
-      if (this.activeParam.type === "array") {
+    onSettingsActiveParamRemove (index) {
+      if (this.activeParam.type === 'array') {
         this.activeParam.value.splice(index, 1);
-      } else if (this.activeParam.type === "object") {
+      } else if (this.activeParam.type === 'object') {
         const key = this.activeParamData[index].key;
         const value = JSON.parse(JSON.stringify(this.activeParam.value));
         delete value[key];
-        this.$set(this.activeParam, "value", value);
+        this.$set(this.activeParam, 'value', value);
       }
     },
-    settingsKeysFetchSuggestions(queryString, cb) {
+    settingsKeysFetchSuggestions (queryString, cb) {
       const data = this.$utils.scrapy.settingParamNames
         .filter(s => {
           if (!queryString) return true;
-          return !!s.match(new RegExp(queryString, "i"));
+          return !!s.match(new RegExp(queryString, 'i'));
         })
         .map(s => {
           return {
@@ -504,39 +504,39 @@ export default {
         });
       cb(data);
     },
-    onSettingsParamTypeChange(row) {
-      if (row.type === "number") {
+    onSettingsParamTypeChange (row) {
+      if (row.type === 'number') {
         row.value = Number(row.value);
       }
     },
-    onAddSpiderConfirm() {
-      this.$refs["add-spider-form"].validate(async valid => {
+    onAddSpiderConfirm () {
+      this.$refs['add-spider-form'].validate(async valid => {
         if (!valid) return;
         this.isAddSpiderLoading = true;
-        const res = await this.$store.dispatch("spider/addSpiderScrapySpider", {
+        const res = await this.$store.dispatch('spider/addSpiderScrapySpider', {
           id: this.$route.params.id,
           form: this.addSpiderForm
         });
         if (!res.data.error) {
-          this.$message.success("Saved successfully");
+          this.$message.success('Saved successfully');
         }
         this.isAddSpiderVisible = false;
         this.isAddSpiderLoading = false;
         await this.$store.dispatch(
-          "spider/getSpiderScrapySpiders",
+          'spider/getSpiderScrapySpiders',
           this.$route.params.id
         );
       });
     },
-    onAddSpider() {
+    onAddSpider () {
       this.addSpiderForm = {
-        name: "",
-        domain: "",
-        template: "basic"
+        name: '',
+        domain: '',
+        template: 'basic'
       };
       this.isAddSpiderVisible = true;
     },
-    getMaxItemNodeId() {
+    getMaxItemNodeId () {
       let max = 0;
       this.spiderScrapyItems.forEach(d => {
         if (max < d.id) max = d.id;
@@ -546,7 +546,7 @@ export default {
       });
       return max;
     },
-    onAddItem() {
+    onAddItem () {
       const maxId = this.getMaxItemNodeId();
       this.spiderScrapyItems.push({
         id: maxId + 1,
@@ -561,7 +561,7 @@ export default {
         ]
       });
     },
-    removeItem(data, ev) {
+    removeItem (data, ev) {
       ev.stopPropagation();
       for (let i = 0; i < this.spiderScrapyItems.length; i++) {
         const item = this.spiderScrapyItems[i];
@@ -571,7 +571,7 @@ export default {
         }
       }
     },
-    onAddItemField(data, ev) {
+    onAddItemField (data, ev) {
       ev.stopPropagation();
       for (let i = 0; i < this.spiderScrapyItems.length; i++) {
         const item = this.spiderScrapyItems[i];
@@ -585,7 +585,7 @@ export default {
         }
       }
     },
-    onRemoveItemField(node, data, ev) {
+    onRemoveItemField (node, data, ev) {
       ev.stopPropagation();
       for (let i = 0; i < this.spiderScrapyItems.length; i++) {
         const item = this.spiderScrapyItems[i];
@@ -601,15 +601,15 @@ export default {
         }
       }
     },
-    onItemLabelEdit(node, data, ev) {
+    onItemLabelEdit (node, data, ev) {
       ev.stopPropagation();
-      this.$set(node, "isEdit", true);
-      this.$set(data, "name", node.label);
+      this.$set(node, 'isEdit', true);
+      this.$set(data, 'name', node.label);
       setTimeout(() => {
         this.$refs[`el-input-${data.id}`].focus();
       }, 0);
     },
-    onItemChange(node, data, value) {
+    onItemChange (node, data, value) {
       for (let i = 0; i < this.spiderScrapyItems.length; i++) {
         const item = this.spiderScrapyItems[i];
         if (item.id === data.id) {
@@ -618,7 +618,7 @@ export default {
         }
       }
     },
-    onItemFieldChange(node, data, value) {
+    onItemFieldChange (node, data, value) {
       for (let i = 0; i < this.spiderScrapyItems.length; i++) {
         const item = this.spiderScrapyItems[i];
         if (item.id === node.parent.data.id) {
@@ -633,27 +633,27 @@ export default {
         }
       }
     },
-    async onItemsSave() {
+    async onItemsSave () {
       const res = await this.$store.dispatch(
-        "spider/saveSpiderScrapyItems",
+        'spider/saveSpiderScrapyItems',
         this.$route.params.id
       );
       if (!res.data.error) {
-        this.$message.success("Saved successfully");
+        this.$message.success('Saved successfully');
       }
     },
-    async onClickSpider(spiderName) {
+    async onClickSpider (spiderName) {
       if (this.loadingDict[spiderName]) return;
       this.$set(this.loadingDict, spiderName, true);
       try {
         const res = await this.$store.dispatch(
-          "spider/getSpiderScrapySpiderFilepath",
+          'spider/getSpiderScrapySpiderFilepath',
           {
             id: this.$route.params.id,
             spiderName
           }
         );
-        this.$emit("click-spider", res.data.data);
+        this.$emit('click-spider', res.data.data);
       } finally {
         this.$set(this.loadingDict, spiderName, false);
       }

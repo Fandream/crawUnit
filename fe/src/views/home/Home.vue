@@ -35,89 +35,89 @@
 </template>
 
 <script>
-import request from "../../api/request";
-import echarts from "echarts";
+import request from '../../api/request';
+import echarts from 'echarts';
 
 export default {
-  name: "Home",
-  data() {
+  name: 'Home',
+  data () {
     return {
       echarts: {},
       overviewStats: {},
       dailyTasks: [],
       metrics: [
         {
-          name: "task_count",
-          label: "总任务数",
-          icon: "fa fa-check",
-          color: "blue",
-          path: "tasks"
+          name: 'task_count',
+          label: '总任务数',
+          icon: 'fa fa-check',
+          color: 'blue',
+          path: 'tasks'
         },
         {
-          name: "spider_count",
-          label: "爬虫",
-          icon: "fa fa-bug",
-          color: "green",
-          path: "spiders"
+          name: 'spider_count',
+          label: '爬虫',
+          icon: 'fa fa-bug',
+          color: 'green',
+          path: 'spiders'
         },
         {
-          name: "active_node_count",
-          label: "在线节点",
-          icon: "fa fa-server",
-          color: "red",
-          path: "nodes"
+          name: 'active_node_count',
+          label: '在线节点',
+          icon: 'fa fa-server',
+          color: 'red',
+          path: 'nodes'
         },
         {
-          name: "schedule_count",
-          label: "定时任务",
-          icon: "fa fa-clock-o",
-          color: "orange",
-          path: "schedules"
+          name: 'schedule_count',
+          label: '定时任务',
+          icon: 'fa fa-clock-o',
+          color: 'orange',
+          path: 'schedules'
         },
         {
-          name: "project_count",
-          label: "项目",
-          icon: "fa fa-code-fork",
-          color: "grey",
-          path: "projects"
+          name: 'project_count',
+          label: '项目',
+          icon: 'fa fa-code-fork',
+          color: 'grey',
+          path: 'projects'
         }
       ]
     };
   },
   methods: {
-    initEchartsDailyTasks() {
+    initEchartsDailyTasks () {
       const option = {
         xAxis: {
-          type: "category",
+          type: 'category',
           data: this.dailyTasks.map(d => d.date)
         },
         yAxis: {
-          type: "value"
+          type: 'value'
         },
         series: [
           {
             data: this.dailyTasks.map(d => d.task_count),
-            type: "line",
+            type: 'line',
             areaStyle: {},
             smooth: true
           }
         ],
         tooltip: {
-          trigger: "axis",
+          trigger: 'axis',
           show: true
         }
       };
       this.echarts.dailyTasks = echarts.init(
-        this.$el.querySelector("#echarts-daily-tasks")
+        this.$el.querySelector('#echarts-daily-tasks')
       );
       this.echarts.dailyTasks.setOption(option);
     },
-    onClickMetric(m) {
+    onClickMetric (m) {
       this.$router.push(`/${m.path}`);
     }
   },
-  created() {
-    request.get("/stats/home").then(response => {
+  created () {
+    request.get('/stats/home').then(response => {
       // overview stats
       this.overviewStats = response.data.data.overview;
 
@@ -126,7 +126,7 @@ export default {
       this.initEchartsDailyTasks();
     });
   },
-  mounted() {
+  mounted () {
     // this.$ba.trackPageview('/')
   }
 };

@@ -126,48 +126,48 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import StatusTag from "../Status/StatusTag";
-import dayjs from "dayjs";
+import { mapState } from 'vuex';
+import StatusTag from '../Status/StatusTag';
+import dayjs from 'dayjs';
 
 export default {
-  name: "NodeInfoView",
+  name: 'NodeInfoView',
   components: { StatusTag },
   computed: {
-    ...mapState("task", ["taskForm", "taskLog", "errorLogData"]),
-    isRunning() {
-      return ["pending", "running"].includes(this.taskForm.status);
+    ...mapState('task', ['taskForm', 'taskLog', 'errorLogData']),
+    isRunning () {
+      return ['pending', 'running'].includes(this.taskForm.status);
     }
   },
   methods: {
-    onRestart() {},
-    onStop() {
+    onRestart () {},
+    onStop () {
       this.$store
-        .dispatch("task/cancelTask", this.$route.params.id)
+        .dispatch('task/cancelTask', this.$route.params.id)
         .then(() => {
           this.$message.success(
             `Task "${this.$route.params.id}" has been sent signal to stop`
           );
         });
     },
-    getTime(str) {
-      if (!str || str.match("^0001")) return "NA";
-      return dayjs(str).format("YYYY-MM-DD HH:mm:ss");
+    getTime (str) {
+      if (!str || str.match('^0001')) return 'NA';
+      return dayjs(str).format('YYYY-MM-DD HH:mm:ss');
     },
-    getWaitDuration(row) {
-      if (!row.start_ts || row.start_ts.match("^0001")) return "NA";
-      return dayjs(row.start_ts).diff(row.create_ts, "second");
+    getWaitDuration (row) {
+      if (!row.start_ts || row.start_ts.match('^0001')) return 'NA';
+      return dayjs(row.start_ts).diff(row.create_ts, 'second');
     },
-    getRuntimeDuration(row) {
-      if (!row.finish_ts || row.finish_ts.match("^0001")) return "NA";
-      return dayjs(row.finish_ts).diff(row.start_ts, "second");
+    getRuntimeDuration (row) {
+      if (!row.finish_ts || row.finish_ts.match('^0001')) return 'NA';
+      return dayjs(row.finish_ts).diff(row.start_ts, 'second');
     },
-    getTotalDuration(row) {
-      if (!row.finish_ts || row.finish_ts.match("^0001")) return "NA";
-      return dayjs(row.finish_ts).diff(row.create_ts, "second");
+    getTotalDuration (row) {
+      if (!row.finish_ts || row.finish_ts.match('^0001')) return 'NA';
+      return dayjs(row.finish_ts).diff(row.create_ts, 'second');
     },
-    onClickLogWithErrors() {
-      this.$emit("click-log");
+    onClickLogWithErrors () {
+      this.$emit('click-log');
     }
   }
 };

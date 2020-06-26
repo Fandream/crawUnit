@@ -56,8 +56,8 @@
 
 <script>
 export default {
-  name: "GeneralTableView",
-  data() {
+  name: 'GeneralTableView',
+  data () {
     return {};
   },
   props: {
@@ -75,36 +75,36 @@ export default {
     },
     columns: {
       type: Array,
-      default() {
+      default () {
         return [];
       }
     },
     data: {
       type: Array,
-      default() {
+      default () {
         return [];
       }
     }
   },
   computed: {
-    filteredData() {
+    filteredData () {
       return this.data;
     }
   },
   methods: {
-    isUrl(value) {
+    isUrl (value) {
       if (!value) return false;
       if (!value.match) return false;
       return !!value.match(/^https?:\/\//);
     },
-    onPageChange() {
-      this.$emit("page-change", {
+    onPageChange () {
+      this.$emit('page-change', {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       });
     },
-    getString(value) {
-      if (value === undefined) return "";
+    getString (value) {
+      if (value === undefined) return '';
       const str = JSON.stringify(value);
       if (str.match(/^"(.*)"$/)) return str.match(/^"(.*)"$/)[1];
       return str;

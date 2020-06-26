@@ -31,31 +31,31 @@
 
 <script>
 export default {
-  name: "CopySpiderDialog",
+  name: 'CopySpiderDialog',
   props: {
     spiderId: {
       type: String,
-      default: ""
+      default: ''
     },
     visible: {
       type: Boolean,
       default: false
     }
   },
-  data() {
+  data () {
     return {
       form: {
-        name: ""
+        name: ''
       },
       isLoading: false
     };
   },
   methods: {
-    onClose() {
-      this.$emit("close");
+    onClose () {
+      this.$emit('close');
     },
-    onConfirm() {
-      this.$refs["form"].validate(async valid => {
+    onConfirm () {
+      this.$refs['form'].validate(async valid => {
         if (!valid) return;
         try {
           this.isLoading = true;
@@ -64,10 +64,10 @@ export default {
             this.form
           );
           if (!res.data.error) {
-            this.$message.success("已成功复制");
+            this.$message.success('已成功复制');
           }
-          this.$emit("confirm");
-          this.$emit("close");
+          this.$emit('confirm');
+          this.$emit('close');
         } finally {
           this.isLoading = false;
         }

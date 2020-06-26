@@ -81,7 +81,7 @@
 
 <script>
 export default {
-  name: "ParametersDialog",
+  name: 'ParametersDialog',
   props: {
     visible: {
       type: Boolean,
@@ -89,82 +89,82 @@ export default {
     },
     param: {
       type: String,
-      default: ""
+      default: ''
     }
   },
-  data() {
+  data () {
     return {
       paramData: []
     };
   },
   watch: {
-    visible(value) {
+    visible (value) {
       if (value) this.initParamData();
     }
   },
   methods: {
-    beforeClose() {
-      this.$emit("close");
+    beforeClose () {
+      this.$emit('close');
     },
-    initParamData() {
+    initParamData () {
       const mArr = this.param.match(/((?:-[-a-zA-Z0-9] )?(?:\w+=)?\w+)/g);
       if (!mArr) {
         this.paramData = [];
-        this.paramData.push({ type: "spider", name: "", value: "" });
+        this.paramData.push({ type: 'spider', name: '', value: '' });
         return;
       }
       this.paramData = [];
       mArr.forEach(s => {
         s = s.trim();
         let d = {};
-        const arr = s.split(" ");
+        const arr = s.split(' ');
         if (arr.length === 1) {
-          d.type = "other";
+          d.type = 'other';
           d.value = s;
         } else {
-          const arr2 = arr[1].split("=");
+          const arr2 = arr[1].split('=');
           d.name = arr2[0];
           d.value = arr2[1];
-          if (arr[0] === "-a") {
-            d.type = "spider";
-          } else if (arr[0] === "-s") {
-            d.type = "setting";
+          if (arr[0] === '-a') {
+            d.type = 'spider';
+          } else if (arr[0] === '-s') {
+            d.type = 'setting';
           } else {
-            d.type = "other";
+            d.type = 'other';
             d.value = s;
           }
         }
         this.paramData.push(d);
       });
       if (this.paramData.length === 0) {
-        this.paramData.push({ type: "spider", name: "", value: "" });
+        this.paramData.push({ type: 'spider', name: '', value: '' });
       }
     },
-    onConfirm() {
+    onConfirm () {
       const param = this.paramData
         .filter(d => d.value)
         .map(d => {
-          let s = "";
-          if (d.type === "setting") {
+          let s = '';
+          if (d.type === 'setting') {
             s = `-s ${d.name}=${d.value}`;
-          } else if (d.type === "spider") {
+          } else if (d.type === 'spider') {
             s = `-a ${d.name}=${d.value}`;
-          } else if (d.type === "other") {
+          } else if (d.type === 'other') {
             s = d.value;
           }
           return s;
         })
         .filter(s => !!s)
-        .join(" ");
-      this.$emit("confirm", param);
+        .join(' ');
+      this.$emit('confirm', param);
     },
-    onRemove(index) {
+    onRemove (index) {
       this.paramData.splice(index, 1);
     },
-    onAdd() {
-      this.paramData.push({ type: "spider", name: "", value: "" });
+    onAdd () {
+      this.paramData.push({ type: 'spider', name: '', value: '' });
     },
-    querySearch(queryString, cb) {
+    querySearch (queryString, cb) {
       let data = this.$utils.scrapy.settingParamNames;
       if (!queryString) {
         return cb(
@@ -174,7 +174,7 @@ export default {
         );
       }
       data = data
-        .filter(s => s.match(new RegExp(queryString, "i")))
+        .filter(s => s.match(new RegExp(queryString, 'i')))
         .sort((a, b) => (a < b ? 1 : -1));
       cb(
         data.map(s => {

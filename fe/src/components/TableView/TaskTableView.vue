@@ -70,14 +70,14 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import dayjs from "dayjs";
-import StatusTag from "../Status/StatusTag";
+import { mapState } from 'vuex';
+import dayjs from 'dayjs';
+import StatusTag from '../Status/StatusTag';
 
 export default {
-  name: "TaskTableView",
+  name: 'TaskTableView',
   components: { StatusTag },
-  data() {
+  data () {
     return {
       // setInterval handle
       handle: undefined,
@@ -89,11 +89,11 @@ export default {
     title: String
   },
   computed: {
-    ...mapState("spider", ["spiderForm"]),
-    ...mapState("task", ["taskList"])
+    ...mapState('spider', ['spiderForm']),
+    ...mapState('task', ['taskList'])
   },
   methods: {
-    onClickSpider(row) {
+    onClickSpider (row) {
       this.clicked = true;
       setTimeout(() => {
         this.clicked = false;
@@ -102,7 +102,7 @@ export default {
       if (this.$route.path.match(/\/nodes\//)) {
       }
     },
-    onClickNode(row) {
+    onClickNode (row) {
       this.clicked = true;
       setTimeout(() => {
         this.clicked = false;
@@ -111,7 +111,7 @@ export default {
       if (this.$route.path.match(/\/spiders\//)) {
       }
     },
-    onClickTask(row) {
+    onClickTask (row) {
       if (!this.clicked) {
         this.$router.push(`/tasks/${row._id}`);
         if (this.$route.path.match(/\/nodes\//)) {
@@ -119,23 +119,23 @@ export default {
         }
       }
     },
-    onRefresh() {
-      if (this.$route.path.split("/")[1] === "spiders") {
-        this.$store.dispatch("spider/getTaskList", this.$route.params.id);
-      } else if (this.$route.path.split("/")[1] === "nodes") {
-        this.$store.dispatch("node/getTaskList", this.$route.params.id);
+    onRefresh () {
+      if (this.$route.path.split('/')[1] === 'spiders') {
+        this.$store.dispatch('spider/getTaskList', this.$route.params.id);
+      } else if (this.$route.path.split('/')[1] === 'nodes') {
+        this.$store.dispatch('node/getTaskList', this.$route.params.id);
       }
     },
-    getTime(str) {
+    getTime (str) {
       return dayjs(str);
     }
   },
-  mounted() {
+  mounted () {
     this.handle = setInterval(() => {
       this.onRefresh();
     }, 5000);
   },
-  destroyed() {
+  destroyed () {
     clearInterval(this.handle);
   }
 };

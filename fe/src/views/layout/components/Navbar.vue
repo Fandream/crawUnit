@@ -5,17 +5,17 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
+import { mapState, mapGetters } from 'vuex';
+import Breadcrumb from '@/components/Breadcrumb';
+import Hamburger from '@/components/Hamburger';
 
-import showdown from "showdown";
+import showdown from 'showdown';
 
 export default {
   components: {
     Breadcrumb
   },
-  data() {
+  data () {
     return {};
   }
 };

@@ -1,4 +1,4 @@
-import request from "../../api/request";
+import request from '../../api/request';
 
 const state = {
   deployList: []
@@ -7,16 +7,16 @@ const state = {
 const getters = {};
 
 const mutations = {
-  SET_DEPLOY_LIST(state, value) {
+  SET_DEPLOY_LIST (state, value) {
     state.deployList = value;
   }
 };
 
 const actions = {
-  getDeployList({ state, commit }) {
-    request.get("/deploys").then(response => {
+  getDeployList ({ state, commit }) {
+    request.get('/deploys').then(response => {
       commit(
-        "SET_DEPLOY_LIST",
+        'SET_DEPLOY_LIST',
         response.data.items
           .map(d => {
             return d;

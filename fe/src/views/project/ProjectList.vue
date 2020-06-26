@@ -145,36 +145,36 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
-  name: "ProjectList",
-  data() {
+  name: 'ProjectList',
+  data () {
     return {
       defaultTags: [],
       dialogVisible: false,
       isClickAction: false,
       filter: {
-        tag: ""
+        tag: ''
       }
     };
   },
   computed: {
-    ...mapState("project", ["projectForm", "projectList", "projectTags"])
+    ...mapState('project', ['projectForm', 'projectList', 'projectTags'])
   },
   methods: {
-    onDialogClose() {
+    onDialogClose () {
       this.dialogVisible = false;
     },
-    onFilterChange() {
-      this.$store.dispatch("project/getProjectList", this.filter);
+    onFilterChange () {
+      this.$store.dispatch('project/getProjectList', this.filter);
     },
-    onAdd() {
+    onAdd () {
       this.isEdit = false;
       this.dialogVisible = true;
-      this.$store.commit("project/SET_PROJECT_FORM", { tags: [] });
+      this.$store.commit('project/SET_PROJECT_FORM', { tags: [] });
     },
-    onAddSubmit() {
+    onAddSubmit () {
       this.$refs.projectForm.validate(res => {
         if (res) {
           const form = JSON.parse(JSON.stringify(this.projectForm));
@@ -187,71 +187,71 @@ export default {
                   return;
                 }
                 this.dialogVisible = false;
-                this.$store.dispatch("project/getProjectList");
-                this.$message.success("项目已经保存");
+                this.$store.dispatch('project/getProjectList');
+                this.$message.success('项目已经保存');
               });
           } else {
-            this.$request.put("/projects", form).then(response => {
+            this.$request.put('/projects', form).then(response => {
               if (response.data.error) {
                 this.$message.error(response.data.error);
                 return;
               }
               this.dialogVisible = false;
-              this.$store.dispatch("project/getProjectList");
-              this.$message.success("项目已经添加");
+              this.$store.dispatch('project/getProjectList');
+              this.$message.success('项目已经添加');
             });
           }
         }
       });
     },
-    onEdit(row) {
+    onEdit (row) {
       this.isClickAction = true;
       setTimeout(() => {
         this.isClickAction = false;
       }, 100);
 
-      this.$store.commit("project/SET_PROJECT_FORM", row);
+      this.$store.commit('project/SET_PROJECT_FORM', row);
       this.dialogVisible = true;
       this.isEdit = true;
     },
-    onRemove(row) {
+    onRemove (row) {
       this.isClickAction = true;
       setTimeout(() => {
         this.isClickAction = false;
       }, 100);
 
-      this.$confirm("确认删除该项目?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确认删除该项目?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.$store.dispatch("project/removeProject", row._id).then(() => {
+          this.$store.dispatch('project/removeProject', row._id).then(() => {
             setTimeout(() => {
-              this.$store.dispatch("project/getProjectList");
-              this.$message.success("项目已经移除");
+              this.$store.dispatch('project/getProjectList');
+              this.$message.success('项目已经移除');
             }, 100);
           });
         })
         .catch(() => {});
     },
-    onView(row) {
+    onView (row) {
       if (this.isClickAction) return;
 
       this.$router.push({
-        name: "SpiderList",
+        name: 'SpiderList',
         params: {
           project_id: row._id
         }
       });
     },
-    isNoProject(row) {
-      return row._id === "000000000000000000000000";
+    isNoProject (row) {
+      return row._id === '000000000000000000000000';
     }
   },
-  async created() {
-    await this.$store.dispatch("project/getProjectList", this.filter);
-    await this.$store.dispatch("project/getProjectTags");
+  async created () {
+    await this.$store.dispatch('project/getProjectList', this.filter);
+    await this.$store.dispatch('project/getProjectTags');
   }
 };
 </script>

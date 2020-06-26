@@ -36,17 +36,17 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import FileList from "../../components/File/FileList";
-import SpiderOverview from "../../components/Overview/SpiderOverview";
-import SpiderStats from "../../components/Stats/SpiderStats";
-import ConfigList from "../../components/Config/ConfigList";
-import SpiderSchedules from "./SpiderSchedules";
-import SpiderScrapy from "../../components/Scrapy/SpiderScrapy";
-import GitSettings from "../../components/Settings/GitSettings";
+import { mapState } from 'vuex';
+import FileList from '../../components/File/FileList';
+import SpiderOverview from '../../components/Overview/SpiderOverview';
+import SpiderStats from '../../components/Stats/SpiderStats';
+import ConfigList from '../../components/Config/ConfigList';
+import SpiderSchedules from './SpiderSchedules';
+import SpiderScrapy from '../../components/Scrapy/SpiderScrapy';
+import GitSettings from '../../components/Settings/GitSettings';
 
 export default {
-  name: "SpiderDetail",
+  name: 'SpiderDetail',
   components: {
     GitSettings,
     SpiderScrapy,
@@ -58,103 +58,103 @@ export default {
     SpiderOverview
   },
   watch: {
-    configListTs() {
+    configListTs () {
       this.onConvert();
     }
   },
-  data() {
+  data () {
     return {
-      activeTabName: "overview",
-      redirectType: ""
+      activeTabName: 'overview',
+      redirectType: ''
     };
   },
   computed: {
-    ...mapState("spider", ["spiderList", "spiderForm", "configListTs"]),
-    ...mapState("file", ["currentPath"]),
-    ...mapState("deploy", ["deployList"]),
-    isCustomized() {
-      return this.spiderForm.type === "customized";
+    ...mapState('spider', ['spiderList', 'spiderForm', 'configListTs']),
+    ...mapState('file', ['currentPath']),
+    ...mapState('deploy', ['deployList']),
+    isCustomized () {
+      return this.spiderForm.type === 'customized';
     },
-    isConfigurable() {
-      return this.spiderForm.type === "configurable";
+    isConfigurable () {
+      return this.spiderForm.type === 'configurable';
     },
-    isScrapy() {
+    isScrapy () {
       return this.isCustomized && this.spiderForm.is_scrapy;
     },
-    isGit() {
+    isGit () {
       return this.spiderForm.is_git;
     }
   },
   methods: {
-    async onTabClick(tab) {
-      if (this.activeTabName === "analytics") {
+    async onTabClick (tab) {
+      if (this.activeTabName === 'analytics') {
         setTimeout(() => {
-          this.$refs["spider-stats"].update();
+          this.$refs['spider-stats'].update();
         }, 0);
-      } else if (this.activeTabName === "config") {
+      } else if (this.activeTabName === 'config') {
         setTimeout(() => {
-          this.$refs["config"].update();
+          this.$refs['config'].update();
         }, 0);
-      } else if (this.activeTabName === "scrapy-settings") {
+      } else if (this.activeTabName === 'scrapy-settings') {
         await this.getScrapyData();
-      } else if (this.activeTabName === "files") {
-        await this.$store.dispatch("spider/getFileTree");
+      } else if (this.activeTabName === 'files') {
+        await this.$store.dispatch('spider/getFileTree');
         if (this.currentPath) {
-          await this.$store.dispatch("file/getFileContent", {
+          await this.$store.dispatch('file/getFileContent', {
             path: this.currentPath
           });
         }
       }
     },
-    onSpiderChange(id) {
+    onSpiderChange (id) {
       this.$router.push(`/spiders/${id}`);
     },
-    async getScrapyData() {
+    async getScrapyData () {
       await Promise.all([
         this.$store.dispatch(
-          "spider/getSpiderScrapySpiders",
+          'spider/getSpiderScrapySpiders',
           this.$route.params.id
         ),
         this.$store.dispatch(
-          "spider/getSpiderScrapyItems",
+          'spider/getSpiderScrapyItems',
           this.$route.params.id
         ),
         this.$store.dispatch(
-          "spider/getSpiderScrapySettings",
+          'spider/getSpiderScrapySettings',
           this.$route.params.id
         ),
         this.$store.dispatch(
-          "spider/getSpiderScrapyPipelines",
+          'spider/getSpiderScrapyPipelines',
           this.$route.params.id
         )
       ]);
     },
-    async onClickScrapySpider(filepath) {
-      this.activeTabName = "files";
-      await this.$store.dispatch("spider/getFileTree");
-      this.$refs["file-list"].clickSpider(filepath);
+    async onClickScrapySpider (filepath) {
+      this.activeTabName = 'files';
+      await this.$store.dispatch('spider/getFileTree');
+      this.$refs['file-list'].clickSpider(filepath);
     },
-    async onClickScrapyPipeline() {
-      this.activeTabName = "files";
-      await this.$store.dispatch("spider/getFileTree");
-      this.$refs["file-list"].clickPipeline();
+    async onClickScrapyPipeline () {
+      this.activeTabName = 'files';
+      await this.$store.dispatch('spider/getFileTree');
+      this.$refs['file-list'].clickPipeline();
     },
-    onConvert() {
-      this.activeTabName = "overview";
+    onConvert () {
+      this.activeTabName = 'overview';
     }
   },
-  async created() {
+  async created () {
     // get spider basic info
-    await this.$store.dispatch("spider/getSpiderData", this.$route.params.id);
+    await this.$store.dispatch('spider/getSpiderData', this.$route.params.id);
 
     // get spider file info
-    await this.$store.dispatch("file/getFileList", this.spiderForm.src);
+    await this.$store.dispatch('file/getFileList', this.spiderForm.src);
 
     // get spider tasks
-    await this.$store.dispatch("spider/getTaskList", this.$route.params.id);
+    await this.$store.dispatch('spider/getTaskList', this.$route.params.id);
 
     // get spider list
-    await this.$store.dispatch("spider/getSpiderList", { owner_type: "all" });
+    await this.$store.dispatch('spider/getSpiderList', { owner_type: 'all' });
   }
 };
 </script>

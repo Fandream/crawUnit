@@ -422,41 +422,41 @@
 </template>
 
 <script>
-import request from "../../api/request";
-import VueCronLinux from "../../components/Cron";
-import { mapState } from "vuex";
-import ParametersDialog from "../../components/Common/ParametersDialog";
-import ScheduleTaskList from "../../components/Schedule/ScheduleTaskList";
-import CrawlConfirmDialog from "../../components/Common/CrawlConfirmDialog";
+import request from '../../api/request';
+import VueCronLinux from '../../components/Cron';
+import { mapState } from 'vuex';
+import ParametersDialog from '../../components/Common/ParametersDialog';
+import ScheduleTaskList from '../../components/Schedule/ScheduleTaskList';
+import CrawlConfirmDialog from '../../components/Common/CrawlConfirmDialog';
 
 export default {
-  name: "ScheduleList",
+  name: 'ScheduleList',
   components: {
     CrawlConfirmDialog,
     ScheduleTaskList,
     VueCronLinux,
     ParametersDialog
   },
-  data() {
+  data () {
     return {
       columns: [
-        { name: "name", label: "名称", width: "150px" },
-        { name: "cron", label: "Cron", width: "120px" },
-        { name: "run_type", label: "运行类型", width: "120px" },
-        { name: "node_names", label: "节点", width: "150px" },
-        { name: "spider_name", label: "爬虫", width: "150px" },
-        { name: "scrapy_spider", label: "Scrapy爬虫", width: "150px" },
-        { name: "param", label: "参数", width: "150px" },
-        { name: "description", label: "描述", width: "200px" },
-        { name: "enable", label: "启用/禁用", width: "120px" },
-        { name: "username", label: "所有者", width: "100px" }
+        { name: 'name', label: '名称', width: '150px' },
+        { name: 'cron', label: 'Cron', width: '120px' },
+        { name: 'run_type', label: '运行类型', width: '120px' },
+        { name: 'node_names', label: '节点', width: '150px' },
+        { name: 'spider_name', label: '爬虫', width: '150px' },
+        { name: 'scrapy_spider', label: 'Scrapy爬虫', width: '150px' },
+        { name: 'param', label: '参数', width: '150px' },
+        { name: 'description', label: '描述', width: '200px' },
+        { name: 'enable', label: '启用/禁用', width: '120px' },
+        { name: 'username', label: '所有者', width: '100px' }
         // { name: 'status', label: 'Status', width: '100px' }
       ],
       isEdit: false,
-      dialogTitle: "",
+      dialogTitle: '',
       dialogVisible: false,
       cronDialogVisible: false,
-      expression: "",
+      expression: '',
       spiderList: [],
       nodeList: [],
       isShowCron: false,
@@ -467,19 +467,19 @@ export default {
     };
   },
   computed: {
-    ...mapState("spider", ["spiderForm"]),
-    ...mapState("schedule", ["scheduleList", "scheduleForm"]),
-    lang() {
+    ...mapState('spider', ['spiderForm']),
+    ...mapState('schedule', ['scheduleList', 'scheduleForm']),
+    lang () {
       const lang =
-        this.$store.state.lang.lang || window.localStorage.getItem("lang");
-      if (!lang) return "cn";
-      if (lang === "zh") return "cn";
-      return "en";
+        this.$store.state.lang.lang || window.localStorage.getItem('lang');
+      if (!lang) return 'cn';
+      if (lang === 'zh') return 'cn';
+      return 'en';
     },
-    filteredTableData() {
+    filteredTableData () {
       return this.scheduleList;
     },
-    spider() {
+    spider () {
       for (let i = 0; i < this.spiderList.length; i++) {
         if (this.spiderList[i]._id === this.scheduleForm.spider_id) {
           return this.spiderList[i];
@@ -487,27 +487,27 @@ export default {
       }
       return {};
     },
-    isDisabledSpiderSchedule() {
+    isDisabledSpiderSchedule () {
       return false;
     }
   },
   methods: {
-    onDialogClose() {
+    onDialogClose () {
       this.dialogVisible = false;
     },
-    onCancel() {
+    onCancel () {
       this.dialogVisible = false;
     },
-    onAdd() {
+    onAdd () {
       this.isEdit = false;
       this.dialogVisible = true;
-      this.$store.commit("schedule/SET_SCHEDULE_FORM", { node_ids: [] });
+      this.$store.commit('schedule/SET_SCHEDULE_FORM', { node_ids: [] });
     },
-    onAddSubmit() {
+    onAddSubmit () {
       this.$refs.scheduleForm.validate(res => {
         if (res) {
           const form = JSON.parse(JSON.stringify(this.scheduleForm));
-          form.cron = "0 " + this.scheduleForm.cron;
+          form.cron = '0 ' + this.scheduleForm.cron;
           if (this.isEdit) {
             request
               .post(`/schedules/${this.scheduleForm._id}`, form)
@@ -517,37 +517,37 @@ export default {
                   return;
                 }
                 this.dialogVisible = false;
-                this.$store.dispatch("schedule/getScheduleList");
-                this.$message.success("已保存定时任务");
+                this.$store.dispatch('schedule/getScheduleList');
+                this.$message.success('已保存定时任务');
               });
           } else {
-            request.put("/schedules", form).then(response => {
+            request.put('/schedules', form).then(response => {
               if (response.data.error) {
                 this.$message.error(response.data.error);
                 return;
               }
               this.dialogVisible = false;
-              this.$store.dispatch("schedule/getScheduleList");
-              this.$message.success("已添加定时任务");
+              this.$store.dispatch('schedule/getScheduleList');
+              this.$message.success('已添加定时任务');
             });
           }
         }
       });
     },
-    isShowRun(row) {},
-    async onEdit(row) {
-      this.$store.commit("schedule/SET_SCHEDULE_FORM", row);
+    isShowRun (row) {},
+    async onEdit (row) {
+      this.$store.commit('schedule/SET_SCHEDULE_FORM', row);
       this.dialogVisible = true;
       this.isEdit = true;
 
       this.isLoading = true;
       if (!this.scheduleForm.scrapy_log_level) {
-        this.$set(this.scheduleForm, "scrapy_log_level", "INFO");
+        this.$set(this.scheduleForm, 'scrapy_log_level', 'INFO');
       }
-      await this.$store.dispatch("spider/getSpiderData", row.spider_id);
+      await this.$store.dispatch('spider/getSpiderData', row.spider_id);
       if (this.spiderForm.is_scrapy) {
         await this.$store.dispatch(
-          "spider/getSpiderScrapySpiders",
+          'spider/getSpiderScrapySpiders',
           row.spider_id
         );
         if (!this.scheduleForm.scrapy_spider) {
@@ -557,7 +557,7 @@ export default {
           ) {
             this.$set(
               this.scheduleForm,
-              "scrapy_spider",
+              'scrapy_spider',
               this.spiderForm.spider_names[0]
             );
           }
@@ -565,101 +565,101 @@ export default {
       }
       this.isLoading = false;
     },
-    onRemove(row) {
-      this.$confirm("确定删除定时任务?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        type: "warning"
+    onRemove (row) {
+      this.$confirm('确定删除定时任务?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(() => {
-          this.$store.dispatch("schedule/removeSchedule", row._id).then(() => {
+          this.$store.dispatch('schedule/removeSchedule', row._id).then(() => {
             setTimeout(() => {
-              this.$store.dispatch("schedule/getScheduleList");
-              this.$message.success("已删除定时任务");
+              this.$store.dispatch('schedule/getScheduleList');
+              this.$message.success('已删除定时任务');
             }, 100);
           });
         })
         .catch(() => {});
     },
-    isDisabledSpider(spider) {
-      if (spider.type === "customized") {
+    isDisabledSpider (spider) {
+      if (spider.type === 'customized') {
         return !spider.cmd;
       } else {
         return false;
       }
     },
-    async onEnabledChange(row) {
+    async onEnabledChange (row) {
       let res;
       if (row.enabled) {
-        res = await this.$store.dispatch("schedule/enableSchedule", row._id);
+        res = await this.$store.dispatch('schedule/enableSchedule', row._id);
       } else {
-        res = await this.$store.dispatch("schedule/disableSchedule", row._id);
+        res = await this.$store.dispatch('schedule/disableSchedule', row._id);
       }
       if (!res || res.data.error) {
         this.$message.error(
-          `${row.enabled ? "Enabling" : "Disabling"} the schedule unsuccessful`
+          `${row.enabled ? 'Enabling' : 'Disabling'} the schedule unsuccessful`
         );
       } else {
         this.$message.success(
-          `${row.enabled ? "Enabling" : "Disabling"} the schedule successful`
+          `${row.enabled ? 'Enabling' : 'Disabling'} the schedule successful`
         );
       }
     },
-    onCronChange(value) {
-      this.$set(this.scheduleForm, "cron", value);
+    onCronChange (value) {
+      this.$set(this.scheduleForm, 'cron', value);
     },
-    onCronDialogSubmit() {
-      const valid = this.$refs["vue-cron-linux"].submit();
+    onCronDialogSubmit () {
+      const valid = this.$refs['vue-cron-linux'].submit();
       if (valid) {
         this.cronDialogVisible = false;
       }
     },
-    onOpenParameters() {
+    onOpenParameters () {
       this.isParametersVisible = true;
     },
-    onParametersConfirm(value) {
+    onParametersConfirm (value) {
       this.scheduleForm.param = value;
       this.isParametersVisible = false;
     },
-    async onSpiderChange(spiderId) {
-      await this.$store.dispatch("spider/getSpiderData", spiderId);
-      if (this.spiderForm.type === "customized" && this.spiderForm.is_scrapy) {
+    async onSpiderChange (spiderId) {
+      await this.$store.dispatch('spider/getSpiderData', spiderId);
+      if (this.spiderForm.type === 'customized' && this.spiderForm.is_scrapy) {
         this.isLoading = true;
-        await this.$store.dispatch("spider/getSpiderScrapySpiders", spiderId);
+        await this.$store.dispatch('spider/getSpiderScrapySpiders', spiderId);
         this.isLoading = false;
         this.$set(
           this.scheduleForm,
-          "scrapy_spider",
+          'scrapy_spider',
           this.spiderForm.spider_names[0]
         );
-        this.$set(this.scheduleForm, "scrapy_log_level", "INFO");
+        this.$set(this.scheduleForm, 'scrapy_log_level', 'INFO');
       }
     },
-    onShowCronDialog() {
+    onShowCronDialog () {
       this.cronDialogVisible = true;
     },
-    async onViewTasks(row) {
+    async onViewTasks (row) {
       this.isViewTasksDialogVisible = true;
-      this.$store.commit("schedule/SET_SCHEDULE_FORM", row);
+      this.$store.commit('schedule/SET_SCHEDULE_FORM', row);
       setTimeout(() => {
-        this.$refs["schedule-task-list"].update();
+        this.$refs['schedule-task-list'].update();
       }, 100);
     },
-    async onRun(row) {
+    async onRun (row) {
       this.crawlConfirmDialogVisible = true;
-      this.$store.commit("schedule/SET_SCHEDULE_FORM", row);
+      this.$store.commit('schedule/SET_SCHEDULE_FORM', row);
     }
   },
-  created() {
-    this.$store.dispatch("schedule/getScheduleList");
+  created () {
+    this.$store.dispatch('schedule/getScheduleList');
 
     // 节点列表
-    request.get("/nodes", {}).then(response => {
+    request.get('/nodes', {}).then(response => {
       this.nodeList = response.data.data.map(d => {
         d.systemInfo = {
-          os: "",
-          arch: "",
-          num_cpu: "",
+          os: '',
+          arch: '',
+          num_cpu: '',
           executables: []
         };
         return d;
@@ -667,7 +667,7 @@ export default {
     });
 
     // 爬虫列表
-    request.get("/spiders", { owner_type: "all" }).then(response => {
+    request.get('/spiders', { owner_type: 'all' }).then(response => {
       this.spiderList = response.data.data.list || [];
     });
   }

@@ -52,118 +52,118 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import MetricCard from "./MetricCard";
-import echarts from "echarts";
+import { mapState } from 'vuex';
+import MetricCard from './MetricCard';
+import echarts from 'echarts';
 
 export default {
-  name: "SpiderStats",
+  name: 'SpiderStats',
   components: { MetricCard },
-  data() {
+  data () {
     return {
       loading: false
     };
   },
   methods: {
-    renderTaskLine() {
-      const chart = echarts.init(this.$el.querySelector("#task-line"));
+    renderTaskLine () {
+      const chart = echarts.init(this.$el.querySelector('#task-line'));
       const option = {
         grid: {
           top: 20,
           bottom: 40
         },
         xAxis: {
-          type: "category",
+          type: 'category',
           data: this.dailyStats.map(d => d.date)
         },
         yAxis: {
-          type: "value"
+          type: 'value'
         },
         series: [
           {
-            type: "line",
+            type: 'line',
             data: this.dailyStats.map(d => d.task_count),
             areaStyle: {},
             smooth: true
           }
         ],
         tooltip: {
-          trigger: "axis",
+          trigger: 'axis',
           show: true
         }
       };
       chart.setOption(option);
     },
 
-    renderDurationLine() {
-      const chart = echarts.init(this.$el.querySelector("#duration-line"));
+    renderDurationLine () {
+      const chart = echarts.init(this.$el.querySelector('#duration-line'));
       const option = {
         grid: {
           top: 20,
           bottom: 40
         },
         xAxis: {
-          type: "category",
+          type: 'category',
           data: this.dailyStats.map(d => d.date)
         },
         yAxis: {
-          type: "value"
+          type: 'value'
         },
         series: [
           {
-            type: "line",
+            type: 'line',
             data: this.dailyStats.map(d => d.avg_runtime_duration),
             areaStyle: {},
             smooth: true
           }
         ],
         tooltip: {
-          trigger: "axis",
+          trigger: 'axis',
           show: true
         }
       };
       chart.setOption(option);
     },
 
-    render() {
+    render () {
       this.renderTaskLine();
       this.renderDurationLine();
     },
 
-    update() {
+    update () {
       this.loading = true;
       this.$store
-        .dispatch("spider/getSpiderStats")
+        .dispatch('spider/getSpiderStats')
         .then(() => {
           this.render();
         })
         .catch(() => {
-          this.$message.error("An error happened when fetching the data");
+          this.$message.error('An error happened when fetching the data');
         })
         .finally(() => {
           this.loading = false;
         });
     },
 
-    getPercentStr(value) {
-      if (value === undefined) return "NA";
-      return (value * 100).toFixed(2) + "%";
+    getPercentStr (value) {
+      if (value === undefined) return 'NA';
+      return (value * 100).toFixed(2) + '%';
     },
 
-    getDecimal(value) {
-      if (value === undefined) return "NA";
+    getDecimal (value) {
+      if (value === undefined) return 'NA';
       return value.toFixed(2);
     }
   },
   computed: {
-    ...mapState("spider", [
-      "overviewStats",
-      "statusStats",
-      "nodeStats",
-      "dailyStats"
+    ...mapState('spider', [
+      'overviewStats',
+      'statusStats',
+      'nodeStats',
+      'dailyStats'
     ])
   },
-  mounted() {}
+  mounted () {}
 };
 </script>
 

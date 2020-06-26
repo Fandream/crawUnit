@@ -50,31 +50,31 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import SpiderInfoView from "../InfoView/SpiderInfoView";
-import NodeInfoView from "../InfoView/NodeInfoView";
-import TaskInfoView from "../InfoView/TaskInfoView";
+import { mapState } from 'vuex';
+import SpiderInfoView from '../InfoView/SpiderInfoView';
+import NodeInfoView from '../InfoView/NodeInfoView';
+import TaskInfoView from '../InfoView/TaskInfoView';
 
 export default {
-  name: "SpiderOverview",
+  name: 'SpiderOverview',
   components: {
     NodeInfoView,
     SpiderInfoView,
     TaskInfoView
   },
   computed: {
-    ...mapState("node", ["nodeForm"]),
-    ...mapState("spider", ["spiderForm"])
+    ...mapState('node', ['nodeForm']),
+    ...mapState('spider', ['spiderForm'])
   },
   methods: {
-    onNavigateToSpider() {
+    onNavigateToSpider () {
       this.$router.push(`/spiders/${this.spiderForm._id}`);
     },
-    onNavigateToNode() {
+    onNavigateToNode () {
       this.$router.push(`/nodes/${this.nodeForm._id}`);
     }
   },
-  created() {}
+  created () {}
 };
 </script>
 

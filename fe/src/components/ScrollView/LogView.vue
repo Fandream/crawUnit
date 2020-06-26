@@ -97,29 +97,29 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import VirtualList from "vue-virtual-scroll-list";
-import Convert from "ansi-to-html";
-import hasAnsi from "has-ansi";
+import { mapState, mapGetters } from 'vuex';
+import VirtualList from 'vue-virtual-scroll-list';
+import Convert from 'ansi-to-html';
+import hasAnsi from 'has-ansi';
 
-import LogItem from "./LogItem";
+import LogItem from './LogItem';
 
 const convert = new Convert();
 export default {
-  name: "LogView",
+  name: 'LogView',
   components: {
     VirtualList
   },
   props: {
     data: {
       type: String,
-      default: ""
+      default: ''
     }
   },
-  data() {
+  data () {
     return {
       item: LogItem,
-      searchString: "",
+      searchString: '',
       isScrolling: false,
       isScrolling2nd: false,
       errorRegex: this.$utils.log.errorRegex,
@@ -129,92 +129,92 @@ export default {
     };
   },
   computed: {
-    ...mapState("task", [
-      "taskForm",
-      "taskLogTotal",
-      "logKeyword",
-      "isLogFetchLoading",
-      "errorLogData"
+    ...mapState('task', [
+      'taskForm',
+      'taskLogTotal',
+      'logKeyword',
+      'isLogFetchLoading',
+      'errorLogData'
     ]),
-    ...mapGetters("task", ["logData"]),
+    ...mapGetters('task', ['logData']),
     currentLogIndex: {
-      get() {
+      get () {
         return this.$store.state.task.currentLogIndex;
       },
-      set(value) {
-        this.$store.commit("task/SET_CURRENT_LOG_INDEX", value);
+      set (value) {
+        this.$store.commit('task/SET_CURRENT_LOG_INDEX', value);
       }
     },
     logKeyword: {
-      get() {
+      get () {
         return this.$store.state.task.logKeyword;
       },
-      set(value) {
-        this.$store.commit("task/SET_LOG_KEYWORD", value);
+      set (value) {
+        this.$store.commit('task/SET_LOG_KEYWORD', value);
       }
     },
     taskLogPage: {
-      get() {
+      get () {
         return this.$store.state.task.taskLogPage;
       },
-      set(value) {
-        this.$store.commit("task/SET_TASK_LOG_PAGE", value);
+      set (value) {
+        this.$store.commit('task/SET_TASK_LOG_PAGE', value);
       }
     },
     taskLogPageSize: {
-      get() {
+      get () {
         return this.$store.state.task.taskLogPageSize;
       },
-      set(value) {
-        this.$store.commit("task/SET_TASK_LOG_PAGE_SIZE", value);
+      set (value) {
+        this.$store.commit('task/SET_TASK_LOG_PAGE_SIZE', value);
       }
     },
     isLogAutoScroll: {
-      get() {
+      get () {
         return this.$store.state.task.isLogAutoScroll;
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_AUTO_SCROLL", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_AUTO_SCROLL', value);
       }
     },
     isLogAutoFetch: {
-      get() {
+      get () {
         return this.$store.state.task.isLogAutoFetch;
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_AUTO_FETCH", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_AUTO_FETCH', value);
       }
     },
     isLogFetchLoading: {
-      get() {
+      get () {
         return this.$store.state.task.isLogFetchLoading;
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_FETCH_LOADING", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_FETCH_LOADING', value);
       }
     },
-    filteredLogData() {
+    filteredLogData () {
       return this.logData.filter(d => {
         if (!this.searchString) return true;
         return !!d.data.toLowerCase().match(this.searchString.toLowerCase());
       });
     },
-    remainSize() {
-      const height = document.querySelector("body").clientHeight;
+    remainSize () {
+      const height = document.querySelector('body').clientHeight;
       return (height - 240) / 18;
     }
   },
   watch: {
-    taskLogPage() {
-      this.$emit("search");
+    taskLogPage () {
+      this.$emit('search');
     },
-    taskLogPageSize() {
-      this.$emit("search");
+    taskLogPageSize () {
+      this.$emit('search');
     },
-    isLogAutoScroll() {
+    isLogAutoScroll () {
       if (this.isLogAutoScroll) {
         this.$store
-          .dispatch("task/getTaskLog", {
+          .dispatch('task/getTaskLog', {
             id: this.$route.params.id,
             keyword: this.logKeyword
           })
@@ -226,7 +226,7 @@ export default {
     }
   },
   methods: {
-    getItemProps(index) {
+    getItemProps (index) {
       const logItem = this.filteredLogData[index];
       const isAnsi = hasAnsi(logItem.data);
       return {
@@ -242,31 +242,31 @@ export default {
         }
       };
     },
-    onToBottom() {},
-    onScroll() {},
-    toBottom() {
-      this.$el.querySelector(".log-view").scrollTo({ top: 99999999 });
+    onToBottom () {},
+    onScroll () {},
+    toBottom () {
+      this.$el.querySelector('.log-view').scrollTo({ top: 99999999 });
     },
-    toggleErrors() {
+    toggleErrors () {
       this.isErrorsCollapsed = !this.isErrorsCollapsed;
       this.isErrorCollapsing = true;
       setTimeout(() => {
         this.isErrorCollapsing = false;
       }, 300);
     },
-    async onClickError(item) {
+    async onClickError (item) {
       const page = Math.ceil(item.seq / this.taskLogPageSize);
-      this.$store.commit("task/SET_LOG_KEYWORD", "");
-      this.$store.commit("task/SET_TASK_LOG_PAGE", page);
-      this.$store.commit("task/SET_IS_LOG_AUTO_SCROLL", false);
-      this.$store.commit("task/SET_ACTIVE_ERROR_LOG_ITEM", item);
-      this.$emit("search");
+      this.$store.commit('task/SET_LOG_KEYWORD', '');
+      this.$store.commit('task/SET_TASK_LOG_PAGE', page);
+      this.$store.commit('task/SET_IS_LOG_AUTO_SCROLL', false);
+      this.$store.commit('task/SET_ACTIVE_ERROR_LOG_ITEM', item);
+      this.$emit('search');
     },
-    onSearchLog() {
-      this.$emit("search");
+    onSearchLog () {
+      this.$emit('search');
     }
   },
-  mounted() {
+  mounted () {
     this.currentLogIndex = 0;
     this.handle = setInterval(() => {
       if (this.isLogAutoScroll) {
@@ -274,7 +274,7 @@ export default {
       }
     }, 200);
   },
-  destroyed() {
+  destroyed () {
     clearInterval(this.handle);
   }
 };

@@ -1,13 +1,13 @@
 const state = {
-  lang: window.localStorage.getItem("lang") || "zh"
+  lang: window.localStorage.getItem('lang') || 'zh'
 };
 
 const getters = {
-  lang(state) {
-    if (state.lang === "en") {
-      return "English";
-    } else if (state.lang === "zh") {
-      return "中文";
+  lang (state) {
+    if (state.lang === 'en') {
+      return 'English';
+    } else if (state.lang === 'zh') {
+      return '中文';
     } else {
       return state.lang;
     }
@@ -15,7 +15,7 @@ const getters = {
 };
 
 const mutations = {
-  SET_LANG(state, value) {
+  SET_LANG (state, value) {
     state.lang = value;
   }
 };

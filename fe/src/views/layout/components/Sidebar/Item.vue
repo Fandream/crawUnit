@@ -1,26 +1,26 @@
 <script>
 export default {
-  name: "MenuItem",
+  name: 'MenuItem',
   functional: true,
   props: {
     icon: {
       type: String,
-      default: ""
+      default: ''
     },
     title: {
       type: String,
-      default: ""
+      default: ''
     }
   },
-  render(h, context) {
+  render (h, context) {
     const { icon, title } = context.props;
     const vnodes = [];
 
     if (icon) {
       // vnodes.push(<svg-icon icon-class={icon}/>)
       const style = {
-        "margin-right": "5px",
-        "z-index": 999
+        'margin-right': '5px',
+        'z-index': 999
       };
       vnodes.push(<span class={icon} style={style} />);
     }

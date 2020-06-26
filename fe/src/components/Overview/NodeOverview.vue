@@ -17,24 +17,24 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import TaskTableView from "../TableView/TaskTableView";
-import NodeInfoView from "../InfoView/NodeInfoView";
+import { mapState } from 'vuex';
+import TaskTableView from '../TableView/TaskTableView';
+import NodeInfoView from '../InfoView/NodeInfoView';
 
 export default {
-  name: "NodeOverview",
+  name: 'NodeOverview',
   components: {
     NodeInfoView,
     TaskTableView
   },
   computed: {
-    id() {
+    id () {
       return this.$route.params.id;
     },
-    ...mapState("node", ["nodeForm"])
+    ...mapState('node', ['nodeForm'])
   },
   methods: {},
-  created() {}
+  created () {}
 };
 </script>
 

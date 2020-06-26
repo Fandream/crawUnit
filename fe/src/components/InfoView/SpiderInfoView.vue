@@ -165,11 +165,11 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import CrawlConfirmDialog from "../Common/CrawlConfirmDialog";
+import { mapState, mapGetters } from 'vuex';
+import CrawlConfirmDialog from '../Common/CrawlConfirmDialog';
 
 export default {
-  name: "SpiderInfoView",
+  name: 'SpiderInfoView',
   components: { CrawlConfirmDialog },
   props: {
     isView: {
@@ -177,18 +177,18 @@ export default {
       type: Boolean
     }
   },
-  data() {
+  data () {
     const cronValidator = (rule, value, callback) => {
       let patArr = [];
       for (let i = 0; i < 6; i++) {
-        patArr.push("[/*,0-9]+");
+        patArr.push('[/*,0-9]+');
       }
-      const pat = "^" + patArr.join(" ") + "$";
+      const pat = '^' + patArr.join(' ') + '$';
       if (this.spiderForm.cron_enabled) {
         if (!value) {
-          callback(new Error("cron cannot be empty"));
+          callback(new Error('cron cannot be empty'));
         } else if (!value.match(pat)) {
-          callback(new Error("cron format is invalid"));
+          callback(new Error('cron format is invalid'));
         }
       }
       callback();
@@ -200,7 +200,7 @@ export default {
         if (value) {
           return callback();
         } else {
-          return callback(new Error("dedup field cannot be empty"));
+          return callback(new Error('dedup field cannot be empty'));
         }
       }
     };
@@ -209,60 +209,60 @@ export default {
       fileList: [],
       crawlConfirmDialogVisible: false,
       cmdRule: [
-        { message: "Execute Command should not be empty", required: true }
+        { message: 'Execute Command should not be empty', required: true }
       ],
-      cronRules: [{ validator: cronValidator, trigger: "blur" }],
-      dedupRules: [{ validator: dedupValidator, trigger: "blur" }]
+      cronRules: [{ validator: cronValidator, trigger: 'blur' }],
+      dedupRules: [{ validator: dedupValidator, trigger: 'blur' }]
     };
   },
   computed: {
-    ...mapState("spider", ["spiderForm"]),
-    ...mapGetters("user", ["userInfo", "token"]),
-    ...mapState("project", ["projectList"]),
-    isConfigurable() {
-      return this.spiderForm.type === "configurable";
+    ...mapState('spider', ['spiderForm']),
+    ...mapGetters('user', ['userInfo', 'token']),
+    ...mapState('project', ['projectList']),
+    isConfigurable () {
+      return this.spiderForm.type === 'configurable';
     },
-    isShowRun() {
-      if (this.spiderForm.type === "customized") {
+    isShowRun () {
+      if (this.spiderForm.type === 'customized') {
         return !!this.spiderForm.cmd;
       } else {
         return true;
       }
     },
-    isPublic() {
+    isPublic () {
       return (
         this.spiderForm.is_public &&
         this.spiderForm.username !== this.userInfo.username &&
-        this.userInfo.role !== "admin"
+        this.userInfo.role !== 'admin'
       );
     }
   },
   methods: {
-    onCrawl() {
+    onCrawl () {
       this.crawlConfirmDialogVisible = true;
     },
-    onSave() {
-      this.$refs["spiderForm"].validate(async valid => {
+    onSave () {
+      this.$refs['spiderForm'].validate(async valid => {
         if (!valid) return;
-        const res = await this.$store.dispatch("spider/editSpider");
+        const res = await this.$store.dispatch('spider/editSpider');
         if (!res.data.error) {
-          this.$message.success("Spider info has been saved successfully");
+          this.$message.success('Spider info has been saved successfully');
         }
         await this.$store.dispatch(
-          "spider/getSpiderData",
+          'spider/getSpiderData',
           this.$route.params.id
         );
         if (this.spiderForm.is_scrapy) {
           await this.$store.dispatch(
-            "spider/getSpiderScrapySpiders",
+            'spider/getSpiderScrapySpiders',
             this.$route.params.id
           );
         }
       });
     },
-    fetchSiteSuggestions(keyword, callback) {
+    fetchSiteSuggestions (keyword, callback) {
       this.$request
-        .get("/sites", {
+        .get('/sites', {
           keyword: keyword,
           page_num: 1,
           page_size: 100
@@ -275,37 +275,37 @@ export default {
           callback(data);
         });
     },
-    onSiteSelect(item) {
+    onSiteSelect (item) {
       this.spiderForm.site = item._id;
     },
-    onUploadSuccess() {
-      this.$store.dispatch("spider/getFileTree");
+    onUploadSuccess () {
+      this.$store.dispatch('spider/getFileTree');
 
       this.uploadLoading = false;
 
-      this.$message.success("Uploaded spider files successfully");
+      this.$message.success('Uploaded spider files successfully');
     },
-    onUploadError() {
+    onUploadError () {
       this.uploadLoading = false;
     },
-    onIsScrapyChange(value) {
+    onIsScrapyChange (value) {
       if (value) {
-        this.spiderForm.cmd = "scrapy crawl";
+        this.spiderForm.cmd = 'scrapy crawl';
       }
     },
-    onIsDedupChange(value) {
+    onIsDedupChange (value) {
       if (value && !this.spiderForm.dedup_method) {
-        this.spiderForm.dedup_method = "overwrite";
+        this.spiderForm.dedup_method = 'overwrite';
       }
     }
   },
-  async created() {
+  async created () {
     // fetch project list
-    await this.$store.dispatch("project/getProjectList");
+    await this.$store.dispatch('project/getProjectList');
 
     // 兼容项目ID
     if (!this.spiderForm.project_id) {
-      this.$set(this.spiderForm, "project_id", "000000000000000000000000");
+      this.$set(this.spiderForm, 'project_id', '000000000000000000000000');
     }
   }
 };

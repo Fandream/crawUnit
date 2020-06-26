@@ -15,30 +15,30 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import TaskTableView from "../TableView/TaskTableView";
-import SpiderInfoView from "../InfoView/SpiderInfoView";
+import { mapState } from 'vuex';
+import TaskTableView from '../TableView/TaskTableView';
+import SpiderInfoView from '../InfoView/SpiderInfoView';
 
 export default {
-  name: "SpiderOverview",
+  name: 'SpiderOverview',
   components: {
     SpiderInfoView,
     TaskTableView
   },
-  data() {
+  data () {
     return {
       // spiderForm: {}
     };
   },
   computed: {
-    id() {
+    id () {
       return this.$route.params.id;
     },
-    ...mapState("spider", ["spiderForm"]),
-    ...mapState("deploy", ["deployList"])
+    ...mapState('spider', ['spiderForm']),
+    ...mapState('deploy', ['deployList'])
   },
   methods: {},
-  created() {}
+  created () {}
 };
 </script>
 

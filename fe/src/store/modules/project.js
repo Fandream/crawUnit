@@ -1,4 +1,4 @@
-import request from "../../api/request";
+import request from '../../api/request';
 
 const state = {
   projectForm: {},
@@ -21,11 +21,11 @@ const mutations = {
 };
 
 const actions = {
-  getProjectList({ state, commit }, payload) {
-    return request.get("/projects", payload).then(response => {
+  getProjectList ({ state, commit }, payload) {
+    return request.get('/projects', payload).then(response => {
       if (response.data.data) {
         commit(
-          "SET_PROJECT_LIST",
+          'SET_PROJECT_LIST',
           response.data.data.map(d => {
             if (!d.spiders) d.spiders = [];
             return d;
@@ -34,23 +34,23 @@ const actions = {
       }
     });
   },
-  getProjectTags({ state, commit }) {
-    return request.get("/projects/tags").then(response => {
+  getProjectTags ({ state, commit }) {
+    return request.get('/projects/tags').then(response => {
       if (response.data.data) {
         commit(
-          "SET_PROJECT_TAGS",
+          'SET_PROJECT_TAGS',
           response.data.data.map(d => d.tag)
         );
       }
     });
   },
-  addProject({ state }) {
-    return request.put("/projects", state.projectForm);
+  addProject ({ state }) {
+    return request.put('/projects', state.projectForm);
   },
-  editProject({ state }, id) {
+  editProject ({ state }, id) {
     return request.post(`/projects/${id}`, state.projectForm);
   },
-  removeProject({ state }, id) {
+  removeProject ({ state }, id) {
     return request.delete(`/projects/${id}`);
   }
 };

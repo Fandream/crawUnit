@@ -1,41 +1,41 @@
 <script>
-import ScheduleList from "../schedule/ScheduleList";
+import ScheduleList from '../schedule/ScheduleList';
 
 export default {
-  name: "SpiderSchedules",
+  name: 'SpiderSchedules',
   extends: ScheduleList,
   computed: {
-    isDisabledSpiderSchedule() {
+    isDisabledSpiderSchedule () {
       return true;
     },
-    spiderId() {
-      const arr = this.$route.path.split("/");
+    spiderId () {
+      const arr = this.$route.path.split('/');
       return arr[arr.length - 1];
     }
   },
   methods: {
-    getNodeList() {
-      this.$request.get("/nodes", {}).then(response => {
+    getNodeList () {
+      this.$request.get('/nodes', {}).then(response => {
         this.nodeList = response.data.data.map(d => {
           d.systemInfo = {
-            os: "",
-            arch: "",
-            num_cpu: "",
+            os: '',
+            arch: '',
+            num_cpu: '',
             executables: []
           };
           return d;
         });
       });
     },
-    getSpiderList() {
-      this.$request.get("/spiders", {}).then(response => {
+    getSpiderList () {
+      this.$request.get('/spiders', {}).then(response => {
         this.spiderList = response.data.data.list || [];
       });
     },
-    onAdd() {
+    onAdd () {
       this.isEdit = false;
       this.dialogVisible = true;
-      this.$store.commit("schedule/SET_SCHEDULE_FORM", {
+      this.$store.commit('schedule/SET_SCHEDULE_FORM', {
         node_ids: [],
         spider_id: this.spiderId
       });
@@ -44,8 +44,8 @@ export default {
       }
     }
   },
-  created() {
-    const arr = this.$route.path.split("/");
+  created () {
+    const arr = this.$route.path.split('/');
     const id = arr[arr.length - 1];
     this.$store.dispatch(`spider/getScheduleList`, { id });
 

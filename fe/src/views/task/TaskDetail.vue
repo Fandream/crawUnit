@@ -23,143 +23,143 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import TaskOverview from "../../components/Overview/TaskOverview";
-import GeneralTableView from "../../components/TableView/GeneralTableView";
-import LogView from "../../components/ScrollView/LogView";
+import { mapState, mapGetters } from 'vuex';
+import TaskOverview from '../../components/Overview/TaskOverview';
+import GeneralTableView from '../../components/TableView/GeneralTableView';
+import LogView from '../../components/ScrollView/LogView';
 
 export default {
-  name: "TaskDetail",
+  name: 'TaskDetail',
   components: {
     LogView,
     GeneralTableView,
     TaskOverview
   },
-  data() {
+  data () {
     return {
-      activeTabName: "overview",
+      activeTabName: 'overview',
       handle: undefined
     };
   },
   computed: {
-    ...mapState("task", [
-      "taskForm",
-      "taskResultsData",
-      "taskResultsTotalCount",
-      "taskLog",
-      "logKeyword",
-      "isLogAutoFetch",
-      "currentLogIndex",
-      "activeErrorLogItem"
+    ...mapState('task', [
+      'taskForm',
+      'taskResultsData',
+      'taskResultsTotalCount',
+      'taskLog',
+      'logKeyword',
+      'isLogAutoFetch',
+      'currentLogIndex',
+      'activeErrorLogItem'
     ]),
-    ...mapGetters("task", ["taskResultsColumns", "logData"]),
-    ...mapState("file", ["currentPath"]),
-    ...mapState("deploy", ["deployList"]),
+    ...mapGetters('task', ['taskResultsColumns', 'logData']),
+    ...mapState('file', ['currentPath']),
+    ...mapState('deploy', ['deployList']),
     resultsPageNum: {
-      get() {
+      get () {
         return this.$store.state.task.resultsPageNum;
       },
-      set(value) {
-        this.$store.commit("task/SET_RESULTS_PAGE_NUM", value);
+      set (value) {
+        this.$store.commit('task/SET_RESULTS_PAGE_NUM', value);
       }
     },
     resultsPageSize: {
-      get() {
+      get () {
         return this.$store.state.task.resultsPageSize;
       },
-      set(value) {
-        this.$store.commit("task/SET_RESULTS_PAGE_SIZE", value);
+      set (value) {
+        this.$store.commit('task/SET_RESULTS_PAGE_SIZE', value);
       }
     },
     isLogAutoScroll: {
-      get() {
+      get () {
         return this.$store.state.task.isLogAutoScroll;
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_AUTO_SCROLL", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_AUTO_SCROLL', value);
       }
     },
     isLogAutoFetch: {
-      get() {
+      get () {
         return this.$store.state.task.isLogAutoFetch;
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_AUTO_FETCH", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_AUTO_FETCH', value);
       }
     },
     isLogFetchLoading: {
-      get() {
+      get () {
         return this.$store.state.task.isLogFetchLoading;
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_FETCH_LOADING", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_FETCH_LOADING', value);
       }
     },
     currentLogIndex: {
-      get() {
+      get () {
         return this.$store.state.task.currentLogIndex;
       },
-      set(value) {
-        this.$store.commit("task/SET_CURRENT_LOG_INDEX", value);
+      set (value) {
+        this.$store.commit('task/SET_CURRENT_LOG_INDEX', value);
       }
     },
-    logIndexMap() {
+    logIndexMap () {
       const map = new Map();
       this.logData.forEach((d, index) => {
         map.set(d._id, index);
       });
       return map;
     },
-    isRunning() {
-      return ["pending", "running"].includes(this.taskForm.status);
+    isRunning () {
+      return ['pending', 'running'].includes(this.taskForm.status);
     }
   },
   methods: {
-    onTabClick(tab) {},
-    onSpiderChange(id) {
+    onTabClick (tab) {},
+    onSpiderChange (id) {
       this.$router.push(`/spiders/${id}`);
     },
-    onResultsPageChange(payload) {
+    onResultsPageChange (payload) {
       const { pageNum, pageSize } = payload;
       this.resultsPageNum = pageNum;
       this.resultsPageSize = pageSize;
-      this.$store.dispatch("task/getTaskResults", this.$route.params.id);
+      this.$store.dispatch('task/getTaskResults', this.$route.params.id);
     },
-    downloadCSV() {
-      this.$store.dispatch("task/getTaskResultExcel", this.$route.params.id);
+    downloadCSV () {
+      this.$store.dispatch('task/getTaskResultExcel', this.$route.params.id);
     },
-    async getTaskLog(showLoading) {
+    async getTaskLog (showLoading) {
       if (showLoading) {
         this.isLogFetchLoading = true;
       }
-      await this.$store.dispatch("task/getTaskLog", {
+      await this.$store.dispatch('task/getTaskLog', {
         id: this.$route.params.id,
         keyword: this.logKeyword
       });
       this.currentLogIndex =
         this.logIndexMap.get(this.activeErrorLogItem.log_id) + 1 || 0;
       this.isLogFetchLoading = false;
-      await this.$store.dispatch("task/getTaskErrorLog", this.$route.params.id);
+      await this.$store.dispatch('task/getTaskErrorLog', this.$route.params.id);
     }
   },
-  async created() {
-    await this.$store.dispatch("task/getTaskData", this.$route.params.id);
+  async created () {
+    await this.$store.dispatch('task/getTaskData', this.$route.params.id);
 
     this.isLogAutoFetch = !!this.isRunning;
     this.isLogAutoScroll = !!this.isRunning;
 
-    await this.$store.dispatch("task/getTaskResults", this.$route.params.id);
+    await this.$store.dispatch('task/getTaskResults', this.$route.params.id);
 
     this.getTaskLog();
     this.handle = setInterval(() => {
       if (this.isLogAutoFetch) {
-        this.$store.dispatch("task/getTaskData", this.$route.params.id);
-        this.$store.dispatch("task/getTaskResults", this.$route.params.id);
+        this.$store.dispatch('task/getTaskData', this.$route.params.id);
+        this.$store.dispatch('task/getTaskResults', this.$route.params.id);
         this.getTaskLog();
       }
     }, 5000);
   },
-  destroyed() {
+  destroyed () {
     clearInterval(this.handle);
   }
 };

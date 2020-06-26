@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import DialogView from "./components/Common/DialogView";
+import { mapState } from 'vuex';
+import DialogView from './components/Common/DialogView';
 
 export default {
-  name: "App",
-  data() {
+  name: 'App',
+  data () {
     return {
       msgPopup: undefined
     };
@@ -20,38 +20,38 @@ export default {
     DialogView
   },
   computed: {
-    ...mapState("setting", ["setting"]),
-    useStats() {
-      return localStorage.getItem("useStats");
+    ...mapState('setting', ['setting']),
+    useStats () {
+      return localStorage.getItem('useStats');
     },
-    uid() {
-      return localStorage.getItem("uid");
+    uid () {
+      return localStorage.getItem('uid');
     },
-    sid() {
-      return sessionStorage.getItem("sid");
+    sid () {
+      return sessionStorage.getItem('sid');
     }
   },
   methods: {},
-  async mounted() {
+  async mounted () {
     // set uid if first visit
     if (this.uid === undefined || this.uid === null) {
-      localStorage.setItem("uid", this.$utils.encrypt.UUID());
+      localStorage.setItem('uid', this.$utils.encrypt.UUID());
     }
 
     // set session id if starting a session
     if (this.sid === undefined || this.sid === null) {
-      sessionStorage.setItem("sid", this.$utils.encrypt.UUID());
+      sessionStorage.setItem('sid', this.$utils.encrypt.UUID());
     }
 
     // get latest version
-    await this.$store.dispatch("version/getLatestRelease");
+    await this.$store.dispatch('version/getLatestRelease');
 
     // get user info
-    await this.$store.dispatch("user/getInfo");
+    await this.$store.dispatch('user/getInfo');
 
     // send visit event
-    await this.$request.put("/actions", {
-      type: "visit"
+    await this.$request.put('/actions', {
+      type: 'visit'
     });
   }
 };

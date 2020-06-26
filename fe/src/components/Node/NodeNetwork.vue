@@ -3,29 +3,29 @@
 </template>
 
 <script>
-import echarts from "echarts";
+import echarts from 'echarts';
 
 export default {
-  name: "NodeNetwork",
+  name: 'NodeNetwork',
   props: {
     activeTab: {
       type: String
     }
   },
   watch: {
-    activeTab() {
+    activeTab () {
       setTimeout(() => {
         this.render();
       }, 0);
     }
   },
-  data() {
+  data () {
     return {
       chart: undefined
     };
   },
   computed: {
-    masterNode() {
+    masterNode () {
       const nodes = this.$store.state.node.nodeList;
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].is_master) {
@@ -34,66 +34,66 @@ export default {
       }
       return {};
     },
-    nodes() {
+    nodes () {
       let nodes = this.$store.state.node.nodeList;
       nodes = nodes
-        .filter(d => d.status !== "offline")
+        .filter(d => d.status !== 'offline')
         .map(d => {
           d.id = d._id;
           d.x = Math.floor(100 * Math.random());
           d.y = Math.floor(100 * Math.random());
           d.itemStyle = {
-            color: d.is_master ? "#409EFF" : "#e6a23c"
+            color: d.is_master ? '#409EFF' : '#e6a23c'
           };
           return d;
         });
 
       // mongodb
       nodes.push({
-        id: "mongodb",
-        name: "MongoDB",
+        id: 'mongodb',
+        name: 'MongoDB',
         x: Math.floor(100 * Math.random()),
         y: Math.floor(100 * Math.random()),
         itemStyle: {
-          color: "#67c23a"
+          color: '#67c23a'
         }
       });
 
       // redis
       nodes.push({
-        id: "redis",
-        name: "Redis",
+        id: 'redis',
+        name: 'Redis',
         x: Math.floor(100 * Math.random()),
         y: Math.floor(100 * Math.random()),
         itemStyle: {
-          color: "#f56c6c"
+          color: '#f56c6c'
         }
       });
 
       return nodes;
     },
-    links() {
+    links () {
       const links = [];
       for (let i = 0; i < this.nodes.length; i++) {
-        if (this.nodes[i].status === "offline") continue;
-        if (["redis", "mongodb"].includes(this.nodes[i].id)) continue;
+        if (this.nodes[i].status === 'offline') continue;
+        if (['redis', 'mongodb'].includes(this.nodes[i].id)) continue;
         // mongodb
         links.push({
           source: this.nodes[i].id,
-          target: "mongodb",
+          target: 'mongodb',
           value: 10,
           lineStyle: {
-            color: "#67c23a"
+            color: '#67c23a'
           }
         });
 
         // redis
         links.push({
           source: this.nodes[i].id,
-          target: "redis",
+          target: 'redis',
           value: 10,
           lineStyle: {
-            color: "#f56c6c"
+            color: '#f56c6c'
           }
         });
 
@@ -113,10 +113,10 @@ export default {
     }
   },
   methods: {
-    render() {
+    render () {
       const option = {
         title: {
-          text: "节点拓扑图"
+          text: '节点拓扑图'
         },
         tooltip: {
           formatter: params => {
@@ -125,21 +125,18 @@ export default {
               '<span style="margin-right:5px;display:inline-block;height:12px;width:12px;border-radius:6px;background:' +
               params.color +
               '"></span>';
-            if (params.data.name)
-              str += "<span>" + params.data.name + "</span><br>";
-            if (params.data.ip)
-              str += "<span>IP: " + params.data.ip + "</span><br>";
-            if (params.data.mac)
-              str += "<span>MAC: " + params.data.mac + "</span><br>";
+            if (params.data.name) { str += '<span>' + params.data.name + '</span><br>'; }
+            if (params.data.ip) { str += '<span>IP: ' + params.data.ip + '</span><br>'; }
+            if (params.data.mac) { str += '<span>MAC: ' + params.data.mac + '</span><br>'; }
             return str;
           }
         },
         animationDurationUpdate: 1500,
-        animationEasingUpdate: "quinticInOut",
+        animationEasingUpdate: 'quinticInOut',
         series: [
           {
-            type: "graph",
-            layout: "force",
+            type: 'graph',
+            layout: 'force',
             symbolSize: 50,
             roam: true,
             label: {
@@ -147,7 +144,7 @@ export default {
                 show: true
               }
             },
-            edgeSymbol: ["circle", "arrow"],
+            edgeSymbol: ['circle', 'arrow'],
             edgeSymbolSize: [4, 10],
             edgeLabel: {
               normal: {
@@ -158,7 +155,7 @@ export default {
             },
             focusOneNodeAdjacency: true,
             force: {
-              initLayout: "force",
+              initLayout: 'force',
               repulsion: 30,
               gravity: 0.001,
               edgeLength: 30
@@ -181,7 +178,7 @@ export default {
       this.chart.resize();
     }
   },
-  mounted() {
+  mounted () {
     this.render();
   }
 };

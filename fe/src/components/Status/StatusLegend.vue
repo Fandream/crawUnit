@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  name: "StatusLegend"
+  name: 'StatusLegend'
 };
 </script>
 

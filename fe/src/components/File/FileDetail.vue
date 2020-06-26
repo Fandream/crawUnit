@@ -5,82 +5,82 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import { codemirror } from "vue-codemirror-lite";
+import { mapState, mapGetters } from 'vuex';
+import { codemirror } from 'vue-codemirror-lite';
 
-import "codemirror/lib/codemirror.js";
+import 'codemirror/lib/codemirror.js';
 
 // language
-import "codemirror/mode/python/python.js";
-import "codemirror/mode/javascript/javascript.js";
-import "codemirror/mode/go/go.js";
-import "codemirror/mode/shell/shell.js";
-import "codemirror/mode/markdown/markdown.js";
-import "codemirror/mode/php/php.js";
-import "codemirror/mode/yaml/yaml.js";
+import 'codemirror/mode/python/python.js';
+import 'codemirror/mode/javascript/javascript.js';
+import 'codemirror/mode/go/go.js';
+import 'codemirror/mode/shell/shell.js';
+import 'codemirror/mode/markdown/markdown.js';
+import 'codemirror/mode/php/php.js';
+import 'codemirror/mode/yaml/yaml.js';
 
 export default {
-  name: "FileDetail",
+  name: 'FileDetail',
   components: { codemirror },
-  data() {
+  data () {
     return {
-      internalFileContent: ""
+      internalFileContent: ''
     };
   },
   computed: {
-    ...mapState("spider", ["spiderForm"]),
-    ...mapGetters("user", ["userInfo"]),
+    ...mapState('spider', ['spiderForm']),
+    ...mapGetters('user', ['userInfo']),
     fileContent: {
-      get() {
+      get () {
         return this.$store.state.file.fileContent;
       },
-      set(value) {
-        return this.$store.commit("file/SET_FILE_CONTENT", value);
+      set (value) {
+        return this.$store.commit('file/SET_FILE_CONTENT', value);
       }
     },
-    options() {
+    options () {
       return {
         mode: this.language,
-        theme: "darcula",
+        theme: 'darcula',
         styleActiveLine: true,
         smartIndent: true,
         indentUnit: 4,
         lineNumbers: true,
         line: true,
         matchBrackets: true,
-        readOnly: this.isDisabled ? "nocursor" : false
+        readOnly: this.isDisabled ? 'nocursor' : false
       };
     },
-    language() {
+    language () {
       const fileName = this.$store.state.file.currentPath;
-      if (!fileName) return "";
+      if (!fileName) return '';
       if (fileName.match(/\.js$/)) {
-        return "text/javascript";
+        return 'text/javascript';
       } else if (fileName.match(/\.py$/)) {
-        return "text/x-python";
+        return 'text/x-python';
       } else if (fileName.match(/\.go$/)) {
-        return "text/x-go";
+        return 'text/x-go';
       } else if (fileName.match(/\.sh$/)) {
-        return "text/x-shell";
+        return 'text/x-shell';
       } else if (fileName.match(/\.php$/)) {
-        return "text/x-php";
+        return 'text/x-php';
       } else if (fileName.match(/\.md$/)) {
-        return "text/x-markdown";
-      } else if (fileName.match("Spiderfile")) {
-        return "text/x-yaml";
+        return 'text/x-markdown';
+      } else if (fileName.match('Spiderfile')) {
+        return 'text/x-yaml';
       } else {
-        return "text";
+        return 'text';
       }
     },
-    isDisabled() {
+    isDisabled () {
       return (
         this.spiderForm.is_public &&
         this.spiderForm.username !== this.userInfo.username &&
-        this.userInfo.role !== "admin"
+        this.userInfo.role !== 'admin'
       );
     }
   },
-  created() {
+  created () {
     this.internalFileContent = this.fileContent;
   }
 };

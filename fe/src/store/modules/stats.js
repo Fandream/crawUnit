@@ -1,7 +1,7 @@
 const state = {};
 const getters = {
-  useStats() {
-    return localStorage.getItem("useStats");
+  useStats () {
+    return localStorage.getItem('useStats');
   }
 };
 const mutations = {};

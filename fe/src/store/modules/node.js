@@ -1,4 +1,4 @@
-import request from "../../api/request";
+import request from '../../api/request';
 
 const state = {
   // NodeList
@@ -12,16 +12,16 @@ const state = {
 const getters = {};
 
 const mutations = {
-  SET_NODE_FORM(state, value) {
+  SET_NODE_FORM (state, value) {
     state.nodeForm = value;
   },
-  SET_NODE_LIST(state, value) {
+  SET_NODE_LIST (state, value) {
     state.nodeList = value;
   },
-  SET_ACTIVE_SPIDER(state, value) {
+  SET_ACTIVE_SPIDER (state, value) {
     state.activeSpider = value;
   },
-  SET_NODE_SYSTEM_INFO(state, payload) {
+  SET_NODE_SYSTEM_INFO (state, payload) {
     const { id, systemInfo } = payload;
     for (let i = 0; i < state.nodeList.length; i++) {
       if (state.nodeList[i]._id === id) {
@@ -33,15 +33,15 @@ const mutations = {
 };
 
 const actions = {
-  getNodeList({ state, commit }) {
-    request.get("/nodes", {}).then(response => {
+  getNodeList ({ state, commit }) {
+    request.get('/nodes', {}).then(response => {
       commit(
-        "SET_NODE_LIST",
+        'SET_NODE_LIST',
         response.data.data.map(d => {
           d.systemInfo = {
-            os: "",
-            arch: "",
-            num_cpu: "",
+            os: '',
+            arch: '',
+            num_cpu: '',
             executables: []
           };
           return d;
@@ -49,26 +49,26 @@ const actions = {
       );
     });
   },
-  editNode({ state, dispatch }) {
+  editNode ({ state, dispatch }) {
     request.post(`/nodes/${state.nodeForm._id}`, state.nodeForm).then(() => {
-      dispatch("getNodeList");
+      dispatch('getNodeList');
     });
   },
-  deleteNode({ state, dispatch }, id) {
+  deleteNode ({ state, dispatch }, id) {
     request.delete(`/nodes/${id}`).then(() => {
-      dispatch("getNodeList");
+      dispatch('getNodeList');
     });
   },
-  getNodeData({ state, commit }, id) {
+  getNodeData ({ state, commit }, id) {
     request.get(`/nodes/${id}`).then(response => {
-      commit("SET_NODE_FORM", response.data.data);
+      commit('SET_NODE_FORM', response.data.data);
     });
   },
-  getTaskList({ state, commit }, id) {
+  getTaskList ({ state, commit }, id) {
     return request.get(`/nodes/${id}/tasks`).then(response => {
       if (response.data.data) {
         commit(
-          "task/SET_TASK_LIST",
+          'task/SET_TASK_LIST',
           response.data.data
             .map(d => d)
             .sort((a, b) => (a.create_ts < b.create_ts ? 1 : -1)),
@@ -77,9 +77,9 @@ const actions = {
       }
     });
   },
-  getNodeSystemInfo({ state, commit }, id) {
+  getNodeSystemInfo ({ state, commit }, id) {
     return request.get(`/nodes/${id}/system`).then(response => {
-      commit("SET_NODE_SYSTEM_INFO", { id, systemInfo: response.data.data });
+      commit('SET_NODE_SYSTEM_INFO', { id, systemInfo: response.data.data });
     });
   }
 };

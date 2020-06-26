@@ -16,36 +16,36 @@
 
 <script>
 export default {
-  name: "MetricCard",
+  name: 'MetricCard',
   props: {
     icon: {
       type: String,
-      default: ""
+      default: ''
     },
     label: {
       type: String,
-      default: ""
+      default: ''
     },
     value: {
-      default: ""
+      default: ''
     },
     type: {
       type: String,
-      default: "default"
+      default: 'default'
     }
   },
   computed: {
-    color() {
-      if (this.type === "primary") {
-        return "#409EFF";
-      } else if (this.type === "warning") {
-        return "#e6a23c";
-      } else if (this.type === "success") {
-        return "#67c23a";
-      } else if (this.type === "danger") {
-        return "#f56c6c";
+    color () {
+      if (this.type === 'primary') {
+        return '#409EFF';
+      } else if (this.type === 'warning') {
+        return '#e6a23c';
+      } else if (this.type === 'success') {
+        return '#67c23a';
+      } else if (this.type === 'danger') {
+        return '#f56c6c';
       } else {
-        return "grey";
+        return 'grey';
       }
     }
   }

@@ -40,12 +40,12 @@
 </template>
 
 <script>
-import ScrollPane from "@/components/ScrollPane";
-import path from "path";
+import ScrollPane from '@/components/ScrollPane';
+import path from 'path';
 
 export default {
   components: { ScrollPane },
-  data() {
+  data () {
     return {
       visible: false,
       top: 0,
@@ -55,37 +55,37 @@ export default {
     };
   },
   computed: {
-    visitedViews() {
+    visitedViews () {
       return this.$store.state.tagsView.visitedViews;
     },
-    routers() {
+    routers () {
       return this.$store.state.permission
         ? this.$store.state.permission.routers
         : [];
     }
   },
   watch: {
-    $route() {
+    $route () {
       this.addTags();
       this.moveToCurrentTag();
     },
-    visible(value) {
+    visible (value) {
       if (value) {
-        document.body.addEventListener("click", this.closeMenu);
+        document.body.addEventListener('click', this.closeMenu);
       } else {
-        document.body.removeEventListener("click", this.closeMenu);
+        document.body.removeEventListener('click', this.closeMenu);
       }
     }
   },
-  mounted() {
+  mounted () {
     this.initTags();
     this.addTags();
   },
   methods: {
-    isActive(route) {
+    isActive (route) {
       return route.path === this.$route.path;
     },
-    filterAffixTags(routes, basePath = "/") {
+    filterAffixTags (routes, basePath = '/') {
       let tags = [];
       routes.forEach(route => {
         if (route.meta && route.meta.affix) {
@@ -105,23 +105,23 @@ export default {
 
       return tags;
     },
-    initTags() {
+    initTags () {
       const affixTags = (this.affixTags = this.filterAffixTags(this.routers));
       for (const tag of affixTags) {
         // Must have tag name
         if (tag.name) {
-          this.$store.dispatch("addVisitedView", tag);
+          this.$store.dispatch('addVisitedView', tag);
         }
       }
     },
-    addTags() {
+    addTags () {
       const { name } = this.$route;
       if (name) {
-        this.$store.dispatch("addView", this.$route);
+        this.$store.dispatch('addView', this.$route);
       }
       return false;
     },
-    moveToCurrentTag() {
+    moveToCurrentTag () {
       const tags = this.$refs.tag;
       if (tags) {
         this.$nextTick(() => {
@@ -131,7 +131,7 @@ export default {
 
               // when query is different then update
               if (tag.to.fullPath !== this.$route.fullPath) {
-                this.$store.dispatch("updateVisitedView", this.$route);
+                this.$store.dispatch('updateVisitedView', this.$route);
               }
 
               break;
@@ -140,10 +140,10 @@ export default {
         });
       }
     },
-    refreshSelectedTag(view) {
-      this.$store.dispatch("delCachedView", view).then(() => {
+    refreshSelectedTag (view) {
+      this.$store.dispatch('delCachedView', view).then(() => {
         const { fullPath } = view;
-        console.log("fullPath", fullPath);
+        console.log('fullPath', fullPath);
         this.$nextTick(() => {
           this.$router.replace({
             path: fullPath
@@ -151,38 +151,38 @@ export default {
         });
       });
     },
-    clickSelectedTag(tag) {},
-    closeSelectedTag(view) {
-      this.$store.dispatch("delView", view).then(({ visitedViews }) => {
+    clickSelectedTag (tag) {},
+    closeSelectedTag (view) {
+      this.$store.dispatch('delView', view).then(({ visitedViews }) => {
         if (this.isActive(view)) {
           this.toLastView(visitedViews);
         }
       });
     },
-    closeOthersTags() {
+    closeOthersTags () {
       this.$router.push(this.selectedTag);
-      this.$store.dispatch("delOthersViews", this.selectedTag).then(() => {
+      this.$store.dispatch('delOthersViews', this.selectedTag).then(() => {
         this.moveToCurrentTag();
       });
     },
-    closeAllTags(view) {
-      this.$store.dispatch("delAllViews").then(({ visitedViews }) => {
+    closeAllTags (view) {
+      this.$store.dispatch('delAllViews').then(({ visitedViews }) => {
         if (this.affixTags.some(tag => tag.path === view.path)) {
           return;
         }
         this.toLastView(visitedViews);
       });
     },
-    toLastView(visitedViews) {
+    toLastView (visitedViews) {
       const latestView = visitedViews.slice(-1)[0];
       if (latestView) {
         this.$router.push(latestView);
       } else {
         // You can set another route
-        this.$router.push("/");
+        this.$router.push('/');
       }
     },
-    openMenu(tag, e) {
+    openMenu (tag, e) {
       const menuMinWidth = 105;
       const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
       const offsetWidth = this.$el.offsetWidth; // container width
@@ -199,7 +199,7 @@ export default {
       this.visible = true;
       this.selectedTag = tag;
     },
-    closeMenu() {
+    closeMenu () {
       this.visible = false;
     }
   }

@@ -1,5 +1,5 @@
-import request from "../../api/request";
-import utils from "../../utils";
+import request from '../../api/request';
+import utils from '../../utils';
 
 const state = {
   // TaskList
@@ -11,17 +11,17 @@ const state = {
   taskResultsTotalCount: 0,
   // filter
   filter: {
-    node_id: "",
-    spider_id: "",
-    status: "",
-    schedule_id: ""
+    node_id: '',
+    spider_id: '',
+    status: '',
+    schedule_id: ''
   },
   // pagination
   pageNum: 1,
   pageSize: 10,
   // log
   currentLogIndex: 0,
-  logKeyword: "",
+  logKeyword: '',
   errorLogData: [],
   isLogAutoScroll: false,
   isLogAutoFetch: false,
@@ -37,7 +37,7 @@ const state = {
 };
 
 const getters = {
-  taskResultsColumns(state) {
+  taskResultsColumns (state) {
     if (!state.taskResultsData || !state.taskResultsData.length) {
       return [];
     }
@@ -50,7 +50,7 @@ const getters = {
     }
     return keys;
   },
-  logData(state) {
+  logData (state) {
     const data = state.taskLog.map((d, i) => {
       return {
         index: i + 1,
@@ -59,19 +59,19 @@ const getters = {
         ...d
       };
     });
-    if (state.taskForm && state.taskForm.status === "running") {
+    if (state.taskForm && state.taskForm.status === 'running') {
       data.push({
         index: data.length + 1,
-        data: "###LOG_END###"
+        data: '###LOG_END###'
       });
       data.push({
         index: data.length + 1,
-        data: ""
+        data: ''
       });
     }
     return data;
   },
-  errorLogData(state, getters) {
+  errorLogData (state, getters) {
     const idxList = getters.logData.map(d => d._id);
     return state.errorLogData.map(d => {
       const idx = idxList.indexOf(d._id);
@@ -82,83 +82,83 @@ const getters = {
 };
 
 const mutations = {
-  SET_TASK_FORM(state, value) {
+  SET_TASK_FORM (state, value) {
     state.taskForm = value;
   },
-  SET_TASK_LIST(state, value) {
+  SET_TASK_LIST (state, value) {
     state.taskList = value;
   },
-  SET_TASK_LOG(state, value) {
+  SET_TASK_LOG (state, value) {
     state.taskLog = value;
   },
-  SET_TASK_LOG_TOTAL(state, value) {
+  SET_TASK_LOG_TOTAL (state, value) {
     state.taskLogTotal = value;
   },
-  SET_CURRENT_LOG_INDEX(state, value) {
+  SET_CURRENT_LOG_INDEX (state, value) {
     state.currentLogIndex = value;
   },
-  SET_TASK_RESULTS_DATA(state, value) {
+  SET_TASK_RESULTS_DATA (state, value) {
     state.taskResultsData = value;
   },
-  SET_TASK_RESULTS_COLUMNS(state, value) {
+  SET_TASK_RESULTS_COLUMNS (state, value) {
     state.taskResultsColumns = value;
   },
-  SET_PAGE_NUM(state, value) {
+  SET_PAGE_NUM (state, value) {
     state.pageNum = value;
   },
-  SET_PAGE_SIZE(state, value) {
+  SET_PAGE_SIZE (state, value) {
     state.pageSize = value;
   },
-  SET_TASK_LIST_TOTAL_COUNT(state, value) {
+  SET_TASK_LIST_TOTAL_COUNT (state, value) {
     state.taskListTotalCount = value;
   },
-  SET_RESULTS_PAGE_NUM(state, value) {
+  SET_RESULTS_PAGE_NUM (state, value) {
     state.resultsPageNum = value;
   },
-  SET_RESULTS_PAGE_SIZE(state, value) {
+  SET_RESULTS_PAGE_SIZE (state, value) {
     state.resultsPageSize = value;
   },
-  SET_TASK_RESULTS_TOTAL_COUNT(state, value) {
+  SET_TASK_RESULTS_TOTAL_COUNT (state, value) {
     state.taskResultsTotalCount = value;
   },
-  SET_LOG_KEYWORD(state, value) {
+  SET_LOG_KEYWORD (state, value) {
     state.logKeyword = value;
   },
-  SET_ERROR_LOG_DATA(state, value) {
+  SET_ERROR_LOG_DATA (state, value) {
     state.errorLogData = value;
   },
-  SET_TASK_LOG_PAGE(state, value) {
+  SET_TASK_LOG_PAGE (state, value) {
     state.taskLogPage = value;
   },
-  SET_TASK_LOG_PAGE_SIZE(state, value) {
+  SET_TASK_LOG_PAGE_SIZE (state, value) {
     state.taskLogPageSize = value;
   },
-  SET_IS_LOG_AUTO_SCROLL(state, value) {
+  SET_IS_LOG_AUTO_SCROLL (state, value) {
     state.isLogAutoScroll = value;
   },
-  SET_IS_LOG_AUTO_FETCH(state, value) {
+  SET_IS_LOG_AUTO_FETCH (state, value) {
     state.isLogAutoFetch = value;
   },
-  SET_IS_LOG_FETCH_LOADING(state, value) {
+  SET_IS_LOG_FETCH_LOADING (state, value) {
     state.isLogFetchLoading = value;
   },
-  SET_ACTIVE_ERROR_LOG_ITEM(state, value) {
+  SET_ACTIVE_ERROR_LOG_ITEM (state, value) {
     state.activeErrorLogItem = value;
   }
 };
 
 const actions = {
-  getTaskData({ state, dispatch, commit }, id) {
+  getTaskData ({ state, dispatch, commit }, id) {
     return request.get(`/tasks/${id}`).then(response => {
       let data = response.data.data;
-      commit("SET_TASK_FORM", data);
-      dispatch("spider/getSpiderData", data.spider_id, { root: true });
-      dispatch("node/getNodeData", data.node_id, { root: true });
+      commit('SET_TASK_FORM', data);
+      dispatch('spider/getSpiderData', data.spider_id, { root: true });
+      dispatch('node/getNodeData', data.node_id, { root: true });
     });
   },
-  getTaskList({ state, commit }) {
+  getTaskList ({ state, commit }) {
     return request
-      .get("/tasks", {
+      .get('/tasks', {
         page_num: state.pageNum,
         page_size: state.pageSize,
         node_id: state.filter.node_id || undefined,
@@ -167,26 +167,26 @@ const actions = {
         schedule_id: state.filter.schedule_id || undefined
       })
       .then(response => {
-        commit("SET_TASK_LIST", response.data.data || []);
-        commit("SET_TASK_LIST_TOTAL_COUNT", response.data.total);
+        commit('SET_TASK_LIST', response.data.data || []);
+        commit('SET_TASK_LIST_TOTAL_COUNT', response.data.total);
       });
   },
-  deleteTask({ state, dispatch }, id) {
+  deleteTask ({ state, dispatch }, id) {
     return request.delete(`/tasks/${id}`).then(() => {
-      dispatch("getTaskList");
+      dispatch('getTaskList');
     });
   },
-  deleteTaskMultiple({ state }, ids) {
+  deleteTaskMultiple ({ state }, ids) {
     return request.delete(`/tasks`, {
       ids: ids
     });
   },
-  restartTask({ state, dispatch }, id) {
+  restartTask ({ state, dispatch }, id) {
     return request.post(`/tasks/${id}/restart`).then(() => {
-      dispatch("getTaskList");
+      dispatch('getTaskList');
     });
   },
-  getTaskLog({ state, commit }, { id, keyword }) {
+  getTaskLog ({ state, commit }, { id, keyword }) {
     return request
       .get(`/tasks/${id}/log`, {
         keyword,
@@ -194,8 +194,8 @@ const actions = {
         page_size: state.taskLogPageSize
       })
       .then(response => {
-        commit("SET_TASK_LOG", response.data.data || []);
-        commit("SET_TASK_LOG_TOTAL", response.data.total || 0);
+        commit('SET_TASK_LOG', response.data.data || []);
+        commit('SET_TASK_LOG_TOTAL', response.data.total || 0);
 
         // auto switch to next page if not reaching the end
         if (
@@ -203,54 +203,54 @@ const actions = {
           state.taskLogTotal > state.taskLogPage * state.taskLogPageSize
         ) {
           commit(
-            "SET_TASK_LOG_PAGE",
+            'SET_TASK_LOG_PAGE',
             Math.ceil(state.taskLogTotal / state.taskLogPageSize)
           );
         }
       });
   },
-  getTaskErrorLog({ state, commit }, id) {
+  getTaskErrorLog ({ state, commit }, id) {
     return request.get(`/tasks/${id}/error-log`, {}).then(response => {
-      commit("SET_ERROR_LOG_DATA", response.data.data || []);
+      commit('SET_ERROR_LOG_DATA', response.data.data || []);
     });
   },
-  getTaskResults({ state, commit }, id) {
+  getTaskResults ({ state, commit }, id) {
     return request
       .get(`/tasks/${id}/results`, {
         page_num: state.resultsPageNum,
         page_size: state.resultsPageSize
       })
       .then(response => {
-        commit("SET_TASK_RESULTS_DATA", response.data.data);
+        commit('SET_TASK_RESULTS_DATA', response.data.data);
         // commit('SET_TASK_RESULTS_COLUMNS', response.data.fields)
-        commit("SET_TASK_RESULTS_TOTAL_COUNT", response.data.total);
+        commit('SET_TASK_RESULTS_TOTAL_COUNT', response.data.total);
       });
   },
-  async getTaskResultExcel({ state, commit }, id) {
+  async getTaskResultExcel ({ state, commit }, id) {
     const { data } = await request.request(
-      "GET",
-      "/tasks/" + id + "/results/download",
+      'GET',
+      '/tasks/' + id + '/results/download',
       {},
       {
-        responseType: "blob" // important
+        responseType: 'blob' // important
       }
     );
     const downloadUrl = window.URL.createObjectURL(new Blob([data]));
 
-    const link = document.createElement("a");
+    const link = document.createElement('a');
 
     link.href = downloadUrl;
 
-    link.setAttribute("download", "data.csv"); // any other extension
+    link.setAttribute('download', 'data.csv'); // any other extension
 
     document.body.appendChild(link);
     link.click();
     link.remove();
   },
-  cancelTask({ state, dispatch }, id) {
+  cancelTask ({ state, dispatch }, id) {
     return new Promise(resolve => {
       request.post(`/tasks/${id}/cancel`).then(res => {
-        dispatch("getTaskData", id);
+        dispatch('getTaskData', id);
         resolve(res);
       });
     });

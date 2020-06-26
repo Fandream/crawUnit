@@ -244,23 +244,23 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import FileDetail from "./FileDetail";
+import { mapState, mapGetters } from 'vuex';
+import FileDetail from './FileDetail';
 
 export default {
-  name: "FileList",
+  name: 'FileList',
   components: { FileDetail },
-  data() {
+  data () {
     return {
       isEdit: false,
       showFile: false,
-      name: "",
+      name: '',
       isShowAdd: false,
       isShowDelete: false,
       isShowRename: false,
       isShowCreatePopoverDict: {},
-      currentFilePath: ".",
-      ignoreFileRegexList: ["__pycache__", "md5.txt", ".pyc", ".git"],
+      currentFilePath: '.',
+      ignoreFileRegexList: ['__pycache__', 'md5.txt', '.pyc', '.git'],
       activeFileNode: {},
       dirDialogVisible: false,
       fileDialogVisible: false,
@@ -269,24 +269,24 @@ export default {
     };
   },
   computed: {
-    ...mapState("spider", ["fileTree", "spiderForm"]),
-    ...mapState("file", ["fileList"]),
-    ...mapGetters("user", ["userInfo"]),
+    ...mapState('spider', ['fileTree', 'spiderForm']),
+    ...mapState('file', ['fileList']),
+    ...mapGetters('user', ['userInfo']),
     currentPath: {
-      set(value) {
-        this.$store.commit("file/SET_CURRENT_PATH", value);
+      set (value) {
+        this.$store.commit('file/SET_CURRENT_PATH', value);
       },
-      get() {
+      get () {
         return this.$store.state.file.currentPath;
       }
     },
-    computedFileTree() {
+    computedFileTree () {
       if (!this.fileTree || !this.fileTree.children) return [];
       let nodes = this.sortFiles(this.fileTree.children);
       nodes = this.filterFiles(nodes);
       return nodes;
     },
-    expandedPaths() {
+    expandedPaths () {
       return Object.keys(this.nodeExpandedDict)
         .map(path => {
           return {
@@ -297,119 +297,119 @@ export default {
         .filter(d => d.expanded)
         .map(d => d.path);
     },
-    isDisabled() {
+    isDisabled () {
       return (
         this.spiderForm.is_public &&
         this.spiderForm.username !== this.userInfo.username &&
-        this.userInfo.role !== "admin"
+        this.userInfo.role !== 'admin'
       );
     }
   },
   methods: {
-    onEdit() {
+    onEdit () {
       this.isEdit = true;
     },
-    onItemClick(item) {
+    onItemClick (item) {
       if (item.is_dir) {
         // 目录
-        this.$store.dispatch("file/getFileList", { path: item.path });
+        this.$store.dispatch('file/getFileList', { path: item.path });
       } else {
         // 文件
         this.showFile = true;
-        this.$store.commit("file/SET_FILE_CONTENT", "");
-        this.$store.commit("file/SET_CURRENT_PATH", item.path);
-        this.$store.dispatch("file/getFileContent", { path: item.path });
+        this.$store.commit('file/SET_FILE_CONTENT', '');
+        this.$store.commit('file/SET_CURRENT_PATH', item.path);
+        this.$store.dispatch('file/getFileContent', { path: item.path });
       }
     },
-    async onFileSave() {
-      await this.$store.dispatch("file/saveFileContent", {
+    async onFileSave () {
+      await this.$store.dispatch('file/saveFileContent', {
         path: this.currentPath
       });
-      this.$message.success("文件保存成功");
+      this.$message.success('文件保存成功');
     },
-    async onAddFile() {
+    async onAddFile () {
       if (!this.name) {
-        this.$message.error("Name cannot be empty");
+        this.$message.error('Name cannot be empty');
         return;
       }
-      const arr = this.activeFileNode.path.split("/");
+      const arr = this.activeFileNode.path.split('/');
       if (this.activeFileNode.is_dir) {
         arr.push(this.name);
       } else {
         arr[arr.length - 1] = this.name;
       }
-      const path = arr.join("/");
-      await this.$store.dispatch("file/addFile", { path });
-      await this.$store.dispatch("spider/getFileTree");
+      const path = arr.join('/');
+      await this.$store.dispatch('file/addFile', { path });
+      await this.$store.dispatch('spider/getFileTree');
       this.isShowAdd = false;
       this.fileDialogVisible = false;
       this.showFile = true;
-      this.$store.commit("file/SET_FILE_CONTENT", "");
-      this.$store.commit("file/SET_CURRENT_PATH", path);
-      await this.$store.dispatch("file/getFileContent", { path });
+      this.$store.commit('file/SET_FILE_CONTENT', '');
+      this.$store.commit('file/SET_CURRENT_PATH', path);
+      await this.$store.dispatch('file/getFileContent', { path });
     },
-    async onAddDir() {
+    async onAddDir () {
       if (!this.name) {
-        this.$message.error("Name cannot be empty");
+        this.$message.error('Name cannot be empty');
         return;
       }
-      const arr = this.activeFileNode.path.split("/");
+      const arr = this.activeFileNode.path.split('/');
       if (this.activeFileNode.is_dir) {
         arr.push(this.name);
       } else {
         arr[arr.length - 1] = this.name;
       }
-      const path = arr.join("/");
-      await this.$store.dispatch("file/addDir", { path });
-      await this.$store.dispatch("spider/getFileTree");
+      const path = arr.join('/');
+      await this.$store.dispatch('file/addDir', { path });
+      await this.$store.dispatch('spider/getFileTree');
       this.isShowAdd = false;
       this.dirDialogVisible = false;
     },
-    async onFileDelete() {
-      await this.$store.dispatch("file/deleteFile", {
+    async onFileDelete () {
+      await this.$store.dispatch('file/deleteFile', {
         path: this.currentFilePath
       });
-      await this.$store.dispatch("spider/getFileTree");
-      this.$message.success("成功删除");
+      await this.$store.dispatch('spider/getFileTree');
+      this.$message.success('成功删除');
       this.isShowDelete = false;
       this.showFile = false;
     },
-    onOpenRename() {
-      const arr = this.currentFilePath.split("/");
+    onOpenRename () {
+      const arr = this.currentFilePath.split('/');
       this.name = arr[arr.length - 1];
     },
-    async onRenameFile() {
-      await this.$store.dispatch("file/renameFile", {
+    async onRenameFile () {
+      await this.$store.dispatch('file/renameFile', {
         path: this.currentFilePath,
         newPath: this.name
       });
-      await this.$store.dispatch("spider/getFileTree");
-      const arr = this.currentFilePath.split("/");
+      await this.$store.dispatch('spider/getFileTree');
+      const arr = this.currentFilePath.split('/');
       arr[arr.length - 1] = this.name;
-      this.currentFilePath = arr.join("/");
-      this.$store.commit("file/SET_CURRENT_PATH", this.currentFilePath);
-      this.$message.success("重命名保存");
+      this.currentFilePath = arr.join('/');
+      this.$store.commit('file/SET_CURRENT_PATH', this.currentFilePath);
+      this.$message.success('重命名保存');
       this.isShowRename = false;
     },
-    async getFileTree() {
-      const arr = this.$route.path.split("/");
+    async getFileTree () {
+      const arr = this.$route.path.split('/');
       const id = arr[arr.length - 1];
-      await this.$store.dispatch("spider/getFileTree", { id });
+      await this.$store.dispatch('spider/getFileTree', { id });
     },
-    async onFileClick(data) {
+    async onFileClick (data) {
       if (data.is_dir) {
         return;
       }
       this.currentFilePath = data.path;
       this.onItemClick(data);
     },
-    onDirClick(data, node) {
+    onDirClick (data, node) {
       const vm = this;
       setTimeout(() => {
         vm.$set(vm.nodeExpandedDict, data.path, node.expanded);
       }, 0);
     },
-    sortFiles(nodes) {
+    sortFiles (nodes) {
       nodes.forEach(node => {
         if (node.is_dir) {
           if (!node.children) node.children = [];
@@ -424,7 +424,7 @@ export default {
         }
       });
     },
-    filterFiles(nodes) {
+    filterFiles (nodes) {
       return nodes.filter(node => {
         if (node.is_dir) {
           node.children = this.filterFiles(node.children);
@@ -438,43 +438,43 @@ export default {
         return true;
       });
     },
-    isActiveFile(node) {
+    isActiveFile (node) {
       return node.path === this.currentFilePath;
     },
-    onFileRightClick(ev, data) {
+    onFileRightClick (ev, data) {
       this.isShowCreatePopoverDict = {};
       this.$set(this.isShowCreatePopoverDict, data.path, true);
       this.activeFileNode = data;
     },
-    onEmptyClick() {
-      const data = { path: "" };
+    onEmptyClick () {
+      const data = { path: '' };
       this.isShowCreatePopoverDict = {};
       this.$set(this.isShowCreatePopoverDict, data.path, true);
       this.activeFileNode = data;
     },
-    onHideCreate(data) {
+    onHideCreate (data) {
       this.$set(this.isShowCreatePopoverDict, data.path, false);
-      this.name = "";
+      this.name = '';
     },
-    onClickRemoveNav(data) {
-      this.$confirm("你确定要删除该文件/文件夹?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        confirmButtonClass: "danger",
-        type: "warning"
+    onClickRemoveNav (data) {
+      this.$confirm('你确定要删除该文件/文件夹?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        confirmButtonClass: 'danger',
+        type: 'warning'
       }).then(() => {
         this.onFileDeleteNav(data.path);
       });
     },
-    async onFileDeleteNav(path) {
-      await this.$store.dispatch("file/deleteFile", { path });
-      await this.$store.dispatch("spider/getFileTree");
-      this.$message.success("成功删除");
+    async onFileDeleteNav (path) {
+      await this.$store.dispatch('file/deleteFile', { path });
+      await this.$store.dispatch('spider/getFileTree');
+      this.$message.success('成功删除');
       this.isShowDelete = false;
       this.showFile = false;
     },
-    clickSpider(filepath) {
-      const node = this.$refs["tree"].getNode(filepath);
+    clickSpider (filepath) {
+      const node = this.$refs['tree'].getNode(filepath);
       const data = node.data;
       this.onFileClick(data);
       node.parent.expanded = true;
@@ -482,11 +482,11 @@ export default {
       node.parent.parent.expanded = true;
       this.$set(this.nodeExpandedDict, node.parent.parent.data.path, true);
     },
-    clickPipeline() {
-      const filename = "pipelines.py";
+    clickPipeline () {
+      const filename = 'pipelines.py';
       for (let i = 0; i < this.computedFileTree.length; i++) {
         const dataLv1 = this.computedFileTree[i];
-        const nodeLv1 = this.$refs["tree"].getNode(dataLv1.path);
+        const nodeLv1 = this.$refs['tree'].getNode(dataLv1.path);
         if (dataLv1.is_dir) {
           for (let j = 0; j < dataLv1.children.length; j++) {
             const dataLv2 = dataLv1.children[j];
@@ -501,18 +501,18 @@ export default {
       }
     }
   },
-  async created() {
+  async created () {
     await this.getFileTree();
   },
-  mounted() {
+  mounted () {
     this.listener = document
-      .querySelector("body")
-      .addEventListener("click", ev => {
+      .querySelector('body')
+      .addEventListener('click', ev => {
         this.isShowCreatePopoverDict = {};
       });
   },
-  destroyed() {
-    document.querySelector("body").removeEventListener("click", this.listener);
+  destroyed () {
+    document.querySelector('body').removeEventListener('click', this.listener);
   }
 };
 </script>

@@ -26,37 +26,37 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import NodeOverview from "../../components/Overview/NodeOverview";
+import { mapState } from 'vuex';
+import NodeOverview from '../../components/Overview/NodeOverview';
 
 export default {
-  name: "NodeDetail",
+  name: 'NodeDetail',
   components: {
     NodeOverview
   },
-  data() {
+  data () {
     return {
-      activeTabName: "overview"
+      activeTabName: 'overview'
     };
   },
   computed: {
-    ...mapState("node", ["nodeList", "nodeForm"])
+    ...mapState('node', ['nodeList', 'nodeForm'])
   },
   methods: {
-    //onTabClick(tab) {},
-    onNodeChange(id) {
+    // onTabClick(tab) {},
+    onNodeChange (id) {
       this.$router.push(`/nodes/${id}`);
     }
   },
-  created() {
+  created () {
     // get list of nodes
-    this.$store.dispatch("node/getNodeList");
+    this.$store.dispatch('node/getNodeList');
 
     // get node basic info
-    this.$store.dispatch("node/getNodeData", this.$route.params.id);
+    this.$store.dispatch('node/getNodeData', this.$route.params.id);
 
     // get node task list
-    this.$store.dispatch("node/getTaskList", this.$route.params.id);
+    this.$store.dispatch('node/getTaskList', this.$route.params.id);
   }
 };
 </script>
