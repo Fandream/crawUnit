@@ -51,7 +51,7 @@ func InitMongo() error {
 			PoolTimeout:   timeout,
 			ReadTimeout:   timeout,
 			WriteTimeout:  timeout,
-			AppName:       "CrawUnit",
+			AppName:       "crawlab",
 			FailFast:      true,
 			MinPoolSize:   10,
 			MaxIdleTimeMS: 1000 * 30,
