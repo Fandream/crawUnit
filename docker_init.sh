@@ -41,4 +41,4 @@ Host *
 EOF
 
 # start backend
-crawlab-server
+crawUnit
