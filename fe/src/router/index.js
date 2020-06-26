@@ -95,24 +95,6 @@ export const constantRouterMap = [
     ]
   },
   {
-    path: '/schedules',
-    component: Layout,
-    meta: {
-      title: '定时任务'
-    },
-    hidden: false,
-    children: [
-      {
-        path: '',
-        name: 'ScheduleList',
-        component: () => import('../views/schedule/ScheduleList'),
-        meta: {
-          title: '定时任务'
-        }
-      }
-    ]
-  },
-  {
     path: '/nodes',
     component: Layout,
     meta: {
