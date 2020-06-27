@@ -1,12 +1,12 @@
 module.exports = {
-  publicPath: process.env.BASE_URL || "/",
+  publicPath: process.env.BASE_URL || '/',
   devServer: {
     proxy: {
-      "/api/": {
-        target: "http://localhost:8000",
+      '/api/': {
+        target: 'http://localhost:8000',
         ws: true,
         changeOrigin: true,
-        pathRewrite: {'^/api' : ''}
+        pathRewrite: { '^/api': '' }
       }
     }
   },
@@ -14,10 +14,10 @@ module.exports = {
     config.module
       .rule('eslint')
       .use('eslint-loader')
-        .loader('eslint-loader')
-        .tap(options => {
-          options.fix = true
-          return options
-        })
+      .loader('eslint-loader')
+      .tap(options => {
+        options.fix = true
+        return options
+      })
   }
 };

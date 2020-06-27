@@ -104,36 +104,36 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
 
 export default {
-  name: "DeployList",
-  data() {
+  name: 'DeployList',
+  data () {
     return {
       pagination: {
         pageNum: 0,
         pageSize: 10
       },
       filter: {
-        keyword: ""
+        keyword: ''
       },
       // tableData,
       columns: [
         // { name: 'version', label: 'Version', width: '180' },
         // { name: 'ip', label: 'IP', width: '160' },
         // { name: 'port', label: 'Port', width: '80' },
-        { name: "finish_ts", label: "Time", width: "180" },
-        { name: "spider_name", label: "Spider", width: "180", sortable: true },
-        { name: "node_id", label: "Node", width: "auto" }
+        { name: 'finish_ts', label: 'Time', width: '180' },
+        { name: 'spider_name', label: 'Spider', width: '180', sortable: true },
+        { name: 'node_id', label: 'Node', width: 'auto' }
       ],
       nodeFormRules: {
-        name: [{ required: true, message: "Required Field", trigger: "change" }]
+        name: [{ required: true, message: 'Required Field', trigger: 'change' }]
       }
     };
   },
   computed: {
-    ...mapState("deploy", ["deployList", "deployForm"]),
-    filteredTableData() {
+    ...mapState('deploy', ['deployList', 'deployForm']),
+    filteredTableData () {
       return this.deployList
         .filter(d => {
           if (!this.filter.keyword) return true;
@@ -160,27 +160,27 @@ export default {
     }
   },
   methods: {
-    onSearch(value) {
+    onSearch (value) {
       console.log(value);
     },
-    onRefresh() {
-      this.$store.dispatch("deploy/getDeployList");
+    onRefresh () {
+      this.$store.dispatch('deploy/getDeployList');
     },
-    onView(row) {
+    onView (row) {
       this.$router.push(`/deploys/${row._id}`);
     },
-    onClickSpider(row) {
+    onClickSpider (row) {
       this.$router.push(`/spiders/${row.spider_id}`);
     },
-    onClickNode(row) {
+    onClickNode (row) {
       this.$router.push(`/nodes/${row.node_id}`);
     },
-    onPageChange() {
-      this.$store.dispatch("deploy/getDeployList");
+    onPageChange () {
+      this.$store.dispatch('deploy/getDeployList');
     }
   },
-  created() {
-    this.$store.dispatch("deploy/getDeployList");
+  created () {
+    this.$store.dispatch('deploy/getDeployList');
   }
 };
 </script>

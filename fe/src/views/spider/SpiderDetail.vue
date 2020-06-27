@@ -22,12 +22,6 @@
       <el-tab-pane :label="'概览'" name="overview">
         <spider-overview />
       </el-tab-pane>
-      <el-tab-pane v-if="isGit" :label="'Git'" name="git-settings">
-        <git-settings />
-      </el-tab-pane>
-      <el-tab-pane v-if="isConfigurable" :label="'配置'" name="config">
-        <config-list ref="config" @convert="onConvert" />
-      </el-tab-pane>
       <el-tab-pane :label="'文件'" name="files">
         <file-list ref="file-list" />
       </el-tab-pane>
@@ -47,11 +41,6 @@ import GitSettings from '../../components/Settings/GitSettings';
 export default {
   name: 'SpiderDetail',
   components: {
-    GitSettings,
-    SpiderScrapy,
-    SpiderSchedules,
-    ConfigList,
-    SpiderStats,
     // EnvironmentList,
     FileList,
     SpiderOverview

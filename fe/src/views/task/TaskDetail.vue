@@ -31,7 +31,6 @@ import LogView from '../../components/ScrollView/LogView';
 export default {
   name: 'TaskDetail',
   components: {
-    LogView,
     GeneralTableView,
     TaskOverview
   },

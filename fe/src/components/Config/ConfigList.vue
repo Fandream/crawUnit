@@ -557,9 +557,7 @@ export default {
       return '';
     },
     stageNodes () {
-      const startStage = this.spiderForm.config.stages[
-        this.spiderForm.config.start_stage
-      ];
+      const startStage = this.spiderForm.config.stages[this.spiderForm.config.start_stage];
       const nodes = [];
       const allStageNames = new Set();
 
