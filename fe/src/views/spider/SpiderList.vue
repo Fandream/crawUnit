@@ -503,7 +503,7 @@
           min-width="220px"
         >
           <template slot-scope="scope">
-            <el-tooltip :content="'View'" placement="top">
+            <el-tooltip :content="'查看'" placement="top">
               <el-button
                 type="primary"
                 icon="el-icon-search"
@@ -512,13 +512,13 @@
                 @click="onView(scope.row, $event)"
               />
             </el-tooltip>
-
-            <el-tooltip :content="'复制'" placement="top">
+            <el-tooltip :content="'删除'" placement="top">
               <el-button
-                type="info"
-                icon="el-icon-copy-document"
+                type="danger"
+                icon="el-icon-delete"
                 size="mini"
-                @click="onCopy(scope.row, $event)"
+                :disabled="isDisabled(scope.row)"
+                @click="onRemove(scope.row, $event)"
               />
             </el-tooltip>
             <el-tooltip
@@ -655,7 +655,7 @@ export default {
         sortable: true
       });
       columns.push({ name: 'is_scrapy', label: '是否是Scrapy', width: '80' });
-      columns.push({ name: 'latest_tasks', label: '最近任务', width: '180' });
+      columns.push({ name: 'latest_tasks', label: '最近任务', width: '80' });
       columns.push({
         name: 'last_status',
         label: '上次运行状态',

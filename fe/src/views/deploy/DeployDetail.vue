@@ -6,8 +6,10 @@
 
 <script>
 export default {
-  name: "NodeDetail"
-};
+  name: 'NodeDetail'
+}
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

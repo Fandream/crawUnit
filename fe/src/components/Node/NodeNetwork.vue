@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+import echarts from 'echarts'
 
 export default {
   name: 'NodeNetwork',
@@ -15,38 +15,38 @@ export default {
   watch: {
     activeTab () {
       setTimeout(() => {
-        this.render();
-      }, 0);
+        this.render()
+      }, 0)
     }
   },
   data () {
     return {
       chart: undefined
-    };
+    }
   },
   computed: {
     masterNode () {
-      const nodes = this.$store.state.node.nodeList;
+      const nodes = this.$store.state.node.nodeList
       for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].is_master) {
-          return nodes[i];
+          return nodes[i]
         }
       }
-      return {};
+      return {}
     },
     nodes () {
-      let nodes = this.$store.state.node.nodeList;
+      let nodes = this.$store.state.node.nodeList
       nodes = nodes
         .filter(d => d.status !== 'offline')
         .map(d => {
-          d.id = d._id;
-          d.x = Math.floor(100 * Math.random());
-          d.y = Math.floor(100 * Math.random());
+          d.id = d._id
+          d.x = Math.floor(100 * Math.random())
+          d.y = Math.floor(100 * Math.random())
           d.itemStyle = {
             color: d.is_master ? '#409EFF' : '#e6a23c'
-          };
-          return d;
-        });
+          }
+          return d
+        })
 
       // mongodb
       nodes.push({
@@ -57,7 +57,7 @@ export default {
         itemStyle: {
           color: '#67c23a'
         }
-      });
+      })
 
       // redis
       nodes.push({
@@ -68,15 +68,15 @@ export default {
         itemStyle: {
           color: '#f56c6c'
         }
-      });
+      })
 
-      return nodes;
+      return nodes
     },
     links () {
-      const links = [];
+      const links = []
       for (let i = 0; i < this.nodes.length; i++) {
-        if (this.nodes[i].status === 'offline') continue;
-        if (['redis', 'mongodb'].includes(this.nodes[i].id)) continue;
+        if (this.nodes[i].status === 'offline') continue
+        if (['redis', 'mongodb'].includes(this.nodes[i].id)) continue
         // mongodb
         links.push({
           source: this.nodes[i].id,
@@ -85,7 +85,7 @@ export default {
           lineStyle: {
             color: '#67c23a'
           }
-        });
+        })
 
         // redis
         links.push({
@@ -95,9 +95,9 @@ export default {
           lineStyle: {
             color: '#f56c6c'
           }
-        });
+        })
 
-        if (this.masterNode.id === this.nodes[i].id) continue;
+        if (this.masterNode.id === this.nodes[i].id) continue
 
         // master
         // links.push({
@@ -109,7 +109,7 @@ export default {
         //   }
         // })
       }
-      return links;
+      return links
     }
   },
   methods: {
@@ -120,15 +120,12 @@ export default {
         },
         tooltip: {
           formatter: params => {
-            if (!params.data.name) return;
-            let str =
-              '<span style="margin-right:5px;display:inline-block;height:12px;width:12px;border-radius:6px;background:' +
-              params.color +
-              '"></span>';
-            if (params.data.name) { str += '<span>' + params.data.name + '</span><br>'; }
-            if (params.data.ip) { str += '<span>IP: ' + params.data.ip + '</span><br>'; }
-            if (params.data.mac) { str += '<span>MAC: ' + params.data.mac + '</span><br>'; }
-            return str;
+            if (!params.data.name) return
+            let str = '<span style="margin-right:5px;display:inline-block;height:12px;width:12px;border-radius:6px;background:' + params.color + '"></span>'
+            if (params.data.name) str += '<span>' + params.data.name + '</span><br>'
+            if (params.data.ip) str += '<span>IP: ' + params.data.ip + '</span><br>'
+            if (params.data.mac) str += '<span>MAC: ' + params.data.mac + '</span><br>'
+            return str
           }
         },
         animationDurationUpdate: 1500,
@@ -172,21 +169,21 @@ export default {
             }
           }
         ]
-      };
-      this.chart = echarts.init(this.$el);
-      this.chart.setOption(option);
-      this.chart.resize();
+      }
+      this.chart = echarts.init(this.$el)
+      this.chart.setOption(option)
+      this.chart.resize()
     }
   },
   mounted () {
-    this.render();
+    this.render()
   }
-};
+}
 </script>
 
 <style scoped>
-#network-chart {
-  height: 480px;
-  width: 100%;
-}
+  #network-chart {
+    height: 480px;
+    width: 100%;
+  }
 </style>

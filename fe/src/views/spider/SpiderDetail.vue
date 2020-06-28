@@ -140,7 +140,6 @@ export default {
 
     // get spider tasks
     await this.$store.dispatch('spider/getTaskList', this.$route.params.id);
-
     // get spider list
     await this.$store.dispatch('spider/getSpiderList', { owner_type: 'all' });
   }

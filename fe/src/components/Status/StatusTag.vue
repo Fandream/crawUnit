@@ -1,7 +1,7 @@
 <template>
   <el-tag :type="type" class="status-tag">
     <i :class="icon"></i>
-    {{ label }}
+    {{label}}
   </el-tag>
 </template>
 
@@ -24,42 +24,44 @@ export default {
         cancelled: { label: '已取消', type: 'info' },
         abnormal: { label: '异常', type: 'danger' }
       }
-    };
+    }
   },
   computed: {
     type () {
-      const s = this.statusDict[this.status];
+      const s = this.statusDict[this.status]
       if (s) {
-        return s.type;
+        return s.type
       }
-      return '';
+      return ''
     },
     label () {
-      const s = this.statusDict[this.status];
+      const s = this.statusDict[this.status]
       if (s) {
-        return s.label;
+        return s.label
       }
-      return 'NA';
+      return 'NA'
     },
     icon () {
       if (this.status === 'finished') {
-        return 'el-icon-check';
+        return 'el-icon-check'
       } else if (this.status === 'pending') {
-        return 'el-icon-loading';
+        return 'el-icon-loading'
       } else if (this.status === 'running') {
-        return 'el-icon-loading';
+        return 'el-icon-loading'
       } else if (this.status === 'error') {
-        return 'el-icon-error';
+        return 'el-icon-error'
       } else if (this.status === 'cancelled') {
-        return 'el-icon-video-pause';
+        return 'el-icon-video-pause'
       } else if (this.status === 'abnormal') {
-        return 'el-icon-warning';
+        return 'el-icon-warning'
       } else {
-        return 'el-icon-question';
+        return 'el-icon-question'
       }
     }
   }
-};
+}
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

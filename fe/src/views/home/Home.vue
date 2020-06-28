@@ -2,12 +2,7 @@
   <div class="app-container">
     <el-row>
       <ul class="metric-list">
-        <li
-          class="metric-item"
-          v-for="m in metrics"
-          @click="onClickMetric(m)"
-          :key="m.name"
-        >
+        <li class="metric-item" v-for="m in metrics" @click="onClickMetric(m)" :key="m.name">
           <div class="metric-icon" :class="m.color">
             <!--            <font-awesome-icon :icon="m.icon"/>-->
             <i :class="m.icon"></i>
@@ -15,10 +10,10 @@
           <div class="metric-content" :class="m.color">
             <div class="metric-wrapper">
               <div class="metric-number">
-                {{ overviewStats[m.name] }}
+                {{overviewStats[m.name]}}
               </div>
               <div class="metric-name">
-                {{ m.label }}
+                {{m.label}}
               </div>
             </div>
           </div>
@@ -27,7 +22,7 @@
     </el-row>
     <el-row>
       <el-card shadow="hover">
-        <h4 class="title">{{ "每日新增任务数" }}</h4>
+        <h4 class="title">{{'每日新增任务数'}}</h4>
         <div id="echarts-daily-tasks" class="echarts-box"></div>
       </el-card>
     </el-row>
@@ -35,8 +30,8 @@
 </template>
 
 <script>
-import request from '../../api/request';
-import echarts from 'echarts';
+import request from '../../api/request'
+import echarts from 'echarts'
 
 export default {
   name: 'Home',
@@ -46,36 +41,12 @@ export default {
       overviewStats: {},
       dailyTasks: [],
       metrics: [
-        {
-          name: 'task_count',
-          label: '总任务数',
-          icon: 'fa fa-check',
-          color: 'blue',
-          path: 'tasks'
-        },
-        {
-          name: 'spider_count',
-          label: '爬虫',
-          icon: 'fa fa-bug',
-          color: 'green',
-          path: 'spiders'
-        },
-        {
-          name: 'active_node_count',
-          label: '在线节点',
-          icon: 'fa fa-server',
-          color: 'red',
-          path: 'nodes'
-        },
-        {
-          name: 'project_count',
-          label: '项目',
-          icon: 'fa fa-code-fork',
-          color: 'grey',
-          path: 'projects'
-        }
+        { name: 'task_count', label: '总任务数', icon: 'fa fa-check', color: 'blue', path: 'tasks' },
+        { name: 'spider_count', label: '爬虫', icon: 'fa fa-bug', color: 'green', path: 'spiders' },
+        { name: 'active_node_count', label: '在线节点', icon: 'fa fa-server', color: 'red', path: 'nodes' },
+        { name: 'project_count', label: '项目', icon: 'fa fa-code-fork', color: 'grey', path: 'projects' }
       ]
-    };
+    }
   },
   methods: {
     initEchartsDailyTasks () {
@@ -87,143 +58,140 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [
-          {
-            data: this.dailyTasks.map(d => d.task_count),
-            type: 'line',
-            areaStyle: {},
-            smooth: true
-          }
-        ],
+        series: [{
+          data: this.dailyTasks.map(d => d.task_count),
+          type: 'line',
+          areaStyle: {},
+          smooth: true
+        }],
         tooltip: {
           trigger: 'axis',
           show: true
         }
-      };
-      this.echarts.dailyTasks = echarts.init(
-        this.$el.querySelector('#echarts-daily-tasks')
-      );
-      this.echarts.dailyTasks.setOption(option);
+      }
+      this.echarts.dailyTasks = echarts.init(this.$el.querySelector('#echarts-daily-tasks'))
+      this.echarts.dailyTasks.setOption(option)
     },
     onClickMetric (m) {
-      this.$router.push(`/${m.path}`);
+      this.$router.push(`/${m.path}`)
     }
   },
   created () {
-    request.get('/stats/home').then(response => {
-      // overview stats
-      this.overviewStats = response.data.data.overview;
+    request.get('/stats/home')
+      .then(response => {
+        // overview stats
+        this.overviewStats = response.data.data.overview
 
-      // daily tasks
-      this.dailyTasks = response.data.data.daily;
-      this.initEchartsDailyTasks();
-    });
+        // daily tasks
+        this.dailyTasks = response.data.data.daily
+        this.initEchartsDailyTasks()
+      })
   },
   mounted () {
     // this.$ba.trackPageview('/')
   }
-};
+}
 </script>
 
 <style scoped lang="scss">
-.metric-list {
-  margin-top: 0;
-  padding-left: 0;
-  list-style: none;
-  display: flex;
-  font-size: 16px;
-
-  .metric-item:last-child .metric-card {
-    margin-right: 0;
-  }
-
-  .metric-item:hover {
-    transform: scale(1.05);
-    transition: transform 0.5s ease;
-  }
-
-  .metric-item {
-    flex-basis: 20%;
-    height: 64px;
+  .metric-list {
+    margin-top: 0;
+    padding-left: 0;
+    list-style: none;
     display: flex;
-    color: white;
-    cursor: pointer;
-    transform: scale(1);
-    transition: transform 0.5s ease;
+    font-size: 16px;
 
-    .metric-icon {
-      display: inline-flex;
-      width: 64px;
-      align-items: center;
-      justify-content: center;
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-      font-size: 24px;
-
-      svg {
-        width: 24px;
-      }
+    .metric-item:last-child .metric-card {
+      margin-right: 0;
     }
 
-    .metric-content {
+    .metric-item:hover {
+      transform: scale(1.05);
+      transition: transform 0.5s ease;
+    }
+
+    .metric-item {
+      flex-basis: 20%;
+      height: 64px;
       display: flex;
-      width: calc(100% - 80px);
-      align-items: center;
-      opacity: 0.85;
-      font-size: 14px;
-      padding-left: 15px;
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transform: scale(1);
+      transition: transform 0.5s ease;
 
-      .metric-number {
-        font-weight: bolder;
-        margin-bottom: 5px;
+      .metric-icon {
+        display: inline-flex;
+        width: 64px;
+        align-items: center;
+        justify-content: center;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        font-size: 24px;
+
+        svg {
+          width: 24px;
+        }
       }
-    }
 
-    .metric-icon.blue,
-    .metric-content.blue {
-      background: #409eff;
-    }
+      .metric-content {
+        display: flex;
+        width: calc(100% - 80px);
+        align-items: center;
+        opacity: 0.85;
+        font-size: 14px;
+        padding-left: 15px;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
 
-    .metric-icon.green,
-    .metric-content.green {
-      background: #67c23a;
-    }
+        .metric-number {
+          font-weight: bolder;
+          margin-bottom: 5px;
+        }
+      }
 
-    .metric-icon.red,
-    .metric-content.red {
-      background: #f56c6c;
-    }
+      .metric-icon.blue,
+      .metric-content.blue {
+        background: #409eff;
+      }
 
-    .metric-icon.orange,
-    .metric-content.orange {
-      background: #e6a23c;
-    }
+      .metric-icon.green,
+      .metric-content.green {
+        background: #67c23a;
+      }
 
-    .metric-icon.grey,
-    .metric-content.grey {
-      background: #97a8be;
+      .metric-icon.red,
+      .metric-content.red {
+        background: #f56c6c;
+      }
+
+      .metric-icon.orange,
+      .metric-content.orange {
+        background: #E6A23C;
+      }
+
+      .metric-icon.grey,
+      .metric-content.grey {
+        background: #97a8be;
+      }
     }
   }
-}
 
-.title {
-  padding: 0;
-  margin: 0;
-}
+  .title {
+    padding: 0;
+    margin: 0;
+  }
 
-#echarts-daily-tasks {
-  height: 360px;
-  width: 100%;
-}
+  #echarts-daily-tasks {
+    height: 360px;
+    width: 100%;
+  }
 
-.el-card {
-  /*border: 1px solid lightgrey;*/
-}
+  .el-card {
+    /*border: 1px solid lightgrey;*/
+  }
 
-.svg-inline--fa {
-  width: 100%;
-  height: 100%;
-}
+  .svg-inline--fa {
+    width: 100%;
+    height: 100%;
+  }
 </style>

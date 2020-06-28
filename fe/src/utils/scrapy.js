@@ -209,4 +209,4 @@ export default {
     'REDIS_START_URLS_KEY',
     'REDIS_ENCODING'
   ]
-};
+}

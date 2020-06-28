@@ -2,37 +2,19 @@
   <div class="general-table-view">
     <el-table
       :data="filteredData"
-      :header-cell-style="{ background: 'rgb(48, 65, 86)', color: 'white' }"
-      border
-    >
+      :header-cell-style="{background:'rgb(48, 65, 86)',color:'white'}"
+      border>
       <template v-for="col in columns">
-        <el-table-column
-          :key="col"
-          :label="col"
-          :property="col"
-          min-width="120"
-        >
+        <el-table-column :key="col" :label="col" :property="col" min-width="120">
           <template slot-scope="scope">
-            <el-popover
-              trigger="hover"
-              :content="getString(scope.row[col])"
-              popper-class="cell-popover"
-            >
-              <div
-                v-if="isUrl(scope.row[col])"
-                slot="reference"
-                class="wrapper"
-              >
-                <a
-                  :href="getString(scope.row[col])"
-                  target="_blank"
-                  style="color: #409eff"
-                >
-                  {{ getString(scope.row[col]) }}
+            <el-popover trigger="hover" :content="getString(scope.row[col])" popper-class="cell-popover">
+              <div v-if="isUrl(scope.row[col])" slot="reference" class="wrapper">
+                <a :href="getString(scope.row[col])" target="_blank" style="color: #409eff">
+                  {{getString(scope.row[col])}}
                 </a>
               </div>
               <div v-else slot="reference" class="wrapper">
-                {{ getString(scope.row[col]) }}
+                {{getString(scope.row[col])}}
               </div>
             </el-popover>
           </template>
@@ -47,8 +29,7 @@
         :page-sizes="[10, 20, 50, 100]"
         :page-size.sync="pageSize"
         layout="sizes, prev, pager, next"
-        :total="total"
-      >
+        :total="total">
       </el-pagination>
     </div>
   </div>
@@ -58,7 +39,7 @@
 export default {
   name: 'GeneralTableView',
   data () {
-    return {};
+    return {}
   },
   props: {
     pageNum: {
@@ -76,60 +57,57 @@ export default {
     columns: {
       type: Array,
       default () {
-        return [];
+        return []
       }
     },
     data: {
       type: Array,
       default () {
-        return [];
+        return []
       }
     }
   },
   computed: {
     filteredData () {
-      return this.data;
+      return this.data
     }
   },
   methods: {
     isUrl (value) {
-      if (!value) return false;
-      if (!value.match) return false;
-      return !!value.match(/^https?:\/\//);
+      if (!value) return false
+      if (!value.match) return false
+      return !!value.match(/^https?:\/\//)
     },
     onPageChange () {
-      this.$emit('page-change', {
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
-      });
+      this.$emit('page-change', { pageNum: this.pageNum, pageSize: this.pageSize })
     },
     getString (value) {
-      if (value === undefined) return '';
-      const str = JSON.stringify(value);
-      if (str.match(/^"(.*)"$/)) return str.match(/^"(.*)"$/)[1];
-      return str;
+      if (value === undefined) return ''
+      const str = JSON.stringify(value)
+      if (str.match(/^"(.*)"$/)) return str.match(/^"(.*)"$/)[1]
+      return str
     }
   }
-};
+}
 </script>
 
 <style scoped>
-.general-table-view >>> .cell .wrapper:hover {
-  text-decoration: underline;
-}
+  .general-table-view >>> .cell .wrapper:hover {
+    text-decoration: underline;
+  }
 
-.general-table-view >>> .cell .wrapper {
-  font-size: 12px;
-  height: 24px;
-  line-height: 24px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .general-table-view >>> .cell .wrapper {
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 </style>
 
 <style>
-.cell-popover {
-  max-width: 480px;
-}
+  .cell-popover {
+    max-width: 480px;
+  }
 </style>

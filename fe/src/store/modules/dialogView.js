@@ -7,13 +7,13 @@ const dialogView = {
   getters: {},
   mutations: {
     SET_DIALOG_TYPE (state, value) {
-      state.dialogType = value;
+      state.dialogType = value
     },
     SET_DIALOG_VISIBLE (state, value) {
-      state.dialogVisible = value;
+      state.dialogVisible = value
     }
   },
   actions: {}
-};
+}
 
-export default dialogView;
+export default dialogView

@@ -188,17 +188,6 @@
           >
             <template slot-scope="scope">
               <status-tag :status="scope.row[col.name]" />
-              <template v-if="scope.row.error_log_count > 0">
-                <el-tooltip
-                  :content="'日志错误' + ': ' + scope.row.error_log_count"
-                  placement="top"
-                >
-                  <el-tag type="danger" style="margin-left: 10px">
-                    <i class="el-icon-warning"></i>
-                    <i class="el-icon-tickets"></i>
-                  </el-tag>
-                </el-tooltip>
-              </template>
             </template>
           </el-table-column>
           <el-table-column
@@ -287,18 +276,13 @@ export default {
       columns: [
         { name: 'node_name', label: '节点', width: '120' },
         { name: 'spider_name', label: '爬虫', width: '120' },
-        { name: 'status', label: '状态', width: '180' },
+        { name: 'status', label: '状态', width: '120' },
         // { name: 'create_ts', label: 'Create Time', width: '100' },
-        { name: 'start_ts', label: '开始时间', width: '100' },
-        { name: 'finish_ts', label: '结束时间', width: '100' },
-        { name: 'wait_duration', label: '等待时长(秒)', align: 'right' },
-        { name: 'runtime_duration', label: '运行时长(秒)', align: 'right' },
-        {
-          name: 'total_duration',
-          label: '总时长(秒)',
-          width: '80',
-          align: 'right'
-        },
+        { name: 'start_ts', label: '开始时间', width: '200' },
+        { name: 'finish_ts', label: '结束时间', width: '200' },
+        { name: 'wait_duration', label: '等待时长(秒)', align: 'right', width: '80' },
+        { name: 'runtime_duration', label: '运行时长(秒)', align: 'right', width: '80' },
+        { name: 'total_duration', label: '总时长(秒)', width: '80', align: 'right' },
         { name: 'result_count', label: '结果数', width: '80' }
         // { name: 'avg_num_results', label: 'Average Results Count per Second', width: '80' }
       ],

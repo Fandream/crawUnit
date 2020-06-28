@@ -1,12 +1,12 @@
 <template>
   <!-- eslint-disable vue/require-component-is -->
   <component v-bind="linkProps(to)">
-    <slot />
+    <slot/>
   </component>
 </template>
 
 <script>
-import { isExternal } from '@/utils/validate';
+import { isExternal } from '@/utils/validate'
 
 export default {
   props: {
@@ -23,13 +23,13 @@ export default {
           href: url,
           target: '_blank',
           rel: 'noopener'
-        };
+        }
       }
       return {
         is: 'router-link',
         to: url
-      };
+      }
     }
   }
-};
+}
 </script>

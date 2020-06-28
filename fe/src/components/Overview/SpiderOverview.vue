@@ -3,21 +3,23 @@
     <el-col :span="12">
       <!--last tasks-->
       <el-row>
-        <task-table-view :title="'最近任务'" />
+        <task-table-view :title="'最近任务'"/>
       </el-row>
     </el-col>
 
     <el-col :span="12">
       <!--basic info-->
-      <spider-info-view />
+      <spider-info-view/>
     </el-col>
   </el-row>
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import TaskTableView from '../TableView/TaskTableView';
-import SpiderInfoView from '../InfoView/SpiderInfoView';
+import {
+  mapState
+} from 'vuex'
+import TaskTableView from '../TableView/TaskTableView'
+import SpiderInfoView from '../InfoView/SpiderInfoView'
 
 export default {
   name: 'SpiderOverview',
@@ -28,22 +30,27 @@ export default {
   data () {
     return {
       // spiderForm: {}
-    };
+    }
   },
   computed: {
     id () {
-      return this.$route.params.id;
+      return this.$route.params.id
     },
-    ...mapState('spider', ['spiderForm']),
-    ...mapState('deploy', ['deployList'])
+    ...mapState('spider', [
+      'spiderForm'
+    ]),
+    ...mapState('deploy', [
+      'deployList'
+    ])
   },
   methods: {},
-  created () {}
-};
+  created () {
+  }
+}
 </script>
 
 <style scoped>
-.title {
-  margin: 10px 0 3px 0;
-}
+  .title {
+    margin: 10px 0 3px 0;
+  }
 </style>

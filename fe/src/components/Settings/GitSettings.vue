@@ -1,5 +1,9 @@
 <template>
-  <el-tabs v-model="activeTabName" class="git-settings" @change="onChangeTab">
+  <el-tabs
+    v-model="activeTabName"
+    class="git-settings"
+    @change="onChangeTab"
+  >
     <el-tab-pane :label="'设置Git URL'" name="settings">
       <el-form
         class="git-settings-form"
@@ -7,7 +11,11 @@
         :model="spiderForm"
         ref="git-settings-form"
       >
-        <el-form-item :label="'Git URL'" prop="git_url" required>
+        <el-form-item
+          :label="'Git URL'"
+          prop="git_url"
+          required
+        >
           <el-input
             v-model="spiderForm.git_url"
             :placeholder="'Git URL'"
@@ -15,7 +23,10 @@
           >
           </el-input>
         </el-form-item>
-        <el-form-item :label="'需要验证'" prop="git_has_credential">
+        <el-form-item
+          :label="'需要验证'"
+          prop="git_has_credential"
+        >
           <el-switch
             v-model="spiderForm.git_has_credential"
             size="small"
@@ -45,7 +56,11 @@
           >
           </el-input>
         </el-form-item>
-        <el-form-item :label="'Git 分支'" prop="git_branch" required>
+        <el-form-item
+          :label="'Git 分支'"
+          prop="git_branch"
+          required
+        >
           <el-select
             v-model="spiderForm.git_branch"
             :placeholder="'Git 分支'"
@@ -59,7 +74,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item :label="'自动同步'" prop="git_auto_sync">
+        <el-form-item
+          :label="'自动同步'"
+          prop="git_auto_sync"
+        >
           <el-switch
             v-model="spiderForm.git_auto_sync"
             size="small"
@@ -89,19 +107,28 @@
           :label="'错误信息'"
           prop="git_git_sync_error"
         >
-          <el-alert type="error" :closable="false">
-            {{ spiderForm.git_sync_error }}
+          <el-alert
+            type="error"
+            :closable="false"
+          >
+            {{spiderForm.git_sync_error}}
           </el-alert>
         </el-form-item>
-        <el-form-item v-if="sshPublicKey" :label="'SSH 公钥'">
-          <el-alert type="info" :closable="false">
-            {{ sshPublicKey }}
+        <el-form-item
+          v-if="sshPublicKey"
+          :label="'SSH 公钥'"
+        >
+          <el-alert
+            type="info"
+            :closable="false"
+          >
+            {{sshPublicKey}}
           </el-alert>
           <span class="copy" @click="copySshPublicKey">
-            <i class="el-icon-copy-document"></i>
-            {{ "Copy" }}
-          </span>
-          <input id="ssh-public-key" v-model="sshPublicKey" v-show="true" />
+          <i class="el-icon-copy-document"></i>
+          {{'Copy'}}
+        </span>
+          <input id="ssh-public-key" v-model="sshPublicKey" v-show="true">
         </el-form-item>
       </el-form>
       <div class="action-wrapper">
@@ -112,7 +139,7 @@
           :icon="isGitResetLoading ? 'el-icon-loading' : 'el-icon-refresh-left'"
           @click="onReset"
         >
-          {{ "重置" }}
+          {{'重置'}}
         </el-button>
         <el-button
           size="small"
@@ -121,20 +148,17 @@
           :disabled="!spiderForm.git_url || isGitSyncLoading"
           @click="onSync"
         >
-          {{ "同步" }}
+          {{'同步'}}
         </el-button>
-        <el-button
-          size="small"
-          type="success"
-          @click="onSave"
-          icon="el-icon-check"
-        >
-          {{ "保存" }}
+        <el-button size="small" type="success" @click="onSave" icon="el-icon-check">
+          {{'保存'}}
         </el-button>
       </div>
     </el-tab-pane>
     <el-tab-pane label="Log" name="log">
-      <el-timeline class="log">
+      <el-timeline
+        class="log"
+      >
         <el-timeline-item
           v-for="c in commits"
           :key="c.hash"
@@ -144,13 +168,19 @@
           <div class="commit">
             <div class="row">
               <div class="message">
-                {{ c.message }}
+                {{c.message}}
               </div>
-              <div class="author">{{ c.author }} ({{ c.email }})</div>
+              <div class="author">
+                {{c.author}} ({{c.email}})
+              </div>
             </div>
             <div class="row" style="margin-top: 10px">
               <div class="tags">
-                <el-tag v-if="c.is_head" type="primary" size="mini">
+                <el-tag
+                  v-if="c.is_head"
+                  type="primary"
+                  size="mini"
+                >
                   <i class="fa fa-tag"></i>
                   HEAD
                 </el-tag>
@@ -161,7 +191,7 @@
                   size="mini"
                 >
                   <i class="fa fa-tag"></i>
-                  {{ b.label }}
+                  {{b.label}}
                 </el-tag>
                 <el-tag
                   v-for="b in c.remote_branches"
@@ -170,7 +200,7 @@
                   size="mini"
                 >
                   <i class="fa fa-tag"></i>
-                  {{ b.label }}
+                  {{b.label}}
                 </el-tag>
                 <el-tag
                   v-for="t in c.tags"
@@ -179,18 +209,14 @@
                   size="mini"
                 >
                   <i class="fa fa-tag"></i>
-                  {{ t.label }}
+                  {{t.label}}
                 </el-tag>
               </div>
               <div class="actions">
                 <el-button
                   v-if="!c.is_head"
                   type="danger"
-                  :icon="
-                    isGitCheckoutLoading
-                      ? 'el-icon-loading'
-                      : 'el-icon-position'
-                  "
+                  :icon="isGitCheckoutLoading ? 'el-icon-loading' : 'el-icon-position'"
                   size="mini"
                   @click="checkout(c)"
                 >
@@ -206,8 +232,10 @@
 </template>
 
 <script>
-import dayjs from 'dayjs';
-import { mapState } from 'vuex';
+import dayjs from 'dayjs'
+import {
+  mapState
+} from 'vuex'
 
 export default {
   name: 'GitSettings',
@@ -231,52 +259,47 @@ export default {
       sshPublicKey: '',
       activeTabName: 'settings',
       commits: []
-    };
+    }
   },
   computed: {
-    ...mapState('spider', ['spiderForm'])
+    ...mapState('spider', [
+      'spiderForm'
+    ])
   },
   methods: {
     onSave () {
       this.$refs['git-settings-form'].validate(async valid => {
-        if (!valid) return;
-        const res = await this.$store.dispatch('spider/editSpider');
+        if (!valid) return
+        const res = await this.$store.dispatch('spider/editSpider')
         if (!res.data.error) {
-          this.$message.success('Spider info has been saved successfully');
+          this.$message.success('Spider info has been saved successfully')
         }
-      });
+      })
     },
     async onGitUrlChange () {
-      if (!this.spiderForm.git_url) return;
-      this.isGitBranchesLoading = true;
+      if (!this.spiderForm.git_url) return
+      this.isGitBranchesLoading = true
       try {
-        const res = await this.$request.get('/git/branches', {
-          url: this.spiderForm.git_url
-        });
-        this.gitBranches = res.data.data;
+        const res = await this.$request.get('/git/branches', { url: this.spiderForm.git_url })
+        this.gitBranches = res.data.data
         if (!this.spiderForm.git_branch && this.gitBranches.length > 0) {
-          this.$set(this.spiderForm, 'git_branch', this.gitBranches[0]);
+          this.$set(this.spiderForm, 'git_branch', this.gitBranches[0])
         }
       } finally {
-        this.isGitBranchesLoading = false;
+        this.isGitBranchesLoading = false
       }
     },
     async onSync () {
-      this.isGitSyncLoading = true;
+      this.isGitSyncLoading = true
       try {
-        const res = await this.$request.post(
-          `/spiders/${this.spiderForm._id}/git/sync`
-        );
+        const res = await this.$request.post(`/spiders/${this.spiderForm._id}/git/sync`)
         if (!res.data.error) {
-          this.$message.success('Git has been synchronized successfully');
+          this.$message.success('Git has been synchronized successfully')
         }
       } finally {
-        this.isGitSyncLoading = false;
-        await this.updateGit();
-        await this.$store.dispatch(
-          'spider/getSpiderData',
-          this.$route.params.id
-        );
+        this.isGitSyncLoading = false
+        await this.updateGit()
+        await this.$store.dispatch('spider/getSpiderData', this.$route.params.id)
       }
     },
     onReset () {
@@ -287,167 +310,162 @@ export default {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'warning'
-        }
-      ).then(async () => {
-        this.isGitResetLoading = true;
-        try {
-          const res = await this.$request.post(
-            `/spiders/${this.spiderForm._id}/git/reset`
-          );
-          if (!res.data.error) {
-            this.$message.success('Git has been reset successfully');
+        })
+        .then(async () => {
+          this.isGitResetLoading = true
+          try {
+            const res = await this.$request.post(`/spiders/${this.spiderForm._id}/git/reset`)
+            if (!res.data.error) {
+              this.$message.success('Git has been reset successfully')
+            }
+          } finally {
+            this.isGitResetLoading = false
+            // await this.updateGit()
           }
-        } finally {
-          this.isGitResetLoading = false;
-          // await this.updateGit()
-        }
-      });
+        })
     },
     async getSshPublicKey () {
-      const res = await this.$request.get('/git/public-key');
-      this.sshPublicKey = res.data.data;
+      const res = await this.$request.get('/git/public-key')
+      this.sshPublicKey = res.data.data
     },
     copySshPublicKey () {
-      const el = document.querySelector('#ssh-public-key');
-      el.focus();
-      el.setSelectionRange(0, this.sshPublicKey.length);
-      document.execCommand('copy');
-      this.$message.success('SSH Public Key is copied to the clipboard');
+      const el = document.querySelector('#ssh-public-key')
+      el.focus()
+      el.setSelectionRange(0, this.sshPublicKey.length)
+      document.execCommand('copy')
+      this.$message.success('SSH Public Key is copied to the clipboard')
     },
     async getCommits () {
-      const res = await this.$request.get('/git/commits', {
-        spider_id: this.spiderForm._id
-      });
+      const res = await this.$request.get('/git/commits', { spider_id: this.spiderForm._id })
       this.commits = res.data.data.map(d => {
-        d.ts = dayjs(d.ts).format('YYYY-MM-DD HH:mm:ss');
-        return d;
-      });
+        d.ts = dayjs(d.ts).format('YYYY-MM-DD HH:mm:ss')
+        return d
+      })
     },
     async checkout (c) {
-      this.isGitCheckoutLoading = true;
+      this.isGitCheckoutLoading = true
       try {
-        const res = await this.$request.post('/git/checkout', {
-          spider_id: this.spiderForm._id,
-          hash: c.hash
-        });
+        const res = await this.$request.post('/git/checkout', { spider_id: this.spiderForm._id, hash: c.hash })
         if (!res.data.error) {
-          this.$message.success('Checkout success');
+          this.$message.success('Checkout success')
         }
       } finally {
-        this.isGitCheckoutLoading = false;
-        await this.getCommits();
+        this.isGitCheckoutLoading = false
+        await this.getCommits()
       }
     },
     async updateGit () {
-      this.getCommits();
+      this.getCommits()
     },
     getCommitType (c) {
-      if (c.is_head) return 'primary';
+      if (c.is_head) return 'primary'
       if (c.branches && c.branches.length) {
         if (c.branches.map(d => d.label).includes('master')) {
-          return 'danger';
+          return 'danger'
         } else {
-          return 'warning';
+          return 'warning'
         }
       }
       if (c.tags && c.tags.length) {
-        return 'success';
+        return 'success'
       }
       if (c.remote_branches && c.remote_branches.length) {
-        return 'info';
+        return 'info'
       }
     },
-    onChangeTab () {}
+    onChangeTab () {
+
+    }
   },
   async created () {
     if (this.spiderForm.git_url) {
-      this.onGitUrlChange();
+      this.onGitUrlChange()
     }
-    this.getSshPublicKey();
-    this.getCommits();
+    this.getSshPublicKey()
+    this.getCommits()
   }
-};
+}
 </script>
 
 <style scoped>
-.git-settings {
-  color: #606266;
-}
+  .git-settings {
+    color: #606266;
+  }
 
-.git-settings .git-settings-form {
-  width: 640px;
-}
+  .git-settings .git-settings-form {
+    width: 640px;
+  }
 
-.git-settings .git-settings-form >>> .el-alert {
-  padding: 0 5px;
-  margin: 0;
-}
+  .git-settings .git-settings-form >>> .el-alert {
+    padding: 0 5px;
+    margin: 0;
+  }
 
-.git-settings .git-settings-form >>> .el-alert__description {
-  padding: 0;
-  margin: 0;
-  font-size: 14px;
-  line-height: 24px;
-}
+  .git-settings .git-settings-form >>> .el-alert__description {
+    padding: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 24px;
+  }
 
-.git-settings .git-settings-form .copy {
-  display: inline;
-  line-height: 14px;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  cursor: pointer;
-}
+  .git-settings .git-settings-form .copy {
+    display: inline;
+    line-height: 14px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+  }
 
-.git-settings .git-settings-form .copy {
-}
+  .git-settings .git-settings-form .copy {
+  }
 
-#ssh-public-key {
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  left: 0;
-  height: 0;
-  /*visibility: hidden;*/
-}
+  #ssh-public-key {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    height: 0;
+    /*visibility: hidden;*/
+  }
 
-.git-settings .title {
-  border-bottom: 1px solid #dcdfe6;
-  padding-bottom: 15px;
-}
+  .git-settings .title {
+    border-bottom: 1px solid #DCDFE6;
+    padding-bottom: 15px;
+  }
 
-.git-settings .action-wrapper {
-  width: 640px;
-  text-align: right;
-  margin-top: 10px;
-}
+  .git-settings .action-wrapper {
+    width: 640px;
+    text-align: right;
+    margin-top: 10px;
+  }
 
-.git-settings .log {
-  height: calc(100vh - 280px);
-  overflow: auto;
-}
+  .git-settings .log {
+    height: calc(100vh - 280px);
+    overflow: auto;
+  }
 
-.git-settings .log .commit {
-  border-top: 1px solid rgb(244, 244, 245);
-  padding: 10px 0;
-}
+  .git-settings .log .commit {
+    border-top: 1px solid rgb(244, 244, 245);
+    padding: 10px 0;
+  }
 
-.git-settings .log .commit .row {
-  display: flex;
-  justify-content: space-between;
-}
+  .git-settings .log .commit .row {
+    display: flex;
+    justify-content: space-between;
+  }
 
-.git-settings .log .el-timeline-item {
-  /*cursor: pointer;*/
-}
+  .git-settings .log .el-timeline-item {
+    /*cursor: pointer;*/
+  }
 
-.git-settings .log .commit .row .tags .el-tag {
-  margin-right: 5px;
-}
+  .git-settings .log .commit .row .tags .el-tag {
+    margin-right: 5px;
+  }
 
-.git-settings .log .commit .row .actions {
-  right: 0;
-  bottom: 5px;
-  position: absolute;
-}
+  .git-settings .log .commit .row .actions {
+    right: 0;
+    bottom: 5px;
+    position: absolute;
+  }
 </style>
