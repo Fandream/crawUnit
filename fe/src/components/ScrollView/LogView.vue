@@ -28,7 +28,7 @@
           icon="el-icon-search"
           @click="onSearchLog"
         >
-          {{ "搜索日志" }}
+          {{'搜索日志'}}
         </el-button>
       </div>
       <div class="right">
@@ -41,14 +41,17 @@
           :pager-count="3"
           layout="sizes, prev, pager, next"
         />
-        <el-badge v-if="errorLogData.length > 0" :value="errorLogData.length">
+        <el-badge
+          v-if="errorLogData.length > 0"
+          :value="errorLogData.length"
+        >
           <el-button
             type="danger"
             size="small"
             icon="el-icon-warning-outline"
             @click="toggleErrors"
           >
-            {{ "Error Count" }}
+            {{'Error Count'}}
           </el-button>
         </el-badge>
       </div>
@@ -87,7 +90,7 @@
             @click="onClickError(item)"
           >
             <span class="line-content">
-              {{ item.msg }}
+              {{item.msg}}
             </span>
           </li>
         </ul>
@@ -97,138 +100,142 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-import VirtualList from "vue-virtual-scroll-list";
-import Convert from "ansi-to-html";
-import hasAnsi from "has-ansi";
+import {
+  mapState,
+  mapGetters
+} from 'vuex'
+import VirtualList from 'vue-virtual-scroll-list'
+import Convert from 'ansi-to-html'
+import hasAnsi from 'has-ansi'
 
-import LogItem from "./LogItem";
+import LogItem from './LogItem'
 
-const convert = new Convert();
+const convert = new Convert()
 export default {
-  name: "LogView",
+  name: 'LogView',
   components: {
     VirtualList
   },
   props: {
     data: {
       type: String,
-      default: ""
+      default: ''
     }
   },
-  data() {
+  data () {
     return {
       item: LogItem,
-      searchString: "",
+      searchString: '',
       isScrolling: false,
       isScrolling2nd: false,
       errorRegex: this.$utils.log.errorRegex,
       currentOffset: 0,
       isErrorsCollapsed: true,
       isErrorCollapsing: false
-    };
+    }
   },
   computed: {
-    ...mapState("task", [
-      "taskForm",
-      "taskLogTotal",
-      "logKeyword",
-      "isLogFetchLoading",
-      "errorLogData"
+    ...mapState('task', [
+      'taskForm',
+      'taskLogTotal',
+      'logKeyword',
+      'isLogFetchLoading',
+      'errorLogData'
     ]),
-    ...mapGetters("task", ["logData"]),
+    ...mapGetters('task', [
+      'logData'
+    ]),
     currentLogIndex: {
-      get() {
-        return this.$store.state.task.currentLogIndex;
+      get () {
+        return this.$store.state.task.currentLogIndex
       },
-      set(value) {
-        this.$store.commit("task/SET_CURRENT_LOG_INDEX", value);
+      set (value) {
+        this.$store.commit('task/SET_CURRENT_LOG_INDEX', value)
       }
     },
     logKeyword: {
-      get() {
-        return this.$store.state.task.logKeyword;
+      get () {
+        return this.$store.state.task.logKeyword
       },
-      set(value) {
-        this.$store.commit("task/SET_LOG_KEYWORD", value);
+      set (value) {
+        this.$store.commit('task/SET_LOG_KEYWORD', value)
       }
     },
     taskLogPage: {
-      get() {
-        return this.$store.state.task.taskLogPage;
+      get () {
+        return this.$store.state.task.taskLogPage
       },
-      set(value) {
-        this.$store.commit("task/SET_TASK_LOG_PAGE", value);
+      set (value) {
+        this.$store.commit('task/SET_TASK_LOG_PAGE', value)
       }
     },
     taskLogPageSize: {
-      get() {
-        return this.$store.state.task.taskLogPageSize;
+      get () {
+        return this.$store.state.task.taskLogPageSize
       },
-      set(value) {
-        this.$store.commit("task/SET_TASK_LOG_PAGE_SIZE", value);
+      set (value) {
+        this.$store.commit('task/SET_TASK_LOG_PAGE_SIZE', value)
       }
     },
     isLogAutoScroll: {
-      get() {
-        return this.$store.state.task.isLogAutoScroll;
+      get () {
+        return this.$store.state.task.isLogAutoScroll
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_AUTO_SCROLL", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_AUTO_SCROLL', value)
       }
     },
     isLogAutoFetch: {
-      get() {
-        return this.$store.state.task.isLogAutoFetch;
+      get () {
+        return this.$store.state.task.isLogAutoFetch
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_AUTO_FETCH", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_AUTO_FETCH', value)
       }
     },
     isLogFetchLoading: {
-      get() {
-        return this.$store.state.task.isLogFetchLoading;
+      get () {
+        return this.$store.state.task.isLogFetchLoading
       },
-      set(value) {
-        this.$store.commit("task/SET_IS_LOG_FETCH_LOADING", value);
+      set (value) {
+        this.$store.commit('task/SET_IS_LOG_FETCH_LOADING', value)
       }
     },
-    filteredLogData() {
+    filteredLogData () {
       return this.logData.filter(d => {
-        if (!this.searchString) return true;
-        return !!d.data.toLowerCase().match(this.searchString.toLowerCase());
-      });
+        if (!this.searchString) return true
+        return !!d.data.toLowerCase().match(this.searchString.toLowerCase())
+      })
     },
-    remainSize() {
-      const height = document.querySelector("body").clientHeight;
-      return (height - 240) / 18;
+    remainSize () {
+      const height = document.querySelector('body').clientHeight
+      return (height - 240) / 18
     }
   },
   watch: {
-    taskLogPage() {
-      this.$emit("search");
+    taskLogPage () {
+      this.$emit('search')
     },
-    taskLogPageSize() {
-      this.$emit("search");
+    taskLogPageSize () {
+      this.$emit('search')
     },
-    isLogAutoScroll() {
+    isLogAutoScroll () {
       if (this.isLogAutoScroll) {
-        this.$store
-          .dispatch("task/getTaskLog", {
-            id: this.$route.params.id,
-            keyword: this.logKeyword
-          })
-          .then(() => {
-            this.toBottom();
-          });
+        this.$store.dispatch('task/getTaskLog', {
+          id: this.$route.params.id,
+          keyword: this.logKeyword
+        }).then(() => {
+          this.toBottom()
+        })
       } else {
+
       }
     }
   },
   methods: {
-    getItemProps(index) {
-      const logItem = this.filteredLogData[index];
-      const isAnsi = hasAnsi(logItem.data);
+    getItemProps (index) {
+      const logItem = this.filteredLogData[index]
+      const isAnsi = hasAnsi(logItem.data)
       return {
         // <item/> will render with itemProps.
         // https://vuejs.org/v2/guide/render-function.html#createElement-Arguments
@@ -240,145 +247,147 @@ export default {
           active: logItem.active,
           isAnsi
         }
-      };
+      }
     },
-    onToBottom() {},
-    onScroll() {},
-    toBottom() {
-      this.$el.querySelector(".log-view").scrollTo({ top: 99999999 });
+    onToBottom () {
     },
-    toggleErrors() {
-      this.isErrorsCollapsed = !this.isErrorsCollapsed;
-      this.isErrorCollapsing = true;
+    onScroll () {
+    },
+    toBottom () {
+      this.$el.querySelector('.log-view').scrollTo({ top: 99999999 })
+    },
+    toggleErrors () {
+      this.isErrorsCollapsed = !this.isErrorsCollapsed
+      this.isErrorCollapsing = true
       setTimeout(() => {
-        this.isErrorCollapsing = false;
-      }, 300);
+        this.isErrorCollapsing = false
+      }, 300)
     },
-    async onClickError(item) {
-      const page = Math.ceil(item.seq / this.taskLogPageSize);
-      this.$store.commit("task/SET_LOG_KEYWORD", "");
-      this.$store.commit("task/SET_TASK_LOG_PAGE", page);
-      this.$store.commit("task/SET_IS_LOG_AUTO_SCROLL", false);
-      this.$store.commit("task/SET_ACTIVE_ERROR_LOG_ITEM", item);
-      this.$emit("search");
+    async onClickError (item) {
+      const page = Math.ceil(item.seq / this.taskLogPageSize)
+      this.$store.commit('task/SET_LOG_KEYWORD', '')
+      this.$store.commit('task/SET_TASK_LOG_PAGE', page)
+      this.$store.commit('task/SET_IS_LOG_AUTO_SCROLL', false)
+      this.$store.commit('task/SET_ACTIVE_ERROR_LOG_ITEM', item)
+      this.$emit('search')
     },
-    onSearchLog() {
-      this.$emit("search");
+    onSearchLog () {
+      this.$emit('search')
     }
   },
-  mounted() {
-    this.currentLogIndex = 0;
+  mounted () {
+    this.currentLogIndex = 0
     this.handle = setInterval(() => {
       if (this.isLogAutoScroll) {
-        this.toBottom();
+        this.toBottom()
       }
-    }, 200);
+    }, 200)
   },
-  destroyed() {
-    clearInterval(this.handle);
+  destroyed () {
+    clearInterval(this.handle)
   }
-};
+}
 </script>
 
 <style scoped>
-.filter-wrapper {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
+  .filter-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
 
-.content {
-  display: block;
-}
+  .content {
+    display: block;
+  }
 
-.log-view-wrapper {
-  float: left;
-  flex-basis: calc(100% - 240px);
-  width: calc(100% - 300px);
-  transition: width 0.3s;
-}
+  .log-view-wrapper {
+    float: left;
+    flex-basis: calc(100% - 240px);
+    width: calc(100% - 300px);
+    transition: width 0.3s;
+  }
 
-.log-view-wrapper.errors-collapsed {
-  flex-basis: 100%;
-  width: 100%;
-}
+  .log-view-wrapper.errors-collapsed {
+    flex-basis: 100%;
+    width: 100%;
+  }
 
-.log-view {
-  margin-top: 0 !important;
-  overflow-y: scroll !important;
-  list-style: none;
-  color: #a9b7c6;
-  background: #2b2b2b;
-  border: none;
-}
+  .log-view {
+    margin-top: 0 !important;
+    overflow-y: scroll !important;
+    list-style: none;
+    color: #A9B7C6;
+    background: #2B2B2B;
+    border: none;
+  }
 
-.errors-wrapper {
-  float: left;
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  flex-basis: 240px;
-  width: 300px;
-  transition: opacity 0.3s;
-  border-top: 1px solid #dcdfe6;
-  border-right: 1px solid #dcdfe6;
-  border-bottom: 1px solid #dcdfe6;
-  height: calc(100vh - 240px);
-  font-size: 16px;
-  overflow: auto;
-}
+  .errors-wrapper {
+    float: left;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    flex-basis: 240px;
+    width: 300px;
+    transition: opacity 0.3s;
+    border-top: 1px solid #DCDFE6;
+    border-right: 1px solid #DCDFE6;
+    border-bottom: 1px solid #DCDFE6;
+    height: calc(100vh - 240px);
+    font-size: 16px;
+    overflow: auto;
+  }
 
-.errors-wrapper.collapsed {
-  width: 0;
-}
+  .errors-wrapper.collapsed {
+    width: 0;
+  }
 
-.errors-wrapper .error-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+  .errors-wrapper .error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-.errors-wrapper .error-list .error-item {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  /*height: 18px;*/
-  border-bottom: 1px solid white;
-  padding: 5px 0;
-  background: #f56c6c;
-  color: white;
-  cursor: pointer;
-}
+  .errors-wrapper .error-list .error-item {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    /*height: 18px;*/
+    border-bottom: 1px solid white;
+    padding: 5px 0;
+    background: #F56C6C;
+    color: white;
+    cursor: pointer;
+  }
 
-.errors-wrapper .error-list .error-item.active {
-  background: #e6a23c;
-  font-weight: bolder;
-  text-decoration: underline;
-}
+  .errors-wrapper .error-list .error-item.active {
+    background: #E6A23C;
+    font-weight: bolder;
+    text-decoration: underline;
+  }
 
-.errors-wrapper .error-list .error-item:hover {
-  font-weight: bolder;
-  text-decoration: underline;
-}
+  .errors-wrapper .error-list .error-item:hover {
+    font-weight: bolder;
+    text-decoration: underline;
+  }
 
-.errors-wrapper .error-list .error-item .line-no {
-  display: inline-block;
-  text-align: right;
-  width: 70px;
-}
+  .errors-wrapper .error-list .error-item .line-no {
+    display: inline-block;
+    text-align: right;
+    width: 70px;
+  }
 
-.errors-wrapper .error-list .error-item .line-content {
-  display: inline;
-  width: calc(100% - 70px);
-  padding-left: 10px;
-}
+  .errors-wrapper .error-list .error-item .line-content {
+    display: inline;
+    width: calc(100% - 70px);
+    padding-left: 10px;
+  }
 
-.right {
-  display: flex;
-  align-items: center;
-}
+  .right {
+    display: flex;
+    align-items: center;
+  }
 
-.right .el-pagination {
-  margin-right: 10px;
-}
+  .right .el-pagination {
+    margin-right: 10px;
+  }
 </style>

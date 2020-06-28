@@ -3,30 +3,22 @@
     <!--overall stats-->
     <el-row>
       <div class="metric-list">
-        <metric-card
-          label="30-Day Tasks"
-          icon="fa fa-play"
-          :value="overviewStats.task_count"
-          type="danger"
-        />
-        <metric-card
-          label="30-Day Results"
-          icon="fa fa-table"
-          :value="overviewStats.result_count"
-          type="primary"
-        />
-        <metric-card
-          label="Success Rate"
-          icon="fa fa-check"
-          :value="getPercentStr(overviewStats.success_rate)"
-          type="success"
-        />
-        <metric-card
-          label="Avg Duration (sec)"
-          icon="fa fa-hourglass"
-          :value="getDecimal(overviewStats.avg_runtime_duration)"
-          type="warning"
-        />
+        <metric-card label="30-Day Tasks"
+                     icon="fa fa-play"
+                     :value="overviewStats.task_count"
+                     type="danger"/>
+        <metric-card label="30-Day Results"
+                     icon="fa fa-table"
+                     :value="overviewStats.result_count"
+                     type="primary"/>
+        <metric-card label="Success Rate"
+                     icon="fa fa-check"
+                     :value="getPercentStr(overviewStats.success_rate)"
+                     type="success"/>
+        <metric-card label="Avg Duration (sec)"
+                     icon="fa fa-hourglass"
+                     :value="getDecimal(overviewStats.avg_runtime_duration)"
+                     type="warning"/>
       </div>
     </el-row>
     <!--./overall stats-->
@@ -34,7 +26,7 @@
     <el-row>
       <el-col :span="24">
         <el-card class="chart-wrapper">
-          <h4>{{ "每日任务数" }}</h4>
+          <h4>{{'每日任务数'}}</h4>
           <div id="task-line" class="chart"></div>
         </el-card>
       </el-col>
@@ -43,7 +35,7 @@
     <el-row>
       <el-col :span="24">
         <el-card class="chart-wrapper">
-          <h4>{{ "每日平均运行时长(秒)" }}</h4>
+          <h4>{{'每日平均运行时长(秒)'}}</h4>
           <div id="duration-line" class="chart"></div>
         </el-card>
       </el-col>
@@ -52,145 +44,143 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import MetricCard from "./MetricCard";
-import echarts from "echarts";
+import {
+  mapState
+} from 'vuex'
+import MetricCard from './MetricCard'
+import echarts from 'echarts'
 
 export default {
-  name: "SpiderStats",
+  name: 'SpiderStats',
   components: { MetricCard },
-  data() {
+  data () {
     return {
       loading: false
-    };
+    }
   },
   methods: {
-    renderTaskLine() {
-      const chart = echarts.init(this.$el.querySelector("#task-line"));
+    renderTaskLine () {
+      const chart = echarts.init(this.$el.querySelector('#task-line'))
       const option = {
         grid: {
           top: 20,
           bottom: 40
         },
         xAxis: {
-          type: "category",
+          type: 'category',
           data: this.dailyStats.map(d => d.date)
         },
         yAxis: {
-          type: "value"
+          type: 'value'
         },
-        series: [
-          {
-            type: "line",
-            data: this.dailyStats.map(d => d.task_count),
-            areaStyle: {},
-            smooth: true
-          }
-        ],
+        series: [{
+          type: 'line',
+          data: this.dailyStats.map(d => d.task_count),
+          areaStyle: {},
+          smooth: true
+        }],
         tooltip: {
-          trigger: "axis",
+          trigger: 'axis',
           show: true
         }
-      };
-      chart.setOption(option);
+      }
+      chart.setOption(option)
     },
 
-    renderDurationLine() {
-      const chart = echarts.init(this.$el.querySelector("#duration-line"));
+    renderDurationLine () {
+      const chart = echarts.init(this.$el.querySelector('#duration-line'))
       const option = {
         grid: {
           top: 20,
           bottom: 40
         },
         xAxis: {
-          type: "category",
+          type: 'category',
           data: this.dailyStats.map(d => d.date)
         },
         yAxis: {
-          type: "value"
+          type: 'value'
         },
-        series: [
-          {
-            type: "line",
-            data: this.dailyStats.map(d => d.avg_runtime_duration),
-            areaStyle: {},
-            smooth: true
-          }
-        ],
+        series: [{
+          type: 'line',
+          data: this.dailyStats.map(d => d.avg_runtime_duration),
+          areaStyle: {},
+          smooth: true
+        }],
         tooltip: {
-          trigger: "axis",
+          trigger: 'axis',
           show: true
         }
-      };
-      chart.setOption(option);
+      }
+      chart.setOption(option)
     },
 
-    render() {
-      this.renderTaskLine();
-      this.renderDurationLine();
+    render () {
+      this.renderTaskLine()
+      this.renderDurationLine()
     },
 
-    update() {
-      this.loading = true;
-      this.$store
-        .dispatch("spider/getSpiderStats")
+    update () {
+      this.loading = true
+      this.$store.dispatch('spider/getSpiderStats')
         .then(() => {
-          this.render();
+          this.render()
         })
         .catch(() => {
-          this.$message.error("An error happened when fetching the data");
+          this.$message.error('An error happened when fetching the data')
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
 
-    getPercentStr(value) {
-      if (value === undefined) return "NA";
-      return (value * 100).toFixed(2) + "%";
+    getPercentStr (value) {
+      if (value === undefined) return 'NA'
+      return (value * 100).toFixed(2) + '%'
     },
 
-    getDecimal(value) {
-      if (value === undefined) return "NA";
-      return value.toFixed(2);
+    getDecimal (value) {
+      if (value === undefined) return 'NA'
+      return value.toFixed(2)
     }
   },
   computed: {
-    ...mapState("spider", [
-      "overviewStats",
-      "statusStats",
-      "nodeStats",
-      "dailyStats"
+    ...mapState('spider', [
+      'overviewStats',
+      'statusStats',
+      'nodeStats',
+      'dailyStats'
     ])
   },
-  mounted() {}
-};
+  mounted () {
+  }
+}
 </script>
 
 <style scoped>
-.metric-list {
-  display: flex;
-}
+  .metric-list {
+    display: flex;
+  }
 
-.metric-list .metric-card {
-  flex-basis: 25%;
-}
+  .metric-list .metric-card {
+    flex-basis: 25%;
+  }
 
-.chart-wrapper {
-  margin-top: 20px;
-}
+  .chart-wrapper {
+    margin-top: 20px;
+  }
 
-.chart {
-  width: 100%;
-  height: 240px;
-}
+  .chart {
+    width: 100%;
+    height: 240px;
+  }
 
-.table {
-  height: 240px;
-}
+  .table {
+    height: 240px;
+  }
 
-h4 {
-  display: inline-block;
-  margin: 0;
-}
+  h4 {
+    display: inline-block;
+    margin: 0
+  }
 </style>

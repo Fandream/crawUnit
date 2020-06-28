@@ -1,26 +1,26 @@
 const state = {
-  lang: window.localStorage.getItem("lang") || "zh"
-};
+  lang: window.localStorage.getItem('lang') || 'zh'
+}
 
 const getters = {
-  lang(state) {
-    if (state.lang === "en") {
-      return "English";
-    } else if (state.lang === "zh") {
-      return "中文";
+  lang (state) {
+    if (state.lang === 'en') {
+      return 'English'
+    } else if (state.lang === 'zh') {
+      return '中文'
     } else {
-      return state.lang;
+      return state.lang
     }
   }
-};
+}
 
 const mutations = {
-  SET_LANG(state, value) {
-    state.lang = value;
+  SET_LANG (state, value) {
+    state.lang = value
   }
-};
+}
 
-const actions = {};
+const actions = {}
 
 export default {
   namespaced: true,
@@ -28,4 +28,4 @@ export default {
   getters,
   mutations,
   actions
-};
+}
