@@ -164,12 +164,12 @@ export default {
       },
       // tableData,
       columns: [
-        { name: 'name', label: '名称', width: '220' },
-        { name: 'ip', label: 'IP地址', width: '160' },
-        { name: 'type', label: '节点类型', width: '120' },
+        { name: 'name', label: '名称', width: '320', align: 'center' },
+        { name: 'ip', label: 'IP地址', width: '260', align: 'center' },
+        { name: 'type', label: '节点类型', width: '220', align: 'center' },
         // { name: 'port', label: 'Port', width: '80' },
-        { name: 'status', label: '状态', width: '120' },
-        { name: 'description', label: '描述', width: 'auto' }
+        { name: 'status', label: '状态', width: '220', align: 'center' }
+        // { name: 'description', label: '描述', width: 'auto' }
       ],
       nodeFormRules: {
         name: [{ required: true, message: 'Required Field', trigger: 'change' }]
