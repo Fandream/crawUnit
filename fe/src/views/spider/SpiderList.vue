@@ -497,10 +497,10 @@
           </el-table-column>
         </template>
         <el-table-column
-          :label="'操作'"
-          align="center"
-          fixed="right"
-          width="140"
+                :label="'操作'"
+                align="left"
+                fixed="right"
+                width="140px"
         >
           <template slot-scope="scope">
             <el-tooltip :content="'查看'" placement="top">
@@ -643,12 +643,12 @@ export default {
       const columns = [];
       columns.push({ name: 'display_name', label: '名称', width: '160', align: 'center', sortable: true });
       columns.push({ name: 'type', label: '爬虫类型', width: '120', sortable: true });
-      columns.push({ name: 'is_scrapy', label: '是否是Scrapy', width: '80' });
-      columns.push({ name: 'latest_tasks', label: '最近任务', width: '80' });
-      columns.push({ name: 'last_status', label: '上次运行状态', width: '120' });
+      columns.push({ name: 'is_scrapy', label: '是否是Scrapy', width: 'auto' });
+      columns.push({ name: 'latest_tasks', label: '最近任务', width: 'auto' });
+      columns.push({ name: 'last_status', label: '上次运行状态', width: 'auto' });
       columns.push({ name: 'last_run_ts', label: '上次运行', width: '170', align: 'center' });
-      columns.push({ name: 'update_ts', label: '更新时间', width: '170' });
-      columns.push({ name: 'create_ts', label: '创建时间', width: '170' });
+      columns.push({ name: 'update_ts', label: '更新时间', width: 'auto' });
+      columns.push({ name: 'create_ts', label: '创建时间', width: 'auto' });
       return columns;
     },
     activeNodeList () {
