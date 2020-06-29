@@ -497,10 +497,10 @@
           </el-table-column>
         </template>
         <el-table-column
-                :label="'操作'"
-                align="left"
-                fixed="right"
-                width="140px"
+          :label="'操作'"
+          align="left"
+          fixed="right"
+          width="140px"
         >
           <template slot-scope="scope">
             <el-tooltip :content="'查看'" placement="top">
@@ -642,7 +642,6 @@ export default {
     columns () {
       const columns = [];
       columns.push({ name: 'display_name', label: '名称', width: '160', align: 'center', sortable: true });
-      columns.push({ name: 'type', label: '爬虫类型', width: '120', sortable: true });
       columns.push({ name: 'is_scrapy', label: '是否是Scrapy', width: 'auto' });
       columns.push({ name: 'latest_tasks', label: '最近任务', width: 'auto' });
       columns.push({ name: 'last_status', label: '上次运行状态', width: 'auto' });

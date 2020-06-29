@@ -1,5 +1,6 @@
 <template>
-  <div class="app-container">
+  <div>
+    <div class="app-container">
     <el-row>
       <ul class="metric-list">
         <li class="metric-item" v-for="m in metrics" @click="onClickMetric(m)" :key="m.name">
@@ -8,24 +9,37 @@
             <i :class="m.icon"></i>
           </div>
           <div class="metric-content" :class="m.color">
-            <div class="metric-wrapper">
-              <div class="metric-number">
-                {{overviewStats[m.name]}}
-              </div>
-              <div class="metric-name">
-                {{m.label}}
-              </div>
+            <div class="metric-label">
+              {{m.label}}
+            </div>
+            <div class="metric-number">
+              {{overviewStats[m.name]}}
             </div>
           </div>
         </li>
       </ul>
     </el-row>
-    <el-row>
-      <el-card shadow="hover">
-        <h4 class="title">{{'每日新增任务数'}}</h4>
-        <div id="echarts-daily-tasks" class="echarts-box"></div>
-      </el-card>
-    </el-row>
+  </div>
+    <div class="app-container">
+      <el-row>
+        <ul class="metric-list">
+          <li class="metric-item" v-for="m in metrics2" @click="onClickMetric(m)" :key="m.name">
+            <div class="metric-icon" :class="m.color">
+              <!--            <font-awesome-icon :icon="m.icon"/>-->
+              <i :class="m.icon"></i>
+            </div>
+            <div class="metric-content" :class="m.color">
+              <div class="metric-label">
+                {{m.label}}
+              </div>
+              <div class="metric-number">
+                {{overviewStats[m.name]}}
+              </div>
+            </div>
+          </li>
+        </ul>
+      </el-row>
+    </div>
   </div>
 </template>
 
@@ -42,7 +56,10 @@ export default {
       dailyTasks: [],
       metrics: [
         { name: 'task_count', label: '总任务数', icon: 'fa fa-check', color: 'blue', path: 'tasks' },
-        { name: 'spider_count', label: '爬虫', icon: 'fa fa-bug', color: 'green', path: 'spiders' },
+        { name: 'spider_count', label: '爬虫', icon: 'fa fa-bug', color: 'green', path: 'spiders' }
+
+      ],
+      metrics2: [
         { name: 'active_node_count', label: '在线节点', icon: 'fa fa-server', color: 'red', path: 'nodes' },
         { name: 'project_count', label: '项目', icon: 'fa fa-code-fork', color: 'grey', path: 'projects' }
       ]
@@ -111,8 +128,8 @@ export default {
     }
 
     .metric-item {
-      flex-basis: 20%;
-      height: 64px;
+      flex-basis: 50%;
+      height: 128px;
       display: flex;
       color: white;
       cursor: pointer;
@@ -143,12 +160,19 @@ export default {
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
 
-        .metric-number {
+        .metric-number{
           font-weight: bolder;
-          margin-bottom: 5px;
+          /*margin-bottom: 5px;*/
+          margin: 0 auto;
+          font-size: 50px;
+        }
+        .metric-label {
+          font-weight: bolder;
+          /*margin-bottom: 5px;*/
+          margin: 0 auto;
+          font-size: 50px;
         }
       }
-
       .metric-icon.blue,
       .metric-content.blue {
         background: #409eff;

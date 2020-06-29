@@ -190,7 +190,7 @@ export default {
         }
 
         // 消息提示
-        this.$message.success('A task has been scheduled successfully')
+        this.$message.success('已经成功派发一个任务')
 
         this.$emit('close')
 

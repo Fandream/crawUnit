@@ -438,7 +438,7 @@ export default {
     async onSettingsSave () {
       const res = await this.$store.dispatch('spider/saveSpiderScrapySettings', this.$route.params.id)
       if (!res.data.error) {
-        this.$message.success('Saved successfully')
+        this.$message.success('成功保存')
       }
     },
     onSettingsAdd () {
@@ -506,7 +506,7 @@ export default {
           form: this.addSpiderForm
         })
         if (!res.data.error) {
-          this.$message.success('Saved successfully')
+          this.$message.success('成功保存')
         }
         this.isAddSpiderVisible = false
         this.isAddSpiderLoading = false
@@ -621,7 +621,7 @@ export default {
     async onItemsSave () {
       const res = await this.$store.dispatch('spider/saveSpiderScrapyItems', this.$route.params.id)
       if (!res.data.error) {
-        this.$message.success('Saved successfully')
+        this.$message.success('成功保存')
       }
     },
     async onClickSpider (spiderName) {

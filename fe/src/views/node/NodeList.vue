@@ -107,7 +107,7 @@
                              :width="col.width">
             </el-table-column>
           </template>
-          <el-table-column :label="'操作'" align="left" width="160" fixed="right">
+          <el-table-column :label="'操作'" align="left" width="auto" fixed="right">
             <template slot-scope="scope">
               <el-tooltip :content="'查看'" placement="top">
                 <el-button type="primary" icon="el-icon-search" size="mini" @click="onView(scope.row)"></el-button>
@@ -147,7 +147,6 @@ import NodeInstallationMatrix from '../../components/Node/NodeInstallationMatrix
 
 export default {
   name: 'NodeList',
-  components: { NodeNetwork },
   data () {
     return {
       pagination: {
@@ -165,7 +164,7 @@ export default {
         { name: 'ip', label: 'IP地址', width: '260', align: 'center' },
         { name: 'type', label: '节点类型', width: '220', align: 'center' },
         // { name: 'port', label: 'Port', width: '80' },
-        { name: 'status', label: '状态', width: '220', align: 'center' }
+        { name: 'status', label: '状态', width: 'auto', align: 'center' }
         // { name: 'description', label: '描述', width: 'auto' }
       ],
       nodeFormRules: {

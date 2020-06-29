@@ -53,16 +53,16 @@
           />
         </el-form-item>
         <el-row>
-        <el-col :span="6">
-          <el-form-item v-if="spiderForm.type === 'customized' && !isView" :label="'是否为 Scrapy'" prop="is_scrapy">
-            <el-switch
-              v-model="spiderForm.is_scrapy"
-              active-color="#13ce66"
-              :disabled="isView || isPublic"
-              @change="onIsScrapyChange"
-            />
-          </el-form-item>
-        </el-col>
+          <el-col :span="6">
+            <el-form-item v-if="spiderForm.type === 'customized' && !isView" :label="'是否为 Scrapy'" prop="is_scrapy">
+              <el-switch
+                v-model="spiderForm.is_scrapy"
+                active-color="#13ce66"
+                :disabled="isView || isPublic"
+                @change="onIsScrapyChange"
+              />
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </el-row>
@@ -184,7 +184,7 @@ export default {
         if (!valid) return
         const res = await this.$store.dispatch('spider/editSpider')
         if (!res.data.error) {
-          this.$message.success('Spider info has been saved successfully')
+          this.$message.success('爬虫信息已成功保存')
         }
         await this.$store.dispatch('spider/getSpiderData', this.$route.params.id)
         if (this.spiderForm.is_scrapy) {
