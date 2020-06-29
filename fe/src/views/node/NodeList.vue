@@ -132,9 +132,6 @@
         </div>
         <!--./table list-->
       </el-tab-pane>
-      <el-tab-pane :label="'拓扑图'">
-        <node-network :active-tab="activeTab"/>
-      </el-tab-pane>
     </el-tabs>
   </div>
 </template>

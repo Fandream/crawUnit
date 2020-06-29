@@ -103,66 +103,16 @@
               <span class="action-item-text">{{'新建目录'}}</span>
             </li>
           </ul>
-          <el-button
-            class="add-btn"
-            size="small"
-            type="primary"
-            icon="el-icon-plus"
-            slot="reference"
-            :disabled="isDisabled"
-            @click="onEmptyClick"
-          >
-            {{'添加'}}
-          </el-button>
         </el-popover>
       </div>
     </div>
 
     <div class="main-content">
       <div v-if="!showFile" class="file-list">
-        {{'请在左侧选择一个文件或点击添加按钮.'}}
+        {{'请在左侧选中一个文件以显示.'}}
       </div>
       <template v-else>
         <div class="top-part">
-          <!--back-->
-          <div class="action-container">
-            <el-popover v-model="isShowDelete" trigger="click">
-              <el-button size="small" type="default" @click="() => this.isShowDelete = false">
-                {{'取消'}}
-              </el-button>
-              <el-button size="small" type="danger" @click="onFileDelete">
-                {{'确认'}}
-              </el-button>
-              <template slot="reference">
-                <el-button type="danger" size="small" style="margin-right: 10px;" :disabled="isDisabled">
-                  <font-awesome-icon :icon="['fa', 'trash']"/>
-                  {{'删除'}}
-                </el-button>
-              </template>
-            </el-popover>
-            <el-popover v-model="isShowRename" trigger="click">
-              <el-input v-model="name" :placeholder="'Name'" style="margin-bottom: 10px"/>
-              <div style="text-align: right">
-                <el-button size="small" type="warning" @click="onRenameFile">
-                  {{'确认'}}
-                </el-button>
-              </div>
-              <template slot="reference">
-                <div>
-                  <el-button type="warning" size="small" style="margin-right: 10px;" :disabled="isDisabled" @click="onOpenRename">
-                    <font-awesome-icon :icon="['fa', 'redo']"/>
-                    {{'重命名'}}
-                  </el-button>
-                </div>
-              </template>
-            </el-popover>
-            <el-button type="success" size="small" style="margin-right: 10px;" :disabled="isDisabled" @click="onFileSave">
-              <font-awesome-icon :icon="['fa', 'save']"/>
-              {{'保存'}}
-            </el-button>
-          </div>
-          <!--./back-->
-
           <!--file path-->
           <div class="file-path-container">
             <div class="file-path">{{currentPath}}</div>

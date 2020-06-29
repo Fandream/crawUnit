@@ -52,20 +52,7 @@
             :disabled="isView || isPublic"
           />
         </el-form-item>
-        <el-form-item :label="'爬虫类型'">
-          <el-select v-model="spiderForm.type" :placeholder="'爬虫类型'" :disabled="true" clearable>
-            <el-option value="configurable" :label="'可配置'"></el-option>
-            <el-option value="customized" :label="'自定义'"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item :label="'备注'">
-          <el-input
-            type="textarea"
-            v-model="spiderForm.remark"
-            :placeholder="'备注'"
-            :disabled="isView || isPublic"
-          />
-        </el-form-item><el-row>
+        <el-row>
         <el-col :span="6">
           <el-form-item v-if="spiderForm.type === 'customized' && !isView" :label="'是否为 Scrapy'" prop="is_scrapy">
             <el-switch

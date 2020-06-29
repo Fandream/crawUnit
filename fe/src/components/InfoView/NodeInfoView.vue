@@ -12,13 +12,6 @@
         <el-form-item :label="'节点IP'" prop="ip" required>
           <el-input v-model="nodeForm.ip" :placeholder="'节点IP'" disabled></el-input>
         </el-form-item>
-        <el-form-item :label="'节点MAC'" prop="ip" required>
-          <el-input v-model="nodeForm.mac" :placeholder="'节点MAC'" disabled></el-input>
-        </el-form-item>
-        <el-form-item :label="'描述'">
-          <el-input type="textarea" v-model="nodeForm.description" :placeholder="'描述'" :disabled="isView">
-          </el-input>
-        </el-form-item>
       </el-form>
     </el-row>
     <el-row class="button-container" v-if="!isView">
