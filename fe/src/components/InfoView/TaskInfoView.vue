@@ -29,9 +29,6 @@
         <el-form-item :label="'结束时间'">
           <el-input :value="getTime(taskForm.finish_ts)" placeholder="结束时间" disabled></el-input>
         </el-form-item>
-        <el-form-item :label="'等待时长(秒)'">
-          <el-input :value="getWaitDuration(taskForm)" placeholder="等待时长(秒)" disabled></el-input>
-        </el-form-item>
         <el-form-item :label="'运行时长(秒)'">
           <el-input :value="getRuntimeDuration(taskForm)" placeholder="运行时长(秒)" disabled></el-input>
         </el-form-item>
