@@ -52,12 +52,10 @@
                 @change="onFilterChange"
               >
                 <el-option value="" :label="'全部'"></el-option>
-                <el-option value="pending" :label="'待定'"></el-option>
                 <el-option value="running" :label="'进行中'"></el-option>
                 <el-option value="finished" :label="'已完成'"></el-option>
                 <el-option value="error" :label="'错误'"></el-option>
                 <el-option value="cancelled" :label="'取消'"></el-option>
-                <el-option value="abnormal" :label="'异常'"></el-option>
               </el-select>
             </el-form-item>
           </el-form>

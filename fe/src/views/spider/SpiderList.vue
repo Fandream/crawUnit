@@ -115,12 +115,12 @@
       width="920px"
     >
       <el-tabs v-model="activeSpiderTaskStatus">
-        <el-tab-pane name="pending" :label="'待定'" />
+<!--        <el-tab-pane name="pending" :label="'待定'" />-->
         <el-tab-pane name="running" :label="'进行中'" />
         <el-tab-pane name="finished" :label="'已完成'" />
         <el-tab-pane name="error" :label="'错误'" />
         <el-tab-pane name="cancelled" :label="'已取消'" />
-        <el-tab-pane name="abnormal" :label="'异常'" />
+<!--        <el-tab-pane name="abnormal" :label="'异常'" />-->
       </el-tabs>
       <el-table
         :data="activeNodeList"
