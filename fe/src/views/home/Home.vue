@@ -1,26 +1,25 @@
 <template>
   <div>
-      <h1 class="h1" align="center">CrawUnit</h1>
+    <h1 class="h1" align="center">CrawUnit</h1>
     <div class="app-container">
-    <el-row>
-      <ul class="metric-list">
-        <li class="metric-item" v-for="m in metrics" @click="onClickMetric(m)" :key="m.name">
-          <div class="metric-icon" :class="m.color">
-            <!--            <font-awesome-icon :icon="m.icon"/>-->
-            <i :class="m.icon"></i>
-          </div>
-          <div class="metric-content" :class="m.color">
-            <div class="metric-label">
-              {{m.label}}
+      <el-row>
+        <ul class="metric-list">
+          <li class="metric-item" v-for="m in metrics" @click="onClickMetric(m)" :key="m.name">
+            <div class="metric-icon" :class="m.color">
+              <i :class="m.icon"></i>
             </div>
-            <div class="metric-number">
-              {{overviewStats[m.name]}}
+            <div class="metric-content" :class="m.color">
+              <div class="metric-label">
+                {{m.label}}
+              </div>
+              <div class="metric-number">
+                {{overviewStats[m.name]}}
+              </div>
             </div>
-          </div>
-        </li>
-      </ul>
-    </el-row>
-  </div>
+          </li>
+        </ul>
+      </el-row>
+    </div>
     <div class="app-container">
       <el-row>
         <ul class="metric-list">
@@ -57,7 +56,6 @@ export default {
       metrics: [
         { name: 'task_count', label: '总任务数', icon: 'fa fa-check', color: 'blue', path: 'tasks' },
         { name: 'spider_count', label: '爬虫', icon: 'fa fa-bug', color: 'green', path: 'spiders' }
-
       ],
       metrics2: [
         { name: 'active_node_count', label: '在线节点', icon: 'fa fa-server', color: 'red', path: 'nodes' },
@@ -111,12 +109,12 @@ export default {
 </script>
 <style scoped>
   .h1{
-      font-size: 64px;
-  width: 200px;
-  position: relative;
-  color: #1482f0;
-  left: 50%;
-  transform: translateX(-60%);
+    font-size: 64px;
+    width: 200px;
+    position: relative;
+    color: #1482f0;
+    left: 50%;
+    transform: translateX(-60%);
 
   }
   .h1::after{
@@ -124,12 +122,12 @@ export default {
     width: 50px;
     height:50px;
     position: absolute;
-      left:50%;
-      display: block;
-      background: url('/favicon.ico') no-repeat;
-      background-size: 100%;
-      left: -80px;
-  top: 22px;
+    left:50%;
+    display: block;
+    background: url('/favicon.ico') no-repeat;
+    background-size: 100%;
+    left: -80px;
+    top: 22px;
   }
 </style>
 <style scoped lang="scss">
