@@ -213,7 +213,7 @@ export default {
 
       this.uploadLoading = false
 
-      this.$message.success('Uploaded spider files successfully')
+      this.$message.success('上传成功')
     },
     onUploadError () {
       this.uploadLoading = false
