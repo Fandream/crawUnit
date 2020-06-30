@@ -708,7 +708,7 @@ export default {
         try {
           res2 = await this.$store.dispatch('spider/addSpider');
         } catch (e) {
-          this.$message.error('Something wrong happened');
+          this.$message.error('发生错误');
           return;
         }
         this.$router.push(`/spiders/${res2.data.data._id}`);

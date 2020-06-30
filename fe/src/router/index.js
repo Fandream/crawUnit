@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import store from '../store';
 import request from '../api/request';
-import stats from '../utils/stats';
 import Layout from '../views/layout/Layout';
 
 Vue.use(Router);
@@ -153,7 +152,6 @@ router.afterEach(async (to, from, next) => {
     const version = res.data.data;
     store.commit('version/SET_VERSION', version);
     sessionStorage.setItem('v', version);
-    stats.sendPv(to.path);
   }
 });
 

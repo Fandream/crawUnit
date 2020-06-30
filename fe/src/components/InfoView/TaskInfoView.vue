@@ -84,7 +84,7 @@ export default {
     onStop () {
       this.$store.dispatch('task/cancelTask', this.$route.params.id)
         .then(() => {
-          this.$message.success(`Task "${this.$route.params.id}" has been sent signal to stop`)
+          this.$message.success(`任务 "${this.$route.params.id}" 已经停止`)
         })
     },
     getTime (str) {

@@ -33,10 +33,8 @@
 import { mapState } from 'vuex';
 import FileList from '../../components/File/FileList';
 import SpiderOverview from '../../components/Overview/SpiderOverview';
-import SpiderStats from '../../components/Stats/SpiderStats';
 import ConfigList from '../../components/Config/ConfigList';
 import SpiderScrapy from '../../components/Scrapy/SpiderScrapy';
-import GitSettings from '../../components/Settings/GitSettings';
 
 export default {
   name: 'SpiderDetail',

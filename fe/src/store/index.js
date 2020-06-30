@@ -6,15 +6,8 @@ import tagsView from './modules/tagsView'
 import dialogView from './modules/dialogView'
 import node from './modules/node'
 import spider from './modules/spider'
-import deploy from './modules/deploy'
 import task from './modules/task'
 import file from './modules/file'
-import schedule from './modules/schedule'
-import lang from './modules/lang'
-import site from './modules/site'
-import stats from './modules/stats'
-import setting from './modules/setting'
-import version from './modules/version'
 import project from './modules/project'
 import getters from './getters'
 
@@ -28,17 +21,9 @@ const store = new Vuex.Store({
     dialogView,
     node,
     spider,
-    deploy,
     task,
     file,
-    schedule,
-    lang,
-    site,
-    setting,
-    version,
-    project,
-    // 统计
-    stats
+    project
   },
   getters
 })

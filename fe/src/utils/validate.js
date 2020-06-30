@@ -1,6 +1,3 @@
-/**
- * Created by jiachenpan on 16/11/18.
- */
 
 export function isValidUsername (str) {
   if (!str) return false

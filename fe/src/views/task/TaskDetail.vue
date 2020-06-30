@@ -9,6 +9,7 @@
         <log-view @search="getTaskLog(true)"/>
       </el-tab-pane> -->
       <el-tab-pane :label="'结果'" name="results">
+        <!-- 详情组件 -->
         <general-table-view
           :data="taskResultsData"
           :columns="taskResultsColumns"
