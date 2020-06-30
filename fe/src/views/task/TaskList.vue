@@ -275,14 +275,11 @@ export default {
         { name: 'node_name', label: '节点', width: '120', align: 'center' },
         { name: 'spider_name', label: '爬虫', width: '120', align: 'center' },
         { name: 'status', label: '状态', width: '120', align: 'center' },
-        // { name: 'create_ts', label: 'Create Time', width: '100' },
         { name: 'start_ts', label: '开始时间', width: '200', align: 'center' },
         { name: 'finish_ts', label: '结束时间', width: '200', align: 'center' },
-        { name: 'wait_duration', label: '等待时长(秒)', width: '80', align: 'center' },
         { name: 'runtime_duration', label: '运行时长(秒)', width: '80', align: 'center' },
         { name: 'total_duration', label: '总时长(秒)', width: '80', align: 'center' },
-        { name: 'result_count', label: '结果数', width: '80', align: 'center' }
-        // { name: 'avg_num_results', label: 'Average Results Count per Second', width: '80' }
+        { name: 'result_count', label: '结果数', width: 'auto', align: 'center' }
       ],
 
       multipleSelection: [],
