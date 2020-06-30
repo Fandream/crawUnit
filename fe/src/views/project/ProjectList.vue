@@ -14,25 +14,25 @@
         <el-form-item :label="'项目名称'" prop="name" required>
           <el-input id="name" v-model="projectForm.name" :placeholder="'项目名称'"></el-input>
         </el-form-item>
-        <el-form-item :label="'项目描述'" prop="description">
-          <el-input
-            id="description"
-            type="textarea"
-            v-model="projectForm.description"
-            :placeholder="'项目描述'"
-          />
-        </el-form-item>
-        <el-form-item :label="'标签'" prop="tags">
-          <el-select
-            id="tags"
-            v-model="projectForm.tags"
-            :placeholder="'输入标签'"
-            allow-create
-            filterable
-            multiple
-          >
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item :label="'项目描述'" prop="description">-->
+<!--          <el-input-->
+<!--            id="description"-->
+<!--            type="textarea"-->
+<!--            v-model="projectForm.description"-->
+<!--            :placeholder="'项目描述'"-->
+<!--          />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item :label="'标签'" prop="tags">-->
+<!--          <el-select-->
+<!--            id="tags"-->
+<!--            v-model="projectForm.tags"-->
+<!--            :placeholder="'输入标签'"-->
+<!--            allow-create-->
+<!--            filterable-->
+<!--            multiple-->
+<!--          >-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
       </el-form>
       <!--取消、保存-->
       <span slot="footer" class="dialog-footer">
@@ -44,20 +44,20 @@
 
     <div class="action-wrapper">
       <div class="left">
-        <el-select
-          v-model="filter.tag"
-          size="small"
-          :placeholder="'选择标签'"
-          @change="onFilterChange"
-        >
-          <el-option value="" :label="'全部标签'"/>
-          <el-option
-            v-for="tag in projectTags"
-            :key="tag"
-            :label="tag"
-            :value="tag"
-          />
-        </el-select>
+<!--        <el-select-->
+<!--          v-model="filter.tag"-->
+<!--          size="small"-->
+<!--          :placeholder="'选择标签'"-->
+<!--          @change="onFilterChange"-->
+<!--        >-->
+<!--          <el-option value="" :label="'全部标签'"/>-->
+<!--          <el-option-->
+<!--            v-for="tag in projectTags"-->
+<!--            :key="tag"-->
+<!--            :label="tag"-->
+<!--            :value="tag"-->
+<!--          />-->
+<!--        </el-select>-->
       </div>
       <div class="right">
         <el-button
@@ -94,26 +94,6 @@
                 <span class="spider-count">
                 {{'爬虫数'}}: {{ item.spiders.length }}
                 </span>
-                <span class="owner">
-                  {{item.username}}
-                </span>
-              </div>
-            </el-row>
-            <el-row class="description-wrapper">
-              <div class="description">
-                {{ item.description }}
-              </div>
-            </el-row>
-            <el-row class="tags-wrapper">
-              <div class="tags">
-                <el-tag
-                  v-for="(tag, index) in item.tags"
-                  :key="index"
-                  size="mini"
-                  class="tag"
-                >
-                  {{ tag }}
-                </el-tag>
               </div>
             </el-row>
           </el-card>

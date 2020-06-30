@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 class="h1" align="center">CrawUnit</h1>
     <div class="app-container">
     <el-row>
       <ul class="metric-list">
@@ -109,7 +110,12 @@ export default {
   }
 }
 </script>
-
+<style scoped>
+  .h1{
+    font-size:64px;
+    color:#1482f0;
+  }
+</style>
 <style scoped lang="scss">
   .metric-list {
     margin-top: 0;
@@ -129,7 +135,7 @@ export default {
 
     .metric-item {
       flex-basis: 50%;
-      height: 128px;
+      height: 100px;
       display: flex;
       color: white;
       cursor: pointer;
