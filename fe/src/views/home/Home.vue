@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="h1" align="center">CrawUnit</h1>
+      <h1 class="h1" align="center">CrawUnit</h1>
     <div class="app-container">
     <el-row>
       <ul class="metric-list">
@@ -47,7 +47,6 @@
 <script>
 import request from '../../api/request'
 import echarts from 'echarts'
-
 export default {
   name: 'Home',
   data () {
@@ -112,11 +111,29 @@ export default {
 </script>
 <style scoped>
   .h1{
-    font-size:64px;
-    color:#1482f0;
+      font-size: 64px;
+  width: 200px;
+  position: relative;
+  color: #1482f0;
+  left: 50%;
+  transform: translateX(-60%);
+
+  }
+  .h1::after{
+    content:'';
+    width: 50px;
+    height:50px;
+    position: absolute;
+      left:50%;
+      display: block;
+      background: url('/favicon.ico') no-repeat;
+      background-size: 100%;
+      left: -80px;
+  top: 22px;
   }
 </style>
 <style scoped lang="scss">
+
   .metric-list {
     margin-top: 0;
     padding-left: 0;
