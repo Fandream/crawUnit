@@ -70,6 +70,7 @@
                 :headers="{ Authorization: token }"
                 :on-success="onUploadSuccess"
                 :file-list="fileList"
+                :show-file-list="false"
                 :before-upload="beforeUpload"
               >
                 <el-button

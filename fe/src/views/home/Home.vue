@@ -191,7 +191,7 @@ export default {
           font-weight: bolder;
           /*margin-bottom: 5px;*/
           margin: 0 auto;
-          font-size: 50px;
+          font-size: 40px;
         }
       }
       .metric-icon.blue,
