@@ -1,12 +1,12 @@
 package routes
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/entity"
-	"crawlab/model"
-	"crawlab/services"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/entity"
+	"crawunit/model"
+	"crawunit/services"
+	"crawunit/utils"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/gin-gonic/gin"
@@ -152,11 +152,7 @@ func PostSpider(c *gin.Context) {
 		return
 	}
 
-	// 更新 GitCron
-	if err := services.GitCron.Update(); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
+
 
 	// 获取爬虫
 	spider, err := model.GetSpider(bson.ObjectIdHex(id))
@@ -266,11 +262,7 @@ func PutSpider(c *gin.Context) {
 		return
 	}
 
-	// 更新 GitCron
-	if err := services.GitCron.Update(); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
+
 
 	c.JSON(http.StatusOK, Response{
 		Status:  "ok",
@@ -573,11 +565,7 @@ func DeleteSpider(c *gin.Context) {
 		return
 	}
 
-	// 更新 GitCron
-	if err := services.GitCron.Update(); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
+
 
 	c.JSON(http.StatusOK, Response{
 		Status:  "ok",
@@ -603,11 +591,7 @@ func DeleteSelectedSpider(c *gin.Context) {
 		}
 	}
 
-	// 更新 GitCron
-	if err := services.GitCron.Update(); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
+
 
 	c.JSON(http.StatusOK, Response{
 		Status:  "ok",
@@ -994,6 +978,7 @@ func GetSpiderFileTree(c *gin.Context) {
 
 	// 获取文件目录树
 	fileNodeTree, err := services.GetFileNodeTree(spiderFilePath, 0)
+	fmt.Println(fileNodeTree)
 	if err != nil {
 		HandleError(http.StatusInternalServerError, c, err)
 		return
@@ -1444,57 +1429,3 @@ func GetSpiderScrapySpiderFilepath(c *gin.Context) {
 }
 
 // ======== ./Scrapy 部分 ========
-
-// ======== Git 部分 ========
-
-func PostSpiderSyncGit(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	if err := services.SyncSpiderGit(spider); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func PostSpiderResetGit(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	if err := services.ResetSpiderGit(spider); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-// ======== ./Git 部分 ========

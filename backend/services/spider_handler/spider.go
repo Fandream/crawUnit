@@ -1,10 +1,10 @@
 package spider_handler
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/model"
+	"crawunit/utils"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo/bson"
@@ -68,9 +68,9 @@ func (s *SpiderSync) AfterRemoveDownCreate() {
 }
 
 func (s *SpiderSync) RemoveDownCreate(md5 string) {
-	s.RemoveSpiderFile()
-	s.Download()
-	s.CreateMd5File(md5)
+	s.RemoveSpiderFile()//删除整个爬虫项目
+	s.Download()//重新下载爬虫项目压缩包到本地,解压
+	s.CreateMd5File(md5)//在爬虫目录下新建一个md5文件,值为gridfs远端对应值
 	s.AfterRemoveDownCreate()
 }
 

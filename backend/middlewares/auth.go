@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"crawlab/constants"
-	"crawlab/routes"
-	"crawlab/services"
+	"crawunit/constants"
+	"crawunit/routes"
+	"crawunit/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"

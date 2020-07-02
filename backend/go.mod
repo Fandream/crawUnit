@@ -1,4 +1,4 @@
-module crawlab
+module crawunit
 
 go 1.14
 

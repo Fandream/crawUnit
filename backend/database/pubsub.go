@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"crawlab/utils"
+	"crawunit/utils"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/gomodule/redigo/redis"

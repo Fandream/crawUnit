@@ -1,9 +1,9 @@
 package services
 
 import (
-	"crawlab/constants"
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/model"
+	"crawunit/utils"
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

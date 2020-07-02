@@ -1,7 +1,7 @@
 package constants
 
 import (
-	"crawlab/errors"
+	"crawunit/errors"
 	"net/http"
 )
 

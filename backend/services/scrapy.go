@@ -2,9 +2,9 @@ package services
 
 import (
 	"bytes"
-	"crawlab/constants"
-	"crawlab/entity"
-	"crawlab/model"
+	"crawunit/constants"
+	"crawunit/entity"
+	"crawunit/model"
 	"encoding/json"
 	"fmt"
 	"github.com/Unknwon/goconfig"

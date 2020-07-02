@@ -1,9 +1,9 @@
 package model
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/services/register"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/services/register"
 	"errors"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo"
