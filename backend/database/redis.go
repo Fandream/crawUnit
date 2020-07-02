@@ -2,8 +2,8 @@ package database
 
 import (
 	"context"
-	"crawlab/entity"
-	"crawlab/utils"
+	"crawunit/entity"
+	"crawunit/utils"
 	"errors"
 	"github.com/apex/log"
 	"github.com/gomodule/redigo/redis"

@@ -2,15 +2,14 @@ package main
 
 import (
 	"context"
-	"crawlab/config"
-	"crawlab/database"
-	"crawlab/lib/validate_bridge"
-	"crawlab/middlewares"
-	"crawlab/model"
-	"crawlab/routes"
-	"crawlab/services"
-	"crawlab/services/challenge"
-	"crawlab/services/rpc"
+	"crawunit/config"
+	"crawunit/database"
+	"crawunit/lib/validate_bridge"
+	"crawunit/middlewares"
+	"crawunit/model"
+	"crawunit/routes"
+	"crawunit/services"
+	"crawunit/services/rpc"
 	"github.com/apex/log"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -82,13 +81,7 @@ func main() {
 		}
 		log.Info("initialized dependency fetcher successfully")
 
-		// 初始化挑战服务
-		if err := challenge.InitChallengeService(); err != nil {
-			log.Error("init challenge service error:" + err.Error())
-			debug.PrintStack()
-			panic(err)
-		}
-		log.Info("initialized challenge service successfully")
+
 
 		// 初始化清理服务
 		if err := services.InitCleanService(); err != nil {
@@ -139,11 +132,6 @@ func main() {
 			anonymousGroup.POST("/login", routes.Login)       // 用户登录
 			anonymousGroup.PUT("/users", routes.PutUser)      // 添加用户
 			anonymousGroup.GET("/setting", routes.GetSetting) // 获取配置信息
-			// release版本
-			anonymousGroup.GET("/version", routes.GetVersion)               // 获取发布的版本
-			anonymousGroup.GET("/releases/latest", routes.GetLatestRelease) // 获取最近发布的版本
-			// 文档
-			anonymousGroup.GET("/docs", routes.GetDocs) // 获取文档数据
 		}
 		authGroup := app.Group("/", middlewares.AuthorizationMiddleware())
 		{
@@ -193,20 +181,8 @@ func main() {
 				authGroup.POST("/spiders/:id/scrapy/items", routes.PostSpiderScrapyItems)                  // Scrapy 爬虫修改 items
 				authGroup.GET("/spiders/:id/scrapy/pipelines", routes.GetSpiderScrapyPipelines)            // Scrapy 爬虫 pipelines
 				authGroup.GET("/spiders/:id/scrapy/spider/filepath", routes.GetSpiderScrapySpiderFilepath) // Scrapy 爬虫 pipelines
-				authGroup.POST("/spiders/:id/git/sync", routes.PostSpiderSyncGit)                          // 爬虫 Git 同步
-				authGroup.POST("/spiders/:id/git/reset", routes.PostSpiderResetGit)                        // 爬虫 Git 重置
 				authGroup.POST("/spiders-cancel", routes.CancelSelectedSpider)                             // 停止所选爬虫任务
 				authGroup.POST("/spiders-run", routes.RunSelectedSpider)                                   // 运行所选爬虫
-			}
-			// 可配置爬虫
-			{
-				authGroup.GET("/config_spiders/:id/config", routes.GetConfigSpiderConfig)           // 获取可配置爬虫配置
-				authGroup.POST("/config_spiders/:id/config", routes.PostConfigSpiderConfig)         // 更改可配置爬虫配置
-				authGroup.PUT("/config_spiders", routes.PutConfigSpider)                            // 添加可配置爬虫
-				authGroup.POST("/config_spiders/:id", routes.PostConfigSpider)                      // 修改可配置爬虫
-				authGroup.POST("/config_spiders/:id/upload", routes.UploadConfigSpider)             // 上传可配置爬虫
-				authGroup.POST("/config_spiders/:id/spiderfile", routes.PostConfigSpiderSpiderfile) // 上传可配置爬虫
-				authGroup.GET("/config_spiders_templates", routes.GetConfigSpiderTemplateList)      // 获取可配置爬虫模版列表
 			}
 			// 任务
 			{
@@ -223,25 +199,9 @@ func main() {
 				authGroup.GET("/tasks/:id/results/download", routes.DownloadTaskResultsCsv) // 下载任务结果
 				authGroup.POST("/tasks/:id/restart", routes.RestartTask)                    // 重新开始任务
 			}
-			// 定时任务
-			{
-				authGroup.GET("/schedules", routes.GetScheduleList)              // 定时任务列表
-				authGroup.GET("/schedules/:id", routes.GetSchedule)              // 定时任务详情
-				authGroup.PUT("/schedules", routes.PutSchedule)                  // 创建定时任务
-				authGroup.POST("/schedules/:id", routes.PostSchedule)            // 修改定时任务
-				authGroup.DELETE("/schedules/:id", routes.DeleteSchedule)        // 删除定时任务
-				authGroup.POST("/schedules/:id/disable", routes.DisableSchedule) // 禁用定时任务
-				authGroup.POST("/schedules/:id/enable", routes.EnableSchedule)   // 启用定时任务
-			}
 			// 用户
 			{
-				authGroup.GET("/users", routes.GetUserList)       // 用户列表
-				authGroup.GET("/users/:id", routes.GetUser)       // 用户详情
-				authGroup.POST("/users/:id", routes.PostUser)     // 更改用户
-				authGroup.DELETE("/users/:id", routes.DeleteUser) // 删除用户
-				authGroup.PUT("/users-add", routes.PutUser)       // 添加用户
 				authGroup.GET("/me", routes.GetMe)                // 获取自己账户
-				authGroup.POST("/me", routes.PostMe)              // 修改自己账户
 			}
 			// 系统
 			{
@@ -263,33 +223,11 @@ func main() {
 				authGroup.POST("/projects/:id", routes.PostProject)     // 新增
 				authGroup.DELETE("/projects/:id", routes.DeleteProject) // 删除
 			}
-			// 挑战
-			{
-				authGroup.GET("/challenges", routes.GetChallengeList)          // 挑战列表
-				authGroup.POST("/challenges-check", routes.CheckChallengeList) // 检查挑战列表
-			}
-			// 操作
-			{
-				//authGroup.GET("/actions", routes.GetActionList)   // 操作列表
-				//authGroup.GET("/actions/:id", routes.GetAction)   // 操作
-				authGroup.PUT("/actions", routes.PutAction) // 新增操作
-				//authGroup.POST("/actions/:id", routes.PostAction) // 修改操作
-			}
-			// API Token
-			{
-				authGroup.GET("/tokens", routes.GetTokens)          // 获取 Tokens
-				authGroup.PUT("/tokens", routes.PutToken)           // 添加 Token
-				authGroup.DELETE("/tokens/:id", routes.DeleteToken) // 删除 Token
-			}
-			// 统计数据
-			authGroup.GET("/stats/home", routes.GetHomeStats) // 首页统计数据
+
+
 			// 文件
 			authGroup.GET("/file", routes.GetFile) // 获取文件
-			// Git
-			authGroup.GET("/git/branches", routes.GetGitRemoteBranches) // 获取 Git 分支
-			authGroup.GET("/git/public-key", routes.GetGitSshPublicKey) // 获取 SSH 公钥
-			authGroup.GET("/git/commits", routes.GetGitCommits)         // 获取 Git Commits
-			authGroup.POST("/git/checkout", routes.PostGitCheckout)     // 获取 Git Commits
+
 		}
 	}
 
@@ -313,6 +251,9 @@ func main() {
 			}
 		}
 	}()
+
+
+
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

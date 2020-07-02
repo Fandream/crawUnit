@@ -1,11 +1,11 @@
 package rpc
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/entity"
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/entity"
+	"crawunit/model"
+	"crawunit/utils"
 	"encoding/json"
 	"errors"
 	"fmt"

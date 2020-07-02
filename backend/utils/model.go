@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"crawlab/constants"
+	"crawunit/constants"
 	"encoding/json"
 	"github.com/globalsign/mgo/bson"
 	"strings"

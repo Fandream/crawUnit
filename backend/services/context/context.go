@@ -1,9 +1,9 @@
 package context
 
 import (
-	"crawlab/constants"
-	"crawlab/errors"
-	"crawlab/model"
+	"crawunit/constants"
+	"crawunit/errors"
+	"crawunit/model"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/gin-gonic/gin"

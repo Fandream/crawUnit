@@ -1,7 +1,7 @@
 package services
 
 import (
-	"crawlab/model"
+	"crawunit/model"
 	"github.com/apex/log"
 	"os"
 	"path"

@@ -1,8 +1,8 @@
 package services
 
 import (
-	"crawlab/constants"
-	"crawlab/model"
+	"crawunit/constants"
+	"crawunit/model"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo/bson"
 	"runtime/debug"

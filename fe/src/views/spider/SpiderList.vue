@@ -70,6 +70,7 @@
                 :headers="{ Authorization: token }"
                 :on-success="onUploadSuccess"
                 :file-list="fileList"
+                :show-file-list="false"
                 :before-upload="beforeUpload"
               >
                 <el-button
@@ -1029,7 +1030,7 @@ export default {
     await this.getList();
 
     // fetch template list
-    await this.$store.dispatch('spider/getTemplateList');
+    // await this.$store.dispatch('spider/getTemplateList');
 
     // periodically fetch spider list
     this.handle = setInterval(() => {

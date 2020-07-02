@@ -2,23 +2,20 @@ package services
 
 import (
 	"bufio"
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/entity"
-	"crawlab/lib/cron"
-	"crawlab/model"
-	"crawlab/services/notification"
-	"crawlab/services/spider_handler"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/entity"
+	"crawunit/lib/cron"
+	"crawunit/model"
+	"crawunit/services/spider_handler"
+	"crawunit/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo/bson"
-	"github.com/imroc/req"
 	uuid "github.com/satori/go.uuid"
 	"github.com/spf13/viper"
-	"net/http"
 	"os"
 	"os/exec"
 	"path"
@@ -28,7 +25,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 )
 
@@ -69,10 +65,12 @@ func (ex *Executor) Start() error {
 		// WorkerID
 		id := i
 
-		// 初始化任务锁
-		LockList.Store(id, false)
 
-		// 加入定时任务
+		// ------->初始化锁
+		LockList.Store(id, false)
+		// <-------
+
+
 		_, err := ex.Cron.AddFunc(spec, GetExecuteTaskFunc(id))
 		if err != nil {
 			return err
@@ -266,9 +264,9 @@ func FinishOrCancelTask(ch chan string, cmd *exec.Cmd, s model.Spider, t model.T
 		// 兼容windows
 		if runtime.GOOS == constants.Windows {
 			err = cmd.Process.Kill()
-		} else {
+		} /*else {
 			err = syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL)
-		}
+		}*/
 		// 取消进程
 		if err != nil {
 			log.Errorf("process kill error: %s", err.Error())
@@ -376,10 +374,10 @@ func ExecuteShellCmd(cmdStr string, cwd string, t model.Task, s model.Spider, u 
 
 	go FinishOrCancelTask(ch, cmd, s, t)
 
-	// kill的时候，可以kill所有的子进程
+/*	// kill的时候，可以kill所有的子进程
 	if runtime.GOOS != constants.Windows {
 		cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
-	}
+	}*/
 
 	// 启动进程
 	if err := StartTaskProcess(cmd, t); err != nil {
@@ -463,6 +461,7 @@ func ScanErrorLogs(t model.Task) func() {
 
 // 执行任务
 func ExecuteTask(id int) {
+	//------>判断该执行器是否被占用:若被占用,写入日志并返回;若没被占用才可以继续操作
 	if flag, ok := LockList.Load(id); ok {
 		if flag.(bool) {
 			log.Debugf(GetWorkerPrefix(id) + "running tasks...")
@@ -470,14 +469,16 @@ func ExecuteTask(id int) {
 		}
 	}
 
-	// 上锁
+
+	//------>上锁
 	LockList.Store(id, true)
 
-	// 解锁（延迟执行）
+	//------>程序return的时候,解锁,初始化锁
 	defer func() {
 		LockList.Delete(id)
 		LockList.Store(id, false)
 	}()
+	//<------
 
 	// 开始计时
 	tic := time.Now()
@@ -570,8 +571,7 @@ func ExecuteTask(id int) {
 	t.Status = constants.StatusRunning                   // 任务状态
 	t.WaitDuration = t.StartTs.Sub(t.CreateTs).Seconds() // 等待时长
 
-	// 发送 Web Hook 请求 (任务开始)
-	go SendWebHookRequest(user, t, spider)
+
 
 	// 文件检查
 	if err := SpiderFileCheck(t, spider); err != nil {
@@ -613,12 +613,8 @@ func ExecuteTask(id int) {
 
 		// 如果发生错误，则发送通知
 		t, _ = model.GetTask(t.Id)
-		if user.Setting.NotificationTrigger == constants.NotificationTriggerOnTaskEnd || user.Setting.NotificationTrigger == constants.NotificationTriggerOnTaskError {
-			SendNotifications(user, t, spider)
-		}
 
-		// 发送 Web Hook 请求 (任务开始)
-		go SendWebHookRequest(user, t, spider)
+
 
 		return
 	}
@@ -636,13 +632,9 @@ func ExecuteTask(id int) {
 	t.RuntimeDuration = t.FinishTs.Sub(t.StartTs).Seconds() // 运行时长
 	t.TotalDuration = t.FinishTs.Sub(t.CreateTs).Seconds()  // 总时长
 
-	// 发送 Web Hook 请求 (任务结束)
-	go SendWebHookRequest(user, t, spider)
 
-	// 如果是任务结束时发送通知，则发送通知
-	if user.Setting.NotificationTrigger == constants.NotificationTriggerOnTaskEnd {
-		SendNotifications(user, t, spider)
-	}
+
+
 
 	// 保存任务
 	if err := t.Save(); err != nil {
@@ -879,7 +871,6 @@ Your task has finished%s. Please find the task info below.
 **Number of Results:** | %d
 **Error:** | <span style="color:red">%s</span>
 
-Please login to Crawlab to view the details.
 `,
 		errMsg,
 		t.Id,
@@ -927,7 +918,6 @@ func GetTaskMarkdownContent(t model.Task, s model.Spider) string {
 > **结果数:** %d  
 > **错误:** %s  
 
-请登录Crawlab查看详情。
 `,
 		errMsg,
 		t.Id,
@@ -947,101 +937,7 @@ func GetTaskMarkdownContent(t model.Task, s model.Spider) string {
 	)
 }
 
-func SendTaskEmail(u model.User, t model.Task, s model.Spider) {
-	statusMsg := "has finished"
-	if t.Status == constants.StatusError {
-		statusMsg = "has an error"
-	}
-	title := fmt.Sprintf("[Crawlab] Task for \"%s\" %s", s.Name, statusMsg)
-	if err := notification.SendMail(
-		u.Email,
-		u.Username,
-		title,
-		GetTaskEmailMarkdownContent(t, s),
-	); err != nil {
-		log.Errorf("mail error: " + err.Error())
-		debug.PrintStack()
-	}
-}
 
-func SendTaskDingTalk(u model.User, t model.Task, s model.Spider) {
-	statusMsg := "已完成"
-	if t.Status == constants.StatusError {
-		statusMsg = "发生错误"
-	}
-	title := fmt.Sprintf("[Crawlab] \"%s\" 任务%s", s.Name, statusMsg)
-	content := GetTaskMarkdownContent(t, s)
-	if err := notification.SendMobileNotification(u.Setting.DingTalkRobotWebhook, title, content); err != nil {
-		log.Errorf(err.Error())
-		debug.PrintStack()
-	}
-}
-
-func SendTaskWechat(u model.User, t model.Task, s model.Spider) {
-	content := GetTaskMarkdownContent(t, s)
-	if err := notification.SendMobileNotification(u.Setting.WechatRobotWebhook, "", content); err != nil {
-		log.Errorf(err.Error())
-		debug.PrintStack()
-	}
-}
-
-func SendNotifications(u model.User, t model.Task, s model.Spider) {
-	if u.Email != "" && utils.StringArrayContains(u.Setting.EnabledNotifications, constants.NotificationTypeMail) {
-		go func() {
-			SendTaskEmail(u, t, s)
-		}()
-	}
-
-	if u.Setting.DingTalkRobotWebhook != "" && utils.StringArrayContains(u.Setting.EnabledNotifications, constants.NotificationTypeDingTalk) {
-		go func() {
-			SendTaskDingTalk(u, t, s)
-		}()
-	}
-
-	if u.Setting.WechatRobotWebhook != "" && utils.StringArrayContains(u.Setting.EnabledNotifications, constants.NotificationTypeWechat) {
-		go func() {
-			SendTaskWechat(u, t, s)
-		}()
-	}
-}
-
-func SendWebHookRequest(u model.User, t model.Task, s model.Spider) {
-	type RequestBody struct {
-		Status   string       `json:"status"`
-		Task     model.Task   `json:"task"`
-		Spider   model.Spider `json:"spider"`
-		UserName string       `json:"user_name"`
-	}
-
-	if s.IsWebHook && s.WebHookUrl != "" {
-		// request header
-		header := req.Header{
-			"Content-Type": "application/json; charset=utf-8",
-		}
-
-		// request body
-		reqBody := RequestBody{
-			Status:   t.Status,
-			UserName: u.Username,
-			Task:     t,
-			Spider:   s,
-		}
-
-		// make POST http request
-		res, err := req.Post(s.WebHookUrl, header, req.BodyJSON(reqBody))
-		if err != nil {
-			log.Errorf("sent web hook request with error: " + err.Error())
-			debug.PrintStack()
-			return
-		}
-		if res.Response().StatusCode != http.StatusOK {
-			log.Errorf(fmt.Sprintf("sent web hook request with error http code: %d, task_id: %s, status: %s", res.Response().StatusCode, t.Id, t.Status))
-			debug.PrintStack()
-			return
-		}
-		log.Infof(fmt.Sprintf("sent web hook request, task_id: %s, status: %s)", t.Id, t.Status))
-	}
-}
 
 func InitTaskExecutor() error {
 	// 构造任务执行器

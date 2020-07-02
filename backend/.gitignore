@@ -1,7 +1,6 @@
 .DS_Store
 node_modules
 /dist
-crawlab
 crawUnit
 # local env files
 .env.local
