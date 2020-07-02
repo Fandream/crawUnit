@@ -3,7 +3,7 @@ api:
 mongo:
   host: localhost
   port: 27017
-  db: crawlab_test
+  db: crawunit
   username: ""
   password: ""
   authSource: "admin"

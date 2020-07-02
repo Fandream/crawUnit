@@ -15,9 +15,6 @@ func GetNodeList(c *gin.Context) {
 		return
 	}
 
-	//for i, node := range nodes {
-	//	nodes[i].IsMaster = services.IsMasterNode(node.Id.Hex())
-	//}
 
 	c.JSON(http.StatusOK, Response{
 		Status:  "ok",

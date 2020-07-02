@@ -1,7 +1,6 @@
 package context
 
 import (
-	"crawunit/constants"
 	"crawunit/errors"
 	"crawunit/model"
 	"fmt"
@@ -18,7 +17,7 @@ type Context struct {
 }
 
 func (c *Context) User() *model.User {
-	userIfe, exists := c.Get(constants.ContextUser)
+	userIfe, exists := c.Get("ContextUser")
 	if !exists {
 		return nil
 	}

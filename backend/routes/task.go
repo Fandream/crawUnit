@@ -122,7 +122,6 @@ func PutTask(c *gin.Context) {
 				SpiderId:   reqBody.SpiderId,
 				NodeId:     node.Id,
 				Param:      reqBody.Param,
-				UserId:     services.GetCurrentUserId(c),
 				RunType:    constants.RunTypeAllNodes,
 				ScheduleId: bson.ObjectIdHex(constants.ObjectIdNull),
 			}
@@ -140,7 +139,6 @@ func PutTask(c *gin.Context) {
 		t := model.Task{
 			SpiderId:   reqBody.SpiderId,
 			Param:      reqBody.Param,
-			UserId:     services.GetCurrentUserId(c),
 			RunType:    constants.RunTypeRandom,
 			ScheduleId: bson.ObjectIdHex(constants.ObjectIdNull),
 		}
@@ -157,7 +155,6 @@ func PutTask(c *gin.Context) {
 				SpiderId:   reqBody.SpiderId,
 				NodeId:     nodeId,
 				Param:      reqBody.Param,
-				UserId:     services.GetCurrentUserId(c),
 				RunType:    constants.RunTypeSelectedNodes,
 				ScheduleId: bson.ObjectIdHex(constants.ObjectIdNull),
 			}
@@ -258,20 +255,7 @@ func GetTaskLog(c *gin.Context) {
 	})
 }
 
-func GetTaskErrorLog(c *gin.Context) {
-	id := c.Param("id")
-	u := services.GetCurrentUser(c)
-	errLogItems, err := services.GetTaskErrorLog(id, u.Setting.MaxErrorLog)
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-		Data:    errLogItems,
-	})
-}
+
 
 func GetTaskResults(c *gin.Context) {
 	id := c.Param("id")
@@ -387,9 +371,8 @@ func CancelTask(c *gin.Context) {
 func RestartTask(c *gin.Context) {
 	id := c.Param("id")
 
-	uid := services.GetCurrentUserId(c)
 
-	if err := services.RestartTask(id, uid); err != nil {
+	if err := services.RestartTask(id, "1"); err != nil {
 		HandleError(http.StatusInternalServerError, c, err)
 		return
 	}

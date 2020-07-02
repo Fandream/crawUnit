@@ -79,7 +79,7 @@ func PutProject(c *gin.Context) {
 	}
 
 	// UserId
-	p.UserId = services.GetCurrentUserId(c)
+	p.UserId = "currentUser"
 
 	if err := p.Add(); err != nil {
 		HandleError(http.StatusInternalServerError, c, err)

@@ -1,7 +1,6 @@
 package spider_handler
 
 import (
-	"crawunit/constants"
 	"crawunit/database"
 	"crawunit/model"
 	"crawunit/utils"
@@ -44,9 +43,6 @@ func (s *SpiderSync) CreateMd5File(md5 string) {
 }
 
 func (s *SpiderSync) CheckIsScrapy() {
-	if s.Spider.Type == constants.Configurable {
-		return
-	}
 	if viper.GetString("setting.checkScrapy") != "Y" {
 		return
 	}
@@ -224,14 +220,6 @@ func (s *SpiderSync) InstallDeps() {
 		// working directory
 		cmd.Dir = s.Spider.Src
 
-		// compatibility with node.js
-		if l.ExecutableName == constants.Nodejs {
-			deps, err := utils.GetPackageJsonDeps(path.Join(s.Spider.Src, l.DepFileName))
-			if err != nil {
-				continue
-			}
-			cmd = exec.Command(l.DepExecutablePath, strings.Split(l.InstallDepArgs+" "+strings.Join(deps, " "), " ")...)
-		}
 
 		// start executing command
 		output, err := cmd.Output()

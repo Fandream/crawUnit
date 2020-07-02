@@ -3,15 +3,9 @@ package model
 import (
 	"crawunit/constants"
 	"crawunit/database"
-	"crawunit/entity"
-	"crawunit/utils"
-	"errors"
 	"github.com/apex/log"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"path/filepath"
 	"runtime/debug"
 	"time"
 )
@@ -71,7 +65,6 @@ type Spider struct {
 	// 前端展示
 	LastRunTs   time.Time               `json:"last_run_ts"`  // 最后一次执行时间
 	LastStatus  string                  `json:"last_status"`  // 最后执行状态
-	Config      entity.ConfigSpiderData `json:"config"`       // 可配置爬虫配置
 	LatestTasks []Task                  `json:"latest_tasks"` // 最近任务列表
 	Username    string                  `json:"username"`     // 用户名称
 
@@ -277,14 +270,6 @@ func GetSpider(id bson.ObjectId) (Spider, error) {
 		return spider, err
 	}
 
-	// 如果为可配置爬虫，获取爬虫配置
-	if spider.Type == constants.Configurable && utils.Exists(filepath.Join(spider.Src, "Spiderfile")) {
-		config, err := GetConfigSpiderData(spider)
-		if err != nil {
-			return spider, err
-		}
-		spider.Config = config
-	}
 
 	// 获取用户名称
 	var user User
@@ -344,60 +329,4 @@ func RemoveSpider(id bson.ObjectId) error {
 	return nil
 }
 
-// 删除所有爬虫
-func RemoveAllSpider() error {
-	s, c := database.GetCol("spiders")
-	defer s.Close()
 
-	var spiders []Spider
-	err := c.Find(nil).All(&spiders)
-	if err != nil {
-		log.Error("get all spiders error:" + err.Error())
-		return err
-	}
-	for _, spider := range spiders {
-		if err := RemoveSpider(spider.Id); err != nil {
-			log.Error("remove spider error:" + err.Error())
-		}
-	}
-	return nil
-}
-
-// 获取爬虫总数
-func GetSpiderCount(filter interface{}) (int, error) {
-	s, c := database.GetCol("spiders")
-	defer s.Close()
-
-	count, err := c.Find(filter).Count()
-	if err != nil {
-		return 0, err
-	}
-	return count, nil
-}
-
-// 获取爬虫定时任务
-func GetConfigSpiderData(spider Spider) (entity.ConfigSpiderData, error) {
-	// 构造配置数据
-	configData := entity.ConfigSpiderData{}
-
-	// 校验爬虫类别
-	if spider.Type != constants.Configurable {
-		return configData, errors.New("not a configurable spider")
-	}
-
-	// Spiderfile 目录
-	sfPath := filepath.Join(spider.Src, "Spiderfile")
-
-	// 读取YAML文件
-	yamlFile, err := ioutil.ReadFile(sfPath)
-	if err != nil {
-		return configData, err
-	}
-
-	// 反序列化
-	if err := yaml.Unmarshal(yamlFile, &configData); err != nil {
-		return configData, err
-	}
-
-	return configData, nil
-}

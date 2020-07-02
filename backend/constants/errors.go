@@ -7,7 +7,7 @@ import (
 
 var (
 	ErrorMongoError = errors.NewSystemOPError(1001, "system error:[mongo]%s", http.StatusInternalServerError)
-	//users
-	ErrorUserNotFound              = errors.NewBusinessError(10001, "user not found.", http.StatusUnauthorized)
-	ErrorUsernameOrPasswordInvalid = errors.NewBusinessError(11001, "username or password invalid", http.StatusUnauthorized)
+	ErrorDepError = errors.NewSystemOPError(1002, "system error:[dep]%s", http.StatusInternalServerError)
+	ErrorTaskExecuteError = errors.NewSystemOPError(1003, "system error:[task execute]%s", http.StatusInternalServerError)
+
 )

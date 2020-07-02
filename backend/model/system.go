@@ -13,23 +13,9 @@ import (
 
 var executableNameMap = map[string]string{
 	// python
-	"python":    "Python",
-	"python2":   "Python 2",
-	"python2.7": "Python 2.7",
-	"python3":   "Python 3",
-	"python3.5": "Python 3.5",
-	"python3.6": "Python 3.6",
-	"python3.7": "Python 3.7",
 	"python3.8": "Python 3.8",
-	// java
-	"java": "Java",
 	// go
 	"go": "Go",
-	// node
-	"node": "NodeJS",
-	// php
-	"php": "PHP",
-	// windows command
 	"cmd": "Windows Command Prompt",
 	// linux shell
 	"sh":   "Shell",

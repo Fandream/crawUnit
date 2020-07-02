@@ -99,8 +99,6 @@ func (h *HostnameRegister) GetHostname() (string, error) {
 }
 
 // ===================== 公共方法 =====================
-// 获取本机的IP地址
-// TODO: 考虑多个IP地址的情况
 func getIp() (string, error) {
 	addrList, err := net.InterfaceAddrs()
 	if err != nil {

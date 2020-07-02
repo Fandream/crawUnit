@@ -362,10 +362,7 @@ func ExecuteShellCmd(cmdStr string, cwd string, t model.Task, s model.Spider, u 
 		envs = append(envs, model.Env{Name: "CRAWLAB_MONGO_PASSWORD", Value: viper.GetString("mongo.password")})
 		envs = append(envs, model.Env{Name: "CRAWLAB_MONGO_AUTHSOURCE", Value: viper.GetString("mongo.authSource")})
 
-		// 设置配置
-		for envName, envValue := range s.Config.Settings {
-			envs = append(envs, model.Env{Name: "CRAWLAB_SETTING_" + envName, Value: envValue})
-		}
+
 	}
 	cmd = SetEnv(cmd, envs, t, s)
 
@@ -446,13 +443,8 @@ func SaveTaskResultCount(id string) func() {
 // Scan Error Logs
 func ScanErrorLogs(t model.Task) func() {
 	return func() {
-		u, err := model.GetUser(t.UserId)
-		if err != nil {
-			return
-		}
-		if err := model.UpdateTaskErrorLogs(t.Id, u.Setting.ErrorRegexPattern); err != nil {
-			return
-		}
+
+
 		if err := model.UpdateErrorLogCount(t.Id); err != nil {
 			return
 		}
@@ -543,20 +535,9 @@ func ExecuteTask(id int) {
 		spider.Name,
 	)
 
-	// 执行命令
-	var cmd string
-	if spider.Type == constants.Configurable {
-		// 可配置爬虫命令
-		cmd = "scrapy crawl config_spider"
-	} else {
-		// 自定义爬虫命令
-		cmd = spider.Cmd
-	}
 
-	// 加入参数
-	if t.Param != "" {
-		cmd += " " + t.Param
-	}
+	cmd := "cmdstr"
+
 
 	// 获得触发任务用户
 	user, err := model.GetUser(t.UserId)
@@ -606,6 +587,7 @@ func ExecuteTask(id int) {
 	}
 	cronExecErrLog.Start()
 	defer cronExecErrLog.Stop()
+
 
 	// 执行Shell命令
 	if err := ExecuteShellCmd(cmd, cwd, t, spider, user); err != nil {

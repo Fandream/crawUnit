@@ -18,12 +18,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"path"
 	"path/filepath"
 	"runtime/debug"
-	"strconv"
 	"strings"
-	"time"
 )
 
 // ======== 爬虫管理 ========
@@ -36,7 +33,6 @@ func GetSpiderList(c *gin.Context) {
 	t := c.Query("type")
 	sortKey := c.Query("sort_key")
 	sortDirection := c.Query("sort_direction")
-	ownerType := c.Query("owner_type")
 
 	// 筛选-名称
 	filter := bson.M{
@@ -66,20 +62,6 @@ func GetSpiderList(c *gin.Context) {
 		filter["project_id"] = bson.ObjectIdHex(pid)
 	}
 
-	// 筛选-用户
-	if ownerType == constants.OwnerTypeAll {
-		user := services.GetCurrentUser(c)
-		if user.Role == constants.RoleNormal {
-			filter["$or"] = []bson.M{
-				{"user_id": services.GetCurrentUserId(c)},
-				{"is_public": true},
-			}
-		}
-	} else if ownerType == constants.OwnerTypeMe {
-		filter["user_id"] = services.GetCurrentUserId(c)
-	} else if ownerType == constants.OwnerTypePublic {
-		filter["is_public"] = true
-	}
 
 	// 排序
 	sortStr := "-_id"
@@ -219,8 +201,7 @@ func PutSpider(c *gin.Context) {
 	// 将FileId置空
 	spider.FileId = bson.ObjectIdHex(constants.ObjectIdNull)
 
-	// UserId
-	spider.UserId = services.GetCurrentUserId(c)
+
 
 	// 爬虫目录
 	spiderDir := filepath.Join(viper.GetString("spider.path"), spider.Name)
@@ -242,13 +223,6 @@ func PutSpider(c *gin.Context) {
 		return
 	}
 
-	// 如果为 Scrapy 项目，生成 Scrapy 项目
-	if spider.IsScrapy {
-		if err := services.CreateScrapyProject(spider); err != nil {
-			HandleError(http.StatusInternalServerError, c, err)
-			return
-		}
-	}
 
 	// 添加爬虫到数据库
 	if err := spider.Add(); err != nil {
@@ -303,8 +277,7 @@ func CopySpider(c *gin.Context) {
 		return
 	}
 
-	// UserId
-	spider.UserId = services.GetCurrentUserId(c)
+
 
 	// 复制爬虫
 	if err := services.CopySpider(spider, reqBody.Name); err != nil {
@@ -403,7 +376,6 @@ func UploadSpider(c *gin.Context) {
 			Src:         filepath.Join(srcPath, spiderName),
 			FileId:      fid,
 			ProjectId:   bson.ObjectIdHex(constants.ObjectIdNull),
-			UserId:      services.GetCurrentUserId(c),
 		}
 		if name != "" {
 			spider.Name = name
@@ -460,7 +432,6 @@ func UploadSpider(c *gin.Context) {
 }
 
 func UploadSpiderFromId(c *gin.Context) {
-	// TODO: 与 UploadSpider 部分逻辑重复，需要优化代码
 	// 爬虫ID
 	spiderId := c.Param("id")
 
@@ -643,8 +614,6 @@ func RunSelectedSpider(c *gin.Context) {
 	// 任务ID
 	var taskIds []string
 
-	// 遍历爬虫
-	// TODO: 优化此部分代码，与 routes.PutTask 有重合部分
 	for _, taskParam := range reqBody.TaskParams {
 		if reqBody.RunType == constants.RunTypeAllNodes {
 			// 所有节点
@@ -658,7 +627,6 @@ func RunSelectedSpider(c *gin.Context) {
 					SpiderId:   taskParam.SpiderId,
 					NodeId:     node.Id,
 					Param:      taskParam.Param,
-					UserId:     services.GetCurrentUserId(c),
 					RunType:    constants.RunTypeAllNodes,
 					ScheduleId: bson.ObjectIdHex(constants.ObjectIdNull),
 				}
@@ -676,7 +644,6 @@ func RunSelectedSpider(c *gin.Context) {
 			t := model.Task{
 				SpiderId:   taskParam.SpiderId,
 				Param:      taskParam.Param,
-				UserId:     services.GetCurrentUserId(c),
 				RunType:    constants.RunTypeRandom,
 				ScheduleId: bson.ObjectIdHex(constants.ObjectIdNull),
 			}
@@ -693,7 +660,6 @@ func RunSelectedSpider(c *gin.Context) {
 					SpiderId:   taskParam.SpiderId,
 					NodeId:     nodeId,
 					Param:      taskParam.Param,
-					UserId:     services.GetCurrentUserId(c),
 					RunType:    constants.RunTypeSelectedNodes,
 					ScheduleId: bson.ObjectIdHex(constants.ObjectIdNull),
 				}
@@ -737,148 +703,6 @@ func GetSpiderTasks(c *gin.Context) {
 		Status:  "ok",
 		Message: "success",
 		Data:    tasks,
-	})
-}
-
-func GetSpiderStats(c *gin.Context) {
-	type Overview struct {
-		TaskCount            int     `json:"task_count" bson:"task_count"`
-		ResultCount          int     `json:"result_count" bson:"result_count"`
-		SuccessCount         int     `json:"success_count" bson:"success_count"`
-		SuccessRate          float64 `json:"success_rate"`
-		TotalWaitDuration    float64 `json:"wait_duration" bson:"wait_duration"`
-		TotalRuntimeDuration float64 `json:"runtime_duration" bson:"runtime_duration"`
-		AvgWaitDuration      float64 `json:"avg_wait_duration"`
-		AvgRuntimeDuration   float64 `json:"avg_runtime_duration"`
-	}
-
-	type Data struct {
-		Overview Overview              `json:"overview"`
-		Daily    []model.TaskDailyItem `json:"daily"`
-	}
-
-	id := c.Param("id")
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		log.Errorf(err.Error())
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	s, col := database.GetCol("tasks")
-	defer s.Close()
-
-	// 起始日期
-	startDate := time.Now().Add(-time.Hour * 24 * 30)
-	endDate := time.Now()
-
-	// match
-	op1 := bson.M{
-		"$match": bson.M{
-			"spider_id": spider.Id,
-			"create_ts": bson.M{
-				"$gte": startDate,
-				"$lt":  endDate,
-			},
-		},
-	}
-
-	// project
-	op2 := bson.M{
-		"$project": bson.M{
-			"success_count": bson.M{
-				"$cond": []interface{}{
-					bson.M{
-						"$eq": []string{
-							"$status",
-							constants.StatusFinished,
-						},
-					},
-					1,
-					0,
-				},
-			},
-			"result_count":     "$result_count",
-			"wait_duration":    "$wait_duration",
-			"runtime_duration": "$runtime_duration",
-		},
-	}
-
-	// group
-	op3 := bson.M{
-		"$group": bson.M{
-			"_id":              nil,
-			"task_count":       bson.M{"$sum": 1},
-			"success_count":    bson.M{"$sum": "$success_count"},
-			"result_count":     bson.M{"$sum": "$result_count"},
-			"wait_duration":    bson.M{"$sum": "$wait_duration"},
-			"runtime_duration": bson.M{"$sum": "$runtime_duration"},
-		},
-	}
-
-	// run aggregation pipeline
-	var overview Overview
-	if err := col.Pipe([]bson.M{op1, op2, op3}).One(&overview); err != nil {
-		if err == mgo.ErrNotFound {
-			c.JSON(http.StatusOK, Response{
-				Status:  "ok",
-				Message: "success",
-				Data: Data{
-					Overview: overview,
-					Daily:    []model.TaskDailyItem{},
-				},
-			})
-			return
-		}
-		log.Errorf(err.Error())
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 后续处理
-	successCount, _ := strconv.ParseFloat(strconv.Itoa(overview.SuccessCount), 64)
-	taskCount, _ := strconv.ParseFloat(strconv.Itoa(overview.TaskCount), 64)
-	overview.SuccessRate = successCount / taskCount
-	overview.AvgWaitDuration = overview.TotalWaitDuration / taskCount
-	overview.AvgRuntimeDuration = overview.TotalRuntimeDuration / taskCount
-
-	items, err := model.GetDailyTaskStats(bson.M{"spider_id": spider.Id, "user_id": services.GetCurrentUserId(c)})
-	if err != nil {
-		log.Errorf(err.Error())
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-		Data: Data{
-			Overview: overview,
-			Daily:    items,
-		},
-	})
-}
-
-func GetSpiderSchedules(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	// 获取定时任务
-	list, err := model.GetScheduleList(bson.M{"spider_id": bson.ObjectIdHex(id)})
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-		Data:    list,
 	})
 }
 
@@ -992,198 +816,6 @@ func GetSpiderFileTree(c *gin.Context) {
 	})
 }
 
-func PostSpiderFile(c *gin.Context) {
-	// 爬虫ID
-	id := c.Param("id")
-
-	// 文件相对路径
-	var reqBody SpiderFileReqBody
-	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		HandleError(http.StatusBadRequest, c, err)
-		return
-	}
-
-	// 获取爬虫
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 写文件
-	if err := ioutil.WriteFile(filepath.Join(spider.Src, reqBody.Path), []byte(reqBody.Content), os.ModePerm); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 同步到GridFS
-	if err := services.UploadSpiderToGridFsFromMaster(spider); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 返回结果
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func PutSpiderFile(c *gin.Context) {
-	spiderId := c.Param("id")
-	var reqBody SpiderFileReqBody
-	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		HandleError(http.StatusBadRequest, c, err)
-		return
-	}
-	spider, err := model.GetSpider(bson.ObjectIdHex(spiderId))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 文件路径
-	filePath := path.Join(spider.Src, reqBody.Path)
-
-	// 如果文件已存在，则报错
-	if utils.Exists(filePath) {
-		HandleErrorF(http.StatusInternalServerError, c, fmt.Sprintf(`%s already exists`, filePath))
-		return
-	}
-
-	// 写入文件
-	if err := ioutil.WriteFile(filePath, []byte(reqBody.Content), 0777); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 同步到GridFS
-	if err := services.UploadSpiderToGridFsFromMaster(spider); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func PutSpiderDir(c *gin.Context) {
-	spiderId := c.Param("id")
-	var reqBody SpiderFileReqBody
-	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		HandleError(http.StatusBadRequest, c, err)
-		return
-	}
-	spider, err := model.GetSpider(bson.ObjectIdHex(spiderId))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 文件路径
-	filePath := path.Join(spider.Src, reqBody.Path)
-
-	// 如果文件已存在，则报错
-	if utils.Exists(filePath) {
-		HandleErrorF(http.StatusInternalServerError, c, fmt.Sprintf(`%s already exists`, filePath))
-		return
-	}
-
-	// 创建文件夹
-	if err := os.MkdirAll(filePath, 0777); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 同步到GridFS
-	if err := services.UploadSpiderToGridFsFromMaster(spider); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func DeleteSpiderFile(c *gin.Context) {
-	spiderId := c.Param("id")
-	var reqBody SpiderFileReqBody
-	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		HandleError(http.StatusBadRequest, c, err)
-		return
-	}
-	spider, err := model.GetSpider(bson.ObjectIdHex(spiderId))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-	filePath := path.Join(spider.Src, reqBody.Path)
-	if err := os.RemoveAll(filePath); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 同步到GridFS
-	if err := services.UploadSpiderToGridFsFromMaster(spider); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func RenameSpiderFile(c *gin.Context) {
-	spiderId := c.Param("id")
-	var reqBody SpiderFileReqBody
-	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		HandleError(http.StatusBadRequest, c, err)
-	}
-	spider, err := model.GetSpider(bson.ObjectIdHex(spiderId))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 原文件路径
-	filePath := path.Join(spider.Src, reqBody.Path)
-	newFilePath := path.Join(path.Join(path.Dir(filePath), reqBody.NewPath))
-
-	// 如果新文件已存在，则报错
-	if utils.Exists(newFilePath) {
-		HandleErrorF(http.StatusInternalServerError, c, fmt.Sprintf(`%s already exists`, newFilePath))
-		return
-	}
-
-	// 重命名
-	if err := os.Rename(filePath, newFilePath); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	// 删除原文件
-	if err := os.RemoveAll(filePath); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-	}
-
-	// 同步到GridFS
-	if err := services.UploadSpiderToGridFsFromMaster(spider); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
 // ======== 爬虫文件管理 ========
 
 // ======== Scrapy 部分 ========
@@ -1215,217 +847,5 @@ func GetSpiderScrapySpiders(c *gin.Context) {
 	})
 }
 
-func PutSpiderScrapySpiders(c *gin.Context) {
-	type ReqBody struct {
-		Name     string `json:"name"`
-		Domain   string `json:"domain"`
-		Template string `json:"template"`
-	}
-
-	id := c.Param("id")
-
-	var reqBody ReqBody
-	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		HandleErrorF(http.StatusBadRequest, c, "invalid request")
-		return
-	}
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	if err := services.CreateScrapySpider(spider, reqBody.Name, reqBody.Domain, reqBody.Template); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func GetSpiderScrapySettings(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	data, err := services.GetScrapySettings(spider)
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-		Data:    data,
-	})
-}
-
-func PostSpiderScrapySettings(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	var reqData []entity.ScrapySettingParam
-	if err := c.ShouldBindJSON(&reqData); err != nil {
-		HandleErrorF(http.StatusBadRequest, c, "invalid request")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	if err := services.SaveScrapySettings(spider, reqData); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func GetSpiderScrapyItems(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	data, err := services.GetScrapyItems(spider)
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-		Data:    data,
-	})
-}
-
-func PostSpiderScrapyItems(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	var reqData []entity.ScrapyItem
-	if err := c.ShouldBindJSON(&reqData); err != nil {
-		HandleErrorF(http.StatusBadRequest, c, "invalid request")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	if err := services.SaveScrapyItems(spider, reqData); err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-	})
-}
-
-func GetSpiderScrapyPipelines(c *gin.Context) {
-	id := c.Param("id")
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	data, err := services.GetScrapyPipelines(spider)
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-		Data:    data,
-	})
-}
-
-func GetSpiderScrapySpiderFilepath(c *gin.Context) {
-	id := c.Param("id")
-
-	spiderName := c.Query("spider_name")
-	if spiderName == "" {
-		HandleErrorF(http.StatusBadRequest, c, "spider_name is empty")
-		return
-	}
-
-	if !bson.IsObjectIdHex(id) {
-		HandleErrorF(http.StatusBadRequest, c, "spider_id is invalid")
-		return
-	}
-
-	spider, err := model.GetSpider(bson.ObjectIdHex(id))
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	data, err := services.GetScrapySpiderFilepath(spider, spiderName)
-	if err != nil {
-		HandleError(http.StatusInternalServerError, c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, Response{
-		Status:  "ok",
-		Message: "success",
-		Data:    data,
-	})
-}
 
 // ======== ./Scrapy 部分 ========
