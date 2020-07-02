@@ -1,14 +1,14 @@
 package services
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/entity"
-	"crawlab/lib/cron"
-	"crawlab/model"
-	"crawlab/services/msg_handler"
-	"crawlab/services/register"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/entity"
+	"crawunit/lib/cron"
+	"crawunit/model"
+	"crawunit/services/msg_handler"
+	"crawunit/services/register"
+	"crawunit/utils"
 	"encoding/json"
 	"fmt"
 	"github.com/apex/log"

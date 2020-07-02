@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"crawlab/constants"
-	"crawlab/model"
-	"crawlab/services"
+	"crawunit/constants"
+	"crawunit/model"
+	"crawunit/services"
 	"github.com/gin-gonic/gin"
 	"github.com/globalsign/mgo/bson"
 	"net/http"

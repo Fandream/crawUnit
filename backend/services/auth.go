@@ -1,7 +1,7 @@
 package services
 
 import (
-	"crawlab/constants"
+	"crawunit/constants"
 	"github.com/gin-gonic/gin"
 	"github.com/globalsign/mgo/bson"
 )

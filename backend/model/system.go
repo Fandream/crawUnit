@@ -1,7 +1,7 @@
 package model
 
 import (
-	"crawlab/entity"
+	"crawunit/entity"
 	"github.com/apex/log"
 	"io/ioutil"
 	"os"

@@ -1,8 +1,8 @@
 package msg_handler
 
 import (
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/model"
+	"crawunit/utils"
 	"github.com/globalsign/mgo/bson"
 	"github.com/spf13/viper"
 	"path/filepath"

@@ -1,42 +1,35 @@
 version: '3.3'
 services:
-  worker1:
-    image: crawunit:v1.0.0
+  master: 
+    image: crawunit:v2.0.0
+    container_name: master
+    environment:
+      CRAWLAB_SERVER_MASTER: "Y" 
+      CRAWLAB_MONGO_HOST: "47.93.195.128"  
+      CRAWLAB_MONGO_PORT: "27017"  
+      CRAWLAB_REDIS_ADDRESS: "47.93.195.128"  
+      CRAWLAB_REDIS_PORT: "6379"  
+    ports:    
+      - "8080:8080" 
+      
+  worker1: 
+    image: crawunit:v2.0.0
     container_name: worker1
     environment:
-      CRAWLAB_SERVER_MASTER: "N"
-      CRAWLAB_MONGO_HOST: "mongo"
-      CRAWLAB_REDIS_ADDRESS: "redis"
-    depends_on:
-      - mongo
-      - redis
-  worker2:
-    image: crawunit:v1.0.0
+      CRAWLAB_SERVER_MASTER: "N"  
+      CRAWLAB_MONGO_HOST: "47.93.195.128"  
+      CRAWLAB_MONGO_PORT: "27017"  
+      CRAWLAB_REDIS_ADDRESS: "47.93.195.128"  
+      CRAWLAB_REDIS_PORT: "6379"  
+      
+            
+  worker2: 
+    image: crawunit:v2.0.0
     container_name: worker2
     environment:
-      CRAWLAB_SERVER_MASTER: "N"
-      CRAWLAB_MONGO_HOST: "mongo"
-      CRAWLAB_REDIS_ADDRESS: "redis"
-    depends_on:
-      - mongo
-      - redis
-  worker3:
-    image: crawunit:v1.0.0
-    container_name: worker3
-    environment:
-      CRAWLAB_SERVER_MASTER: "N"
-      CRAWLAB_MONGO_HOST: "mongo"
-      CRAWLAB_REDIS_ADDRESS: "redis"
-    depends_on:
-      - mongo
-      - redis
-  mongo:
-    image: mongo:latest
-    restart: always
-    ports:
-      - "27017:27017"  # expose port to host machine 暴露接口到宿主机
-  redis:
-    image: redis:latest
-    restart: always
-    ports:
-      - "6379:6379"  # expose port to host machine 暴露接口到宿主机
+      CRAWLAB_SERVER_MASTER: "N"  
+      CRAWLAB_MONGO_HOST: "47.93.195.128"  
+      CRAWLAB_MONGO_PORT: "27017"  
+      CRAWLAB_REDIS_ADDRESS: "47.93.195.128"  
+      CRAWLAB_REDIS_PORT: "6379"  
+

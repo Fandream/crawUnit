@@ -1,11 +1,11 @@
 package msg_handler
 
 import (
-	"crawlab/constants"
-	"crawlab/database"
-	"crawlab/entity"
-	"crawlab/model"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/database"
+	"crawunit/entity"
+	"crawunit/model"
+	"crawunit/utils"
 	"github.com/apex/log"
 	"runtime/debug"
 )

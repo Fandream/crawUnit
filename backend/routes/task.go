@@ -2,10 +2,10 @@ package routes
 
 import (
 	"bytes"
-	"crawlab/constants"
-	"crawlab/model"
-	"crawlab/services"
-	"crawlab/utils"
+	"crawunit/constants"
+	"crawunit/model"
+	"crawunit/services"
+	"crawunit/utils"
 	"encoding/csv"
 	"github.com/gin-gonic/gin"
 	"github.com/globalsign/mgo/bson"
