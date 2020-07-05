@@ -48,22 +48,6 @@
         <span class="custom-tree-node" slot-scope="{ node, data }">
           <el-popover v-model="isShowCreatePopoverDict[data.path]" trigger="manual" placement="right"
                       popper-class="create-item-popover" :visible-arrow="false" @hide="onHideCreate(data)">
-            <ul class="action-item-list">
-              <li class="action-item" @click="fileDialogVisible = true">
-                <font-awesome-icon icon="file-alt" color="rgba(3,47,98,.5)"/>
-                <span class="action-item-text">{{'新建文件'}}</span>
-              </li>
-              <li class="action-item" @click="dirDialogVisible = true">
-                <font-awesome-icon :icon="['fa', 'folder']" color="rgba(3,47,98,.5)"/>
-                <span class="action-item-text">{{'新建目录'}}</span>
-              </li>
-            </ul>
-            <ul class="action-item-list">
-              <li class="action-item" @click="onClickRemoveNav(data)">
-                <font-awesome-icon :icon="['fa', 'trash']" color="rgba(3,47,98,.5)"/>
-                <span class="action-item-text">{{'删除'}}</span>
-              </li>
-            </ul>
             <template slot="reference">
               <div>
                 <span class="item-icon">

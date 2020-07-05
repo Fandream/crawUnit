@@ -10,7 +10,7 @@ export const constantRouterMap = [
   { path: '/404', component: () => import('../views/404'), hidden: true },
   { path: '/', redirect: '/home' },
 
-  // Crawlab Pages
+  // CRAWUNIT Pages
   {
     path: '/home',
     component: Layout,
